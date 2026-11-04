@@ -1,4 +1,4 @@
-# Tema Bradial Voz para Issabel 5
+# issabel6: tema Bradial Voz para Issabel 5
 
 Fase 1 da interface Bradial Voz: o Issabel atual com o visual do design system da
 Bradial e o menu organizado como os admins usam. Não altera nenhum módulo, nenhum
@@ -38,13 +38,15 @@ seção e continua controlado pelas permissões de grupo.
 
 ## Instalação
 
-Copie a pasta para o servidor e rode como root:
+No servidor, como root:
 
 ```bash
-cd issabel-theme-bradial
-bash install.sh
+git clone https://github.com/yeahgns/issabel6.git /opt/issabel6
+cd /opt/issabel6 && bash install.sh
 ```
 
+O clone fica em `/opt`, fora do `/var/www/html`: o `.git` nunca é servido pelo Apache.
+O `install.sh` copia os arquivos para `themes/bradial` e aplica menu e marca do PBX.
 Depois, recarregue o Issabel no navegador (Cmd+Shift+R ou Ctrl+Shift+R).
 
 Opções:
@@ -55,7 +57,28 @@ Opções:
 | `bash install.sh --sem-menu` | Instalar o tema sem mexer no menu. |
 | `bash install.sh --sem-pbx` | Instalar sem alterar a marca do IssabelPBX. |
 
-Rodar de novo é seguro: atualiza os arquivos e reaplica as configurações.
+## Atualização
+
+```bash
+cd /opt/issabel6 && git pull && bash install.sh
+```
+
+Rodar de novo é seguro: atualiza os arquivos e reaplica as configurações. A versão e o
+commit instalados ficam em `/var/lib/bradial-theme/instalado.txt`.
+
+## Fluxo de mudanças
+
+1. A mudança chega como um arquivo `.patch` com só as linhas alteradas.
+2. No clone local: `git apply ~/Downloads/arquivo.patch`, confira com `git diff`,
+   depois `git commit -am "descrição"` e `git push`.
+3. No servidor: o comando de atualização acima.
+
+Se o `git apply` recusar o patch, é porque o arquivo mudou por fora desde que o patch
+foi gerado; nada é aplicado pela metade.
+
+**Repositório público:** nada de senhas, tokens, IPs de clientes ou dados de servidor no
+código. O `install.sh` lê a senha do MySQL de `/etc/issabel.conf` na hora de rodar, e os
+backups ficam só no servidor, em `/var/lib/bradial-theme`.
 
 ## Depois de instalar
 
@@ -94,7 +117,7 @@ do `install.sh` guarda outro em `/var/lib/bradial-theme/backup-<data>`.
 ## Estrutura
 
 ```
-install.sh, uninstall.sh, VERSION
+install.sh, uninstall.sh, VERSION, CHANGELOG.md
 menu/menu.xml              atalhos do PBX (issabel-menumerge)
 menu/reorganize.sql        organização do menu (menu.db)
 theme/_common/             index.tpl, _menu.tpl, login.tpl

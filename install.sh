@@ -76,6 +76,8 @@ if [ ! -d "$ORIG" ]; then
 fi
 say "Backup desta execução em $BK"
 backup_to "$BK"
+# Guarda só os 10 backups mais recentes (o original nunca é apagado)
+ls -1dt "$STATE"/backup-* 2>/dev/null | tail -n +11 | xargs -r rm -rf || true
 
 # ---------- Tema ----------
 if [ "$DO_THEME" = 1 ]; then
@@ -136,8 +138,11 @@ if [ "$DO_PBX" = 1 ]; then
     fi
 fi
 
+COMMIT=$(git -C "$DIR" rev-parse --short HEAD 2>/dev/null || echo "sem git")
+printf 'versao=%s\ncommit=%s\ndata=%s\n' "$VERSION" "$COMMIT" "$STAMP" > "$STATE/instalado.txt"
+
 echo
-say "Pronto."
+say "Pronto. Versão $VERSION ($COMMIT)."
 info "Recarregue o Issabel no navegador (Ctrl+Shift+R / Cmd+Shift+R)."
 if [ "$DO_MENU" = 1 ]; then
     info "Os atalhos novos do PBX já valem para o grupo administrador. Para outros grupos,"
