@@ -1,0 +1,140 @@
+/* Bradial Voz: tokens do design system (Bradial Design System).
+   Fonte Inter hospedada localmente (sem Google Fonts).
+   Medidas em px: o Bootstrap 3 do Issabel define html{font-size:10px}, então rem encolheria tudo. */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(../fonts/inter-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(../fonts/inter-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Inter';font-style:italic;font-weight:100 900;font-display:swap;src:url(../fonts/inter-latin-wght-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* Base Luma color tokens — source: app/globals.css (:root / .dark) */
+:root{
+color-scheme:light;
+--background:oklch(1 0 0);
+--foreground:oklch(0.145 0 0);
+--card:oklch(1 0 0);
+--card-foreground:oklch(0.145 0 0);
+--popover:oklch(1 0 0);
+--popover-foreground:oklch(0.145 0 0);
+--primary:oklch(0.6515 0.1907 252.9);
+--primary-foreground:oklch(0.985 0 0);
+--secondary:oklch(0.97 0 0);
+--secondary-foreground:oklch(0.205 0 0);
+--muted:oklch(0.97 0 0);
+--muted-foreground:oklch(0.556 0 0);
+--accent:oklch(0.97 0 0);
+--accent-foreground:oklch(0.205 0 0);
+--destructive:oklch(0.577 0.245 27.325);
+--destructive-foreground:oklch(0.985 0 0);
+--border:oklch(0.922 0 0);
+--input:oklch(0.922 0 0);
+--ring:oklch(0.6515 0.1907 252.9);
+--chart-1:oklch(0.85 0.08 252.9);
+--chart-2:oklch(0.75 0.14 252.9);
+--chart-3:oklch(0.6515 0.1907 252.9);
+--chart-4:oklch(0.55 0.17 252.9);
+--chart-5:oklch(0.45 0.14 252.9);
+--sidebar:oklch(0.985 0 0);
+--sidebar-foreground:oklch(0.145 0 0);
+--sidebar-primary:oklch(0.6515 0.1907 252.9);
+--sidebar-primary-foreground:oklch(0.985 0 0);
+--sidebar-accent:oklch(0.97 0 0);
+--sidebar-accent-foreground:oklch(0.205 0 0);
+--sidebar-border:oklch(0.922 0 0);
+--sidebar-ring:oklch(0.6515 0.1907 252.9);
+/* semantic aliases */
+--surface-page:var(--muted);
+--surface-card:var(--card);
+--text-body:var(--foreground);
+--text-muted:var(--muted-foreground);
+--input-bg:oklch(0.922 0 0 / 50%);          /* bg-input/50 — fields */
+--input-bg-strong:oklch(0.922 0 0 / 90%);   /* bg-input/90 — checks, tracks */
+--destructive-tint:oklch(0.577 0.245 27.325 / 10%); /* bg-destructive/10 */
+--card-ring:oklch(0.145 0 0 / 5%);          /* ring-foreground/5 */
+--focus-ring:oklch(0.6515 0.1907 252.9 / 30%); /* ring-ring/30 */
+--bubble-tint:oklch(0.93 0.0763 252.9);     /* oklch(from primary .93 c*0.4 h) */
+}
+.dark{
+color-scheme:dark;
+--background:oklch(0.145 0 0);
+--foreground:oklch(0.985 0 0);
+--card:oklch(0.205 0 0);
+--card-foreground:oklch(0.985 0 0);
+--popover:oklch(0.205 0 0);
+--popover-foreground:oklch(0.985 0 0);
+--primary:oklch(0.6515 0.1907 252.9);
+--primary-foreground:oklch(0.985 0 0);
+--secondary:oklch(0.269 0 0);
+--secondary-foreground:oklch(0.985 0 0);
+--muted:oklch(0.269 0 0);
+--muted-foreground:oklch(0.708 0 0);
+--accent:oklch(0.269 0 0);
+--accent-foreground:oklch(0.985 0 0);
+--destructive:oklch(0.704 0.191 22.216);
+--border:oklch(1 0 0 / 10%);
+--input:oklch(1 0 0 / 15%);
+--ring:oklch(0.6515 0.1907 252.9);
+--sidebar:oklch(0.205 0 0);
+--sidebar-foreground:oklch(0.985 0 0);
+--sidebar-primary:oklch(0.6515 0.1907 252.9);
+--sidebar-primary-foreground:oklch(0.985 0 0);
+--sidebar-accent:oklch(0.269 0 0);
+--sidebar-accent-foreground:oklch(0.985 0 0);
+--sidebar-border:oklch(1 0 0 / 10%);
+--sidebar-ring:oklch(0.6515 0.1907 252.9);
+--surface-page:var(--background);
+--input-bg:oklch(1 0 0 / 7.5%);
+--input-bg-strong:oklch(1 0 0 / 13.5%);
+--card-ring:oklch(0.985 0 0 / 10%);
+--bubble-tint:oklch(0.3 0.0763 252.9);
+}
+
+/* --radius: 10px; scale multipliers from globals.css @theme */
+:root{
+--radius:10px;
+--radius-sm:calc(var(--radius) * 0.6);   /* 6px */
+--radius-md:calc(var(--radius) * 0.8);   /* 8px */
+--radius-lg:var(--radius);               /* 10px */
+--radius-xl:calc(var(--radius) * 1.4);   /* 14px */
+--radius-2xl:calc(var(--radius) * 1.8);  /* 18px */
+--radius-3xl:calc(var(--radius) * 2.2);  /* 22px */
+--radius-4xl:calc(var(--radius) * 2.6);  /* 26px */
+--radius-full:9999px;
+}
+
+/* Tailwind v4 defaults — the kit uses shadow-sm/md/lg/xl + ring-1 card-ring */
+:root{
+--shadow-sm:0 1px 3px 0 rgb(0 0 0 / 0.1),0 1px 2px -1px rgb(0 0 0 / 0.1);
+--shadow-md:0 4px 6px -1px rgb(0 0 0 / 0.1),0 2px 4px -2px rgb(0 0 0 / 0.1);
+--shadow-lg:0 10px 15px -3px rgb(0 0 0 / 0.1),0 4px 6px -4px rgb(0 0 0 / 0.1);
+--shadow-xl:0 20px 25px -5px rgb(0 0 0 / 0.1),0 8px 10px -6px rgb(0 0 0 / 0.1);
+/* composed elevations as used by components */
+--elevation-card:var(--shadow-md),0 0 0 1px var(--card-ring);
+--elevation-popover:var(--shadow-lg),0 0 0 1px var(--card-ring);
+--elevation-dialog:var(--shadow-xl),0 0 0 1px var(--card-ring);
+}
+
+/* Tailwind base unit 4px; kit-specific composites */
+:root{
+--spacing:4px;
+--space-1:4px;--space-1_5:6px;--space-2:8px;--space-2_5:10px;
+--space-3:12px;--space-3_5:14px;--space-4:16px;--space-5:20px;
+--space-6:24px;--space-7:28px;--space-8:32px;--space-10:40px;--space-12:48px;
+--card-spacing:24px;      /* Card default */
+--card-spacing-sm:16px;     /* Card size=sm */
+--control-h:36px;        /* h-9 buttons, inputs, selects */
+--control-h-sm:32px;--control-h-lg:40px;--control-h-xs:24px;
+}
+
+/* Inter everywhere; heading = sans (source: app/layout.tsx, globals.css @theme) */
+:root{
+--font-sans:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+--font-heading:var(--font-sans);
+--font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+--font-serif:ui-serif,Georgia,serif;
+/* Tailwind scale used by the kit */
+--text-xs:12px;--text-xs--lh:16px;
+--text-sm:14px;--text-sm--lh:20px;
+--text-base:16px;--text-base--lh:24px;
+--text-lg:18px;--text-lg--lh:28px;
+--text-xl:20px;--text-xl--lh:28px;
+--text-2xl:24px;--text-2xl--lh:32px;
+--font-weight-normal:400;--font-weight-medium:500;--font-weight-semibold:600;
+}

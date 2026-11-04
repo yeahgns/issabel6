@@ -1,0 +1,44 @@
+/* Bradial Voz: CSS do IssabelPBX (/admin), carregado pela configuração BRAND_CSS_CUSTOM.
+   Versão inicial e conservadora: tipografia, cores, campos e botões. Seletores de
+   componentes ficam para uma segunda passada, com o HTML real das telas do PBX. */
+@import url("tokens.css");
+
+body { font-family: var(--font-sans) !important; color: var(--foreground); background: var(--muted); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, h5, h6, .title, .subtitle { font-family: var(--font-sans) !important; font-weight: 500; letter-spacing: -0.01em; color: var(--foreground); }
+a { color: var(--primary); }
+a:hover { color: var(--foreground); }
+
+/* Logo da Bradial no topo do PBX (BRAND_IMAGE_TANGO_LEFT) com tamanho contido */
+img[src*="/themes/bradial/assets/img/"] { max-height: 36px; width: auto; }
+
+/* Barra superior do PBX na cor da marca */
+.navbar, nav.navbar, .navbar.is-primary, .navbar.is-info, .navbar.is-link, #header, .header { background-color: var(--primary) !important; }
+
+/* Campos */
+input[type=text], input[type=password], input[type=number], input[type=email], input[type=search],
+input[type=tel], input:not([type]), select, textarea, .input, .textarea, .select select {
+  font-family: var(--font-sans); font-size: var(--text-sm);
+  border: 1px solid transparent !important; border-radius: var(--radius-3xl);
+  background-color: var(--input-bg) !important; color: var(--foreground); box-shadow: none !important;
+}
+textarea, .textarea { border-radius: var(--radius-2xl); }
+input:focus, select:focus, textarea:focus, .input:focus, .textarea:focus, .select select:focus {
+  outline: none; border-color: var(--ring) !important; box-shadow: 0 0 0 3px var(--focus-ring) !important;
+}
+input[type=checkbox], input[type=radio] { accent-color: var(--primary); }
+
+/* Botões */
+.button, button, input[type=submit], input[type=button] {
+  font-family: var(--font-sans); font-weight: 500; border-radius: var(--radius-4xl) !important;
+}
+.button.is-primary, .button.is-link, .button.is-info, input[type=submit], .btn-primary {
+  background-color: var(--primary) !important; border-color: transparent !important; color: var(--primary-foreground) !important;
+}
+.button.is-danger, .btn-danger { background-color: var(--destructive-tint) !important; color: var(--destructive) !important; border-color: transparent !important; }
+
+/* Superfícies */
+.box, .card, .panel, .message, .notification { border-radius: var(--radius-4xl); box-shadow: var(--elevation-card); }
+.message .message-header { border-radius: var(--radius-4xl) var(--radius-4xl) 0 0; }
+.table, table { font-family: var(--font-sans); }
+.table th { color: var(--muted-foreground); font-weight: 500; }
+.tag:not(body) { border-radius: var(--radius-3xl); }
