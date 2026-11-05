@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.2
+- Permissões: some o checkbox duplicado. O tema reposicionava todos os checkboxes, o que
+  fazia reaparecer o checkbox que o módulo esconde atrás do botão dele.
+- Reiniciar ou desligar: sai o botão de baixo; clicar em Reiniciar ou Desligar abre um
+  diálogo de confirmação. Os dois cartões ocupam a largura da tela, alinhados aos demais.
+- Construtor de módulo e Remover módulo em português quando o Issabel está em português
+  (rótulos e opções; os valores das opções não mudam).
+- Servidor DHCP e outros formulários com campos curtos (octetos de IP, portas): os campos
+  ficam do tamanho do conteúdo e o cartão não passa da coluna.
+
 ## 1.4.1
 - Construtor de módulo e Remover módulo voltam a mostrar os rótulos. Os dois foram feitos
   para o Issabel 4 e leem os textos de `$arrLangModule`, que o Issabel 5 não preenche mais.

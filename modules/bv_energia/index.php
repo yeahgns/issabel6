@@ -50,13 +50,11 @@ function _moduleContent(&$smarty, $module_name)
     $T = array(
         'title' => bv_en_t('Reiniciar ou desligar', 'Restart or shut down'),
         'cancel' => bv_en_t('Cancelar', 'Cancel'),
-        'what' => bv_en_t('O que fazer', 'What to do'),
         'r' => bv_en_t('Reiniciar', 'Restart'),
         'rd' => bv_en_t('O servidor desliga e volta sozinho em cerca de 2 minutos.', 'The server shuts down and comes back on its own in about 2 minutes.'),
         'p' => bv_en_t('Desligar', 'Shut down'),
         'pd' => bv_en_t('O servidor fica desligado até alguém ligá-lo novamente.', 'The server stays off until someone turns it back on.'),
-        'back' => bv_en_t('Voltar', 'Back'),
-        'go' => bv_en_t('Reiniciar servidor', 'Restart server'),
+        'back' => bv_en_t('Cancelar', 'Cancel'),
     );
     $sub = htmlspecialchars($sub, ENT_QUOTES);
     $agendado = bv_en_scheduled();
@@ -77,25 +75,30 @@ function _moduleContent(&$smarty, $module_name)
     <button type="button" class="bl-btn bl-btn--outline bl-btn--sm" id="bve-cancel">{$T['cancel']}</button>
   </div>
 
-  <div class="bve-opts" role="radiogroup" aria-label="{$T['what']}">
-    <button type="button" class="bve-opt is-selected" role="radio" aria-checked="true" data-op="reboot">
+  <div class="bve-opts">
+    <button type="button" class="bve-opt" data-op="reboot">
       <span class="bve-opt-ic"><svg class="bve-i" aria-hidden="true"><use href="{$sprite}#rotate-ccw"></use></svg></span>
       <span class="bve-opt-title">{$T['r']}</span>
       <span class="bve-opt-desc">{$T['rd']}</span>
     </button>
-    <button type="button" class="bve-opt" role="radio" aria-checked="false" data-op="poweroff">
+    <button type="button" class="bve-opt" data-op="poweroff">
       <span class="bve-opt-ic"><svg class="bve-i" aria-hidden="true"><use href="{$sprite}#power"></use></svg></span>
       <span class="bve-opt-title">{$T['p']}</span>
       <span class="bve-opt-desc">{$T['pd']}</span>
     </button>
   </div>
 
-  <div class="bve-actions">
-    <p class="bve-confirm" id="bve-confirm" hidden></p>
-    <button type="button" class="bl-btn bl-btn--ghost" id="bve-back" hidden>{$T['back']}</button>
-    <button type="button" class="bl-btn bl-btn--destructive" id="bve-go">{$T['go']}</button>
+  <div class="bve-modal" id="bve-modal" hidden>
+    <div class="bve-dialog" role="alertdialog" aria-modal="true" aria-labelledby="bve-m-title" aria-describedby="bve-m-text">
+      <h2 id="bve-m-title"></h2>
+      <p id="bve-m-text"></p>
+      <p class="bve-error" id="bve-error" role="alert" hidden></p>
+      <div class="bve-m-actions">
+        <button type="button" class="bl-btn bl-btn--outline" id="bve-m-cancel">{$T['back']}</button>
+        <button type="button" class="bl-btn bl-btn--destructive" id="bve-m-ok"></button>
+      </div>
+    </div>
   </div>
-  <p class="bve-error" id="bve-error" role="alert" hidden></p>
 </div>
 <script src="{$mod}/assets/energia.js?v={$ver}"></script>
 HTML;

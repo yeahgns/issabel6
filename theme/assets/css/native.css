@@ -248,9 +248,11 @@ body.bv-body .bv-native table.issabel-standard-table > tfoot { display: none; }
 body.bv-body .bv-native table.issabel-standard-table > tbody > tr:last-child > td { border-bottom: 0; }
 body.bv-body .bv-native .neo-table-header-row { padding-left: 24px; padding-right: 24px; }
 body.bv-body .bv-native .neo-table-footer-row { padding: 10px 24px 4px; }
-/* Caixas de seleção alinhadas (o Neon desloca rádios e checkboxes) */
+/* Caixas de seleção: só ajusta o espaçamento. Não mexe na posição: alguns módulos
+   (ex.: Permissões) escondem o checkbox de verdade e mostram um botão próprio no lugar;
+   forçar "position: static" fazia o checkbox escondido reaparecer em cima do botão. */
 body.bv-body .bv-native input[type=radio], body.bv-body .bv-native input[type=checkbox] {
-  position: static; margin: 0 6px 0 0; float: none;
+  margin: 0 6px 0 0;
 }
 body.bv-body .bv-native td > input[type=radio]:only-child, body.bv-body .bv-native td > input[type=checkbox]:only-child { margin: 0; }
 /* Formulários: rótulos sem quebra estranha e campos com largura confortável */
@@ -289,3 +291,19 @@ body.bv-body .bv-native .tabForm tr:has(> td:nth-child(5)) td:has(> b) { white-s
 body.bv-body .bv-native .tabForm tr:has(> td:nth-child(5)) select[multiple] { min-width: 140px; width: 100%; }
 body.bv-body .bv-native .tabForm tr:has(> td:nth-child(5)) > td { min-width: 0; }
 body.bv-body .bv-native .tabForm tr:has(> td:nth-child(5)) input[size] { width: 100%; }
+
+/* ---------- 1.4.2 ---------- */
+/* Campos curtos (octetos de IP, portas, números): largura pelo conteúdo, não pelo mínimo
+   dos campos comuns. Era o que alargava o Servidor DHCP para fora da coluna. */
+body.bv-body .bv-native input[size="1"], body.bv-body .bv-native input[size="2"],
+body.bv-body .bv-native input[size="3"], body.bv-body .bv-native input[size="4"],
+body.bv-body .bv-native input[size="5"], body.bv-body .bv-native input[size="6"],
+body.bv-body .bv-native input[maxlength="1"], body.bv-body .bv-native input[maxlength="2"],
+body.bv-body .bv-native input[maxlength="3"], body.bv-body .bv-native input[maxlength="4"],
+body.bv-body .bv-native input[maxlength="5"] {
+  min-width: 0 !important; width: 72px; padding: 0 10px; text-align: center;
+}
+body.bv-body .bv-native input[size="5"], body.bv-body .bv-native input[size="6"],
+body.bv-body .bv-native input[maxlength="5"] { width: 96px; }
+/* Nenhum formulário passa da largura da coluna de conteúdo */
+body.bv-body .bv-native table.tabForm { max-width: 100%; }

@@ -88,4 +88,24 @@
       if (names[k]) o.textContent = names[k];
     });
   }
+
+  // Construtor de módulo em português: só o texto exibido das opções (o valor continua
+  // igual, porque o JavaScript do módulo usa o valor). Também cobre as opções que o
+  // módulo recria por AJAX ao trocar o nível ou o menu pai.
+  if (modId === 'build_module' && /^pt/i.test(document.documentElement.lang || '')) {
+    var OPT = {
+      'Yes': 'Sim', 'No': 'Não', 'Type Text': 'Texto', 'Type Select': 'Lista de opções',
+      'Type Date': 'Data', 'Type Text Area': 'Área de texto', 'Type Textarea': 'Área de texto',
+      'Type Password': 'Senha', 'Type Checkbox': 'Caixa de seleção', 'Type Radio': 'Botão de opção',
+      'Type Hidden': 'Oculto', 'Type File': 'Arquivo'
+    };
+    var fixOpts = function () {
+      Array.prototype.forEach.call(mod.querySelectorAll('option'), function (o) {
+        var tx = (o.textContent || '').trim();
+        if (OPT[tx]) o.textContent = OPT[tx];
+      });
+    };
+    fixOpts();
+    if (window.MutationObserver) new MutationObserver(fixOpts).observe(mod, { childList: true, subtree: true });
+  }
 })();

@@ -1,60 +1,62 @@
-/* Reiniciar ou desligar (Bradial Voz). Pede confirmação antes de agendar. */
+/* Reiniciar ou desligar (Bradial Voz). Clicar numa opção abre a confirmação. */
 (function () {
   'use strict';
   var root = document.getElementById('bve');
   if (!root) return;
   var BASE = root.getAttribute('data-base'), TOKEN = root.getAttribute('data-token');
-  var op = 'reboot', confirming = false;
-  var go = document.getElementById('bve-go'), back = document.getElementById('bve-back');
-  var conf = document.getElementById('bve-confirm'), err = document.getElementById('bve-error');
-  var pend = document.getElementById('bve-pending'), pendText = document.getElementById('bve-pending-text');
   var EN = root.getAttribute('data-lang') === 'en';
   var TXT = EN ? {
-    reboot:   { cta: 'Restart server', sure: 'Yes, restart', ask: 'Restart the server? Calls in progress will be dropped.', done: 'The server will restart in 1 minute.' },
-    poweroff: { cta: 'Shut down server', sure: 'Yes, shut down', ask: 'Shut down the server? It only comes back when someone turns it on.', done: 'The server will shut down in 1 minute.' }
+    reboot:   { title: 'Restart the server?', text: 'Calls in progress will be dropped. The server comes back on its own in about 2 minutes.', ok: 'Restart', done: 'The server will restart in 1 minute.' },
+    poweroff: { title: 'Shut down the server?', text: 'Calls in progress will be dropped. The server only comes back when someone turns it on.', ok: 'Shut down', done: 'The server will shut down in 1 minute.' }
   } : {
-    reboot:   { cta: 'Reiniciar servidor', sure: 'Sim, reiniciar', ask: 'Reiniciar o servidor? As ligações em andamento serão encerradas.', done: 'O servidor vai reiniciar em 1 minuto.' },
-    poweroff: { cta: 'Desligar servidor', sure: 'Sim, desligar', ask: 'Desligar o servidor? Ele só volta quando alguém ligá-lo.', done: 'O servidor vai desligar em 1 minuto.' }
+    reboot:   { title: 'Reiniciar o servidor?', text: 'As ligações em andamento serão encerradas. O servidor volta sozinho em cerca de 2 minutos.', ok: 'Reiniciar', done: 'O servidor vai reiniciar em 1 minuto.' },
+    poweroff: { title: 'Desligar o servidor?', text: 'As ligações em andamento serão encerradas. O servidor só volta quando alguém ligá-lo.', ok: 'Desligar', done: 'O servidor vai desligar em 1 minuto.' }
   };
+  var modal = document.getElementById('bve-modal'), ok = document.getElementById('bve-m-ok');
+  var cancel = document.getElementById('bve-m-cancel'), err = document.getElementById('bve-error');
+  var pend = document.getElementById('bve-pending'), pendText = document.getElementById('bve-pending-text');
+  var op = null, opener = null;
 
-  function reset() {
-    confirming = false;
-    conf.hidden = true; back.hidden = true;
-    go.textContent = TXT[op].cta; go.disabled = false;
-  }
   function post(action, data) {
     var body = new URLSearchParams(data || {});
     return fetch(BASE + action, { method: 'POST', credentials: 'same-origin', headers: { 'X-BV-Token': TOKEN }, body: body })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok || j.erro) throw new Error(j.erro || (EN ? 'Failed' : 'Falha')); return j; }); });
   }
-  function showErr(m) { err.textContent = m; err.hidden = false; }
+  function open(which, btn) {
+    op = which; opener = btn;
+    document.getElementById('bve-m-title').textContent = TXT[op].title;
+    document.getElementById('bve-m-text').textContent = TXT[op].text;
+    ok.textContent = TXT[op].ok; ok.disabled = false;
+    err.hidden = true;
+    modal.hidden = false;
+    cancel.focus();
+  }
+  function close() {
+    modal.hidden = true;
+    if (opener) opener.focus();
+  }
 
   Array.prototype.forEach.call(root.querySelectorAll('.bve-opt'), function (b) {
-    b.addEventListener('click', function () {
-      Array.prototype.forEach.call(root.querySelectorAll('.bve-opt'), function (x) {
-        x.classList.remove('is-selected'); x.setAttribute('aria-checked', 'false');
-      });
-      b.classList.add('is-selected'); b.setAttribute('aria-checked', 'true');
-      op = b.getAttribute('data-op'); reset();
-    });
+    b.addEventListener('click', function () { open(b.getAttribute('data-op'), b); });
   });
-  back.addEventListener('click', reset);
-  go.addEventListener('click', function () {
-    err.hidden = true;
-    if (!confirming) {
-      confirming = true;
-      conf.textContent = TXT[op].ask; conf.hidden = false; back.hidden = false;
-      go.textContent = TXT[op].sure;
-      return;
+  cancel.addEventListener('click', close);
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (modal.hidden) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'Tab') { // mantém o foco dentro do diálogo
+      if (e.shiftKey && document.activeElement === cancel) { e.preventDefault(); ok.focus(); }
+      else if (!e.shiftKey && document.activeElement === ok) { e.preventDefault(); cancel.focus(); }
     }
-    go.disabled = true;
+  });
+  ok.addEventListener('click', function () {
+    ok.disabled = true; err.hidden = true;
     post('power', { op: op }).then(function () {
-      pendText.textContent = TXT[op].done; pend.hidden = false; reset();
-    }).catch(function (e) { showErr(e.message); reset(); });
+      pendText.textContent = TXT[op].done; pend.hidden = false; close();
+    }).catch(function (e) { err.textContent = e.message; err.hidden = false; ok.disabled = false; });
   });
   document.getElementById('bve-cancel').addEventListener('click', function () {
-    err.hidden = true;
     post('cancel').then(function () { pend.hidden = true; })
-      .catch(function (e) { showErr(e.message); });
+      .catch(function (e) { pendText.textContent = e.message; });
   });
 })();
