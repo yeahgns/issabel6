@@ -28,24 +28,22 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 ## Menu
 
 ```
-GERAL          Visão geral
-PBX            Painel do operador
-               Configurações ▸ Ramais · Filas · URA · Troncos · Rotas · Anúncios ·
-                 Condições de tempo · Conferências · Estacionamento · Lista de bloqueio
-RELATÓRIOS     Registro de chamadas · Relatório CDR
-CALL CENTER    Painel · Console do agente
-               Configurações ▸ Campanhas · Formulários · Agentes · Pausas
-SISTEMA        Usuários ▸ · Rede ▸ · Segurança ▸
-               Preferências ▸ Backup e restauração · Reiniciar ou desligar · Idioma ·
-                 Data e hora · Temas
-DESENVOLVEDOR  Dashboard do Issabel · Módulos ▸ (Construtor de módulo · Remover módulo)
+OPERAÇÃO     Visão geral · Painel do operador · Painel do call center ·
+             Console do agente · Registro de chamadas
+PBX          Ramais · Filas · URA · Troncos · Rotas · Anúncios · Condições de tempo ·
+             Conferências · Estacionamento · Lista de bloqueio
+CALL CENTER  Campanhas · Formulários · Agentes · Pausas
+SISTEMA      Usuários ▸ · Rede ▸ · Segurança ▸
+             Preferências ▸ Backup e restauração · Reiniciar ou desligar · Idioma ·
+               Data e hora · Temas
+             Avançado ▸ Dashboard do Issabel · Construtor de módulo · Remover módulo
 ```
 
-Os itens de PBX > Configurações abrem a tela correspondente do IssabelPBX dentro do layout
+Os itens de PBX abrem a tela correspondente do IssabelPBX dentro do layout
 (por enquanto; as telas próprias vêm depois). A tela completa do IssabelPBX segue
 disponível no tema v5 (Preferências > Temas > Bradial v5). Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
 no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel, Moeda, Gravações, o Shutdown original,
-Configurações do PBX, Ramais em lote e Traduções.
+Configurações do PBX, Ramais em lote, Traduções e Relatório CDR.
 Nenhum item nativo é apagado: o que não está na lista acima vai para o fim da sua
 seção e continua controlado pelas permissões de grupo.
 

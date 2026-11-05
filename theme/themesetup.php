@@ -99,7 +99,8 @@ function bradialHiddenMenus()
         'monitoring',      // PBX > Gravações
         'pbxadmin',        // Configurações do PBX (o /admin inteiro): segue acessível no tema v5
         'extensions_batch',// Ramais em lote: vai para dentro da tela de Ramais
-        'language_admin',  // Desenvolvedor > Traduções
+        'language_admin',  // Avançado > Traduções
+        'cdrreport',       // um único relatório de chamadas: o Registro de chamadas
     );
 }
 
@@ -157,9 +158,9 @@ function bradialMenuNames()
 {
     return array(
         // seções
-        'sysdash' => array('Geral', 'General'), 'pbxconfig' => array('PBX', 'PBX'),
+        'sysdash' => array('Operação', 'Operations'), 'pbxconfig' => array('PBX', 'PBX'),
         'reports' => array('Relatórios', 'Reports'), 'call_center' => array('Call center', 'Call center'),
-        'system' => array('Sistema', 'System'), 'developer' => array('Desenvolvedor', 'Developer'),
+        'system' => array('Sistema', 'System'), 'developer' => array('Avançado', 'Advanced'),
         // Geral e PBX
         'bv_visao_geral' => array('Visão geral', 'Overview'),
         'pbxadmin' => array('Configurações do PBX', 'PBX settings'),
@@ -179,7 +180,7 @@ function bradialMenuNames()
         'registro_de_chamadas' => array('Registro de chamadas', 'Call log'),
         'cdrreport' => array('Relatório CDR', 'CDR report'),
         // Call center
-        'ccx_painel' => array('Painel', 'Dashboard'), 'agent_console' => array('Console do agente', 'Agent console'),
+        'ccx_painel' => array('Painel do call center', 'Call center dashboard'), 'agent_console' => array('Console do agente', 'Agent console'),
         'ccx_campanhas' => array('Campanhas', 'Campaigns'), 'ccx_formularios' => array('Formulários', 'Forms'),
         'ccx_agentes' => array('Agentes', 'Agents'), 'ccx_pausas' => array('Pausas', 'Breaks'),
         // Sistema
@@ -248,11 +249,15 @@ function bradialIcon($id)
 {
     $map = array(
         // Geral
-        'sysdash' => 'layout-dashboard', 'bv_visao_geral' => 'layout-dashboard', 'dashboard' => 'chart-column',
+        'sysdash' => 'layout-dashboard', 'bv_visao_geral' => 'layout-dashboard', 'dashboard' => 'gauge',
         // PBX
         'bv_ramais' => 'phone', 'bv_filas' => 'users', 'bv_troncos' => 'cable',
         'bv_rotas_entrada' => 'phone-incoming', 'bv_rotas_saida' => 'phone-outgoing',
-        'pbxadmin' => 'sliders-horizontal', 'bv_pbx_config' => 'sliders-horizontal', 'bv_cc_config' => 'sliders-horizontal', 'extensions_batch' => 'list-plus',
+        'pbxadmin' => 'sliders-horizontal',
+        'bv_pbx_ramais' => 'phone', 'bv_pbx_filas' => 'list-ordered', 'bv_pbx_ura' => 'workflow',
+        'bv_pbx_troncos' => 'cable', 'bv_pbx_rotas' => 'route', 'bv_pbx_anuncios' => 'volume-2',
+        'bv_pbx_tempo' => 'clock', 'bv_pbx_conferencias' => 'users', 'bv_pbx_estacionamento' => 'circle-parking',
+        'bv_pbx_blacklist' => 'ban', 'extensions_batch' => 'list-plus',
         'monitoring' => 'audio-lines', 'painel_operador' => 'monitor',
         'voicemail' => 'mail', 'conference' => 'users-round', 'tools' => 'wrench',
         'endpoints' => 'list-plus', 'endpoint_configurator' => 'cpu', 'control_panel' => 'monitor',
@@ -272,7 +277,7 @@ function bradialIcon($id)
         'backup_restore' => 'database-backup', 'preferences' => 'settings', 'shutdown' => 'power', 'bv_energia' => 'power',
         'hardware_detector' => 'cpu', 'betachannel' => 'flask-conical', 'theme_designer' => 'settings',
         // Outras seções
-        'security' => 'lock', 'sec_firewall' => 'shield', 'developer' => 'code', 'build_module' => 'code', 'bv_modulos' => 'package', 'delete_module' => 'x', 'language_admin' => 'globe',
+        'security' => 'lock', 'sec_firewall' => 'shield', 'developer' => 'wrench', 'build_module' => 'code', 'bv_modulos' => 'package', 'delete_module' => 'x', 'language_admin' => 'globe',
         'email_admin' => 'mail', 'agenda' => 'book-user', 'fax' => 'printer', 'addons' => 'puzzle',
         'addons_availables' => 'package', 'my_extension' => 'phone', 'extras' => 'puzzle',
     );

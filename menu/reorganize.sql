@@ -5,11 +5,11 @@
 BEGIN TRANSACTION;
 
 -- Seções (1º nível)
-UPDATE menu SET IdParent='', Type='', Name='Geral',       order_no=0 WHERE id='sysdash';
+UPDATE menu SET IdParent='', Type='', Name='Operação',    order_no=0 WHERE id='sysdash';
 UPDATE menu SET Name='PBX',         order_no=1 WHERE id='pbxconfig';
-UPDATE menu SET Name='Relatórios',  order_no=2 WHERE id='reports';
-UPDATE menu SET Name='Call center', order_no=3 WHERE id='call_center';
-UPDATE menu SET Name='Sistema',     order_no=4 WHERE id='system';
+UPDATE menu SET Name='Relatórios',  order_no=20 WHERE id='reports';
+UPDATE menu SET Name='Call center', order_no=2 WHERE id='call_center';
+UPDATE menu SET Name='Sistema',     order_no=3 WHERE id='system';
 -- Demais seções vêm depois, na ordem original
 UPDATE menu SET order_no=21 WHERE id='email_admin';
 UPDATE menu SET order_no=22 WHERE id='agenda';
@@ -18,29 +18,31 @@ UPDATE menu SET order_no=24 WHERE id='addons';
 UPDATE menu SET order_no=25 WHERE id='my_extension';
 UPDATE menu SET order_no=26 WHERE id='extras';
 UPDATE menu SET order_no=27 WHERE id='security';
-UPDATE menu SET order_no=5, Name='Desenvolvedor' WHERE id='developer';
+-- Desenvolvedor vira o grupo "Avançado", dentro de Sistema (mais abaixo)
 
--- Geral: a Visão geral do tema (bv_visao_geral, criada pelo menu.xml) é a tela inicial.
--- O dashboard nativo do Issabel continua disponível no fim de Sistema.
+-- Operação: tudo o que se acompanha no dia a dia, no topo. A Visão geral do tema
+-- (bv_visao_geral, criada pelo menu.xml) é a tela inicial.
 UPDATE menu SET IdParent='sysdash', Type='module', Name='Visão geral', order_no=1 WHERE id='bv_visao_geral';
-UPDATE menu SET IdParent='developer', Name='Dashboard do Issabel', order_no=1 WHERE id='dashboard';
+UPDATE menu SET IdParent='sysdash', Name='Painel do operador',    order_no=2 WHERE id='painel_operador';
+UPDATE menu SET IdParent='sysdash', Name='Painel do call center', order_no=3 WHERE id='ccx_painel';
+UPDATE menu SET IdParent='sysdash', Name='Console do agente',     order_no=4 WHERE id='agent_console';
+UPDATE menu SET IdParent='sysdash', Name='Registro de chamadas',  order_no=5 WHERE id='registro_de_chamadas';
 
--- PBX: Painel do operador e o grupo Configurações (bv_pbx_config), com os atalhos para
--- as telas do IssabelPBX. "Configurações do PBX" (o /admin inteiro) e "Ramais em lote"
--- saem do menu lateral do tema (bradialHiddenMenus), mas continuam acessíveis no tema v5.
+-- PBX: os atalhos para as telas do IssabelPBX, direto na seção (sem grupo). "Configurações
+-- do PBX" (o /admin inteiro) e "Ramais em lote" saem do menu lateral do tema
+-- (bradialHiddenMenus), mas continuam acessíveis no tema v5.
+-- Os grupos da 1.5.0 (bv_pbx_config, bv_cc_config) e o grupo Módulos (bv_modulos) saem.
 DELETE FROM menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida');
-UPDATE menu SET IdParent='pbxconfig', Name='Painel do operador', order_no=1 WHERE id='painel_operador';
-UPDATE menu SET IdParent='pbxconfig', Type='module', Link='', Name='Configurações', order_no=2 WHERE id='bv_pbx_config';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=extensions', Name='Ramais', order_no=1 WHERE id='bv_pbx_ramais';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=queues', Name='Filas', order_no=2 WHERE id='bv_pbx_filas';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=ivr', Name='URA', order_no=3 WHERE id='bv_pbx_ura';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=trunks', Name='Troncos', order_no=4 WHERE id='bv_pbx_troncos';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=did', Name='Rotas', order_no=5 WHERE id='bv_pbx_rotas';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=announcement', Name='Anúncios', order_no=6 WHERE id='bv_pbx_anuncios';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=timeconditions', Name='Condições de tempo', order_no=7 WHERE id='bv_pbx_tempo';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=conferences', Name='Conferências', order_no=8 WHERE id='bv_pbx_conferencias';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=parking', Name='Estacionamento', order_no=9 WHERE id='bv_pbx_estacionamento';
-UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=blacklist', Name='Lista de bloqueio', order_no=10 WHERE id='bv_pbx_blacklist';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=extensions', Name='Ramais', order_no=1 WHERE id='bv_pbx_ramais';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=queues', Name='Filas', order_no=2 WHERE id='bv_pbx_filas';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=ivr', Name='URA', order_no=3 WHERE id='bv_pbx_ura';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=trunks', Name='Troncos', order_no=4 WHERE id='bv_pbx_troncos';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=did', Name='Rotas', order_no=5 WHERE id='bv_pbx_rotas';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=announcement', Name='Anúncios', order_no=6 WHERE id='bv_pbx_anuncios';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=timeconditions', Name='Condições de tempo', order_no=7 WHERE id='bv_pbx_tempo';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=conferences', Name='Conferências', order_no=8 WHERE id='bv_pbx_conferencias';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=parking', Name='Estacionamento', order_no=9 WHERE id='bv_pbx_estacionamento';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=blacklist', Name='Lista de bloqueio', order_no=10 WHERE id='bv_pbx_blacklist';
 UPDATE menu SET Name='Configurações do PBX', order_no=50 WHERE id='pbxadmin';
 UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=59 WHERE id='extensions_batch';
 UPDATE menu SET Name='Gravações', order_no=60 WHERE id='monitoring';
@@ -54,13 +56,11 @@ UPDATE menu SET order_no=57 WHERE id='control_panel';
 UPDATE menu SET order_no=58 WHERE id='avalia_o';
 
 -- Call center
-UPDATE menu SET IdParent='call_center', Name='Painel',            order_no=1 WHERE id='ccx_painel';
-UPDATE menu SET IdParent='call_center', Name='Console do agente', order_no=2 WHERE id='agent_console';
-UPDATE menu SET IdParent='call_center', Type='module', Link='', Name='Configurações', order_no=3 WHERE id='bv_cc_config';
-UPDATE menu SET IdParent='bv_cc_config', Name='Campanhas',   order_no=1 WHERE id='ccx_campanhas';
-UPDATE menu SET IdParent='bv_cc_config', Name='Formulários', order_no=2 WHERE id='ccx_formularios';
-UPDATE menu SET IdParent='bv_cc_config', Name='Agentes',     order_no=3 WHERE id='ccx_agentes';
-UPDATE menu SET IdParent='bv_cc_config', Name='Pausas',      order_no=4 WHERE id='ccx_pausas';
+-- Call center: só as configurações (Painel e Console do agente foram para Operação)
+UPDATE menu SET IdParent='call_center', Name='Campanhas',   order_no=1 WHERE id='ccx_campanhas';
+UPDATE menu SET IdParent='call_center', Name='Formulários', order_no=2 WHERE id='ccx_formularios';
+UPDATE menu SET IdParent='call_center', Name='Agentes',     order_no=3 WHERE id='ccx_agentes';
+UPDATE menu SET IdParent='call_center', Name='Pausas',      order_no=4 WHERE id='ccx_pausas';
 UPDATE menu SET order_no=51 WHERE id='outgoing_calls';
 UPDATE menu SET order_no=52 WHERE id='ingoing_calls';
 UPDATE menu SET order_no=53 WHERE id='agentoptions';
@@ -70,7 +70,6 @@ UPDATE menu SET order_no=56 WHERE id='reports_ingoing_call';
 UPDATE menu SET order_no=57 WHERE id='callcenter_config';
 
 -- Relatórios: um só item visível, "Registro de chamadas" (relatório de ligações v2)
-UPDATE menu SET IdParent='reports', Name='Registro de chamadas', order_no=1 WHERE id='registro_de_chamadas';
 UPDATE menu SET order_no=51 WHERE id='cdrreport';
 UPDATE menu SET order_no=52 WHERE id='channelusage';
 UPDATE menu SET order_no=53 WHERE id='billing';
@@ -116,10 +115,15 @@ UPDATE menu SET order_no=91 WHERE id='hardware_detector';
 UPDATE menu SET order_no=92 WHERE id='betachannel';
 UPDATE menu SET order_no=93 WHERE id='theme_designer';
 
--- Desenvolvedor > Módulos (grupo bv_modulos, criado pelo menu.xml): Construir e Remover módulo
-UPDATE menu SET IdParent='developer', Type='module', Link='', Name='Módulos', order_no=2 WHERE id='bv_modulos';
-UPDATE menu SET IdParent='bv_modulos', Name='Construtor de módulo', order_no=1 WHERE id='build_module';
-UPDATE menu SET IdParent='bv_modulos', Name='Remover módulo', order_no=2 WHERE id='delete_module';
-UPDATE menu SET Name='Traduções', order_no=5 WHERE id='language_admin';
+-- Sistema > Avançado: o antigo Desenvolvedor vira grupo dentro de Sistema, com o
+-- Dashboard do Issabel e as ferramentas de módulo (sem subgrupo: o menu tem 3 níveis).
+UPDATE menu SET IdParent='system', Type='module', Link='', Name='Avançado', order_no=5 WHERE id='developer';
+UPDATE menu SET IdParent='developer', Name='Dashboard do Issabel', order_no=1 WHERE id='dashboard';
+UPDATE menu SET IdParent='developer', Name='Construtor de módulo', order_no=2 WHERE id='build_module';
+UPDATE menu SET IdParent='developer', Name='Remover módulo',       order_no=3 WHERE id='delete_module';
+UPDATE menu SET IdParent='developer', Name='Traduções',            order_no=9 WHERE id='language_admin';
+
+-- Grupos que existiram em versões anteriores do tema
+DELETE FROM menu WHERE id IN ('bv_pbx_config', 'bv_cc_config', 'bv_modulos');
 
 COMMIT;

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.0
+- Menu organizado pelo que a pessoa está fazendo, como no protótipo:
+  - **Operação** (antiga Geral): Visão geral, Painel do operador, Painel do call center,
+    Console do agente e Registro de chamadas. Tudo o que se acompanha no dia a dia, no topo.
+  - **PBX**: os dez atalhos direto na seção, cada um com o próprio ícone (sai o grupo
+    "Configurações").
+  - **Call center**: Campanhas, Formulários, Agentes e Pausas (sai o grupo "Configurações").
+  - **Sistema**: Usuários, Rede, Segurança, Preferências e **Avançado** (antigo
+    Desenvolvedor: Dashboard do Issabel, Construtor e Remover módulo).
+- Relatório CDR sai do menu lateral; fica um único relatório de chamadas.
+
 ## 1.5.0
 - Menu reorganizado:
   - PBX: Painel do operador e **Configurações** (Ramais, Filas, URA, Troncos, Rotas,

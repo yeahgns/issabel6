@@ -156,9 +156,9 @@ fi
 
 # ---------- Menu ----------
 if [ "$DO_MENU" = 1 ]; then
-    say "Registrando os itens do tema no menu (Visão geral, Reiniciar ou desligar, Configurações do PBX e do Call center)"
+    say "Registrando os itens do tema no menu (Visão geral, Reiniciar ou desligar e os atalhos do PBX)"
     issabel-menumerge "$DIR/menu/menu.xml"
-    for id in bv_visao_geral bv_energia bv_modulos bv_pbx_config bv_cc_config bv_pbx_ramais bv_pbx_filas bv_pbx_ura bv_pbx_troncos bv_pbx_rotas bv_pbx_anuncios bv_pbx_tempo bv_pbx_conferencias bv_pbx_estacionamento bv_pbx_blacklist; do
+    for id in bv_visao_geral bv_energia bv_pbx_ramais bv_pbx_filas bv_pbx_ura bv_pbx_troncos bv_pbx_rotas bv_pbx_anuncios bv_pbx_tempo bv_pbx_conferencias bv_pbx_estacionamento bv_pbx_blacklist; do
         [ "$(sqlite3 "$MENUDB" "SELECT COUNT(*) FROM menu WHERE id='$id';")" = 1 ] || fail "o item $id não foi criado pelo issabel-menumerge."
     done
     say "Reorganizando o menu"
