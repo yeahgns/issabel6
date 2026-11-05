@@ -1,0 +1,20 @@
+/* Reiniciar ou desligar (Bradial Voz), no layout do protótipo. */
+.bve { display: flex; flex-direction: column; gap: 20px; max-width: 720px; font-family: var(--font-sans); font-size: 14px; line-height: 20px; color: var(--foreground); }
+.bve *, .bve *::before, .bve *::after { box-sizing: border-box; }
+.bve h1 { margin: 0; font: 500 22px/1.3 var(--font-sans); letter-spacing: -0.01em; color: var(--foreground); }
+.bve-sub { margin: 4px 0 0; color: var(--muted-foreground); font-size: 14px; }
+.bve-i { width: 18px; height: 18px; display: block; }
+.bve-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.bve .bve-opt { display: flex; flex-direction: column; gap: 10px; text-align: left; padding: 20px; border-radius: var(--radius-4xl); border: 1px solid transparent; background: var(--card); box-shadow: var(--shadow-md); cursor: pointer; font-family: var(--font-sans); color: var(--foreground); }
+.bve .bve-opt.is-selected { border-color: var(--primary); }
+.bve .bve-opt:focus-visible { outline: none; box-shadow: var(--shadow-md), 0 0 0 3px var(--focus-ring); }
+.bve-opt-ic { display: flex; width: 40px; height: 40px; border-radius: var(--radius-2xl); background: var(--muted); align-items: center; justify-content: center; }
+.bve-opt-title { font-weight: 500; font-size: 16px; }
+.bve-opt-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.45; }
+.bve-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.bve-confirm { margin: 0 auto 0 0; color: var(--foreground); font-weight: 500; }
+.bve-pending { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius-2xl); background: var(--destructive-tint); color: var(--destructive); }
+.bve-pending span { flex: 1; font-weight: 500; }
+.bve-error { margin: 0; color: var(--destructive); }
+.bve [hidden] { display: none !important; }
+@media (max-width: 640px) { .bve-opts { grid-template-columns: 1fr; } }

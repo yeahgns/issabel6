@@ -11,6 +11,7 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
     $arrMainMenu = $smarty->get_template_vars('arrMainMenu');
     if (!is_array($arrMainMenu)) $arrMainMenu = array();
 
+    $fullMenu = $arrMainMenu;
     $arrMainMenu = bradialPruneMenu($arrMainMenu);
     foreach ($arrMainMenu as $idMenu => $menu) {
         $arrMainMenu[$idMenu]['bicon'] = bradialIcon($idMenu);
@@ -47,9 +48,14 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
         'MENU_COLOR'         => getMenuColorByMenu($pdbACL, $idUser),
         'IMG_BOOKMARKS'      => menuIsBookmark($pdbACL, $idUser, $selectedMenu) ? 'bookmarkon.png' : 'bookmark.png',
         'SHORTCUT'           => loadShortcut($pdbACL, $idUser, $smarty),
-        'BREADCRUMB'         => bradialBreadcrumb($arrMainMenu, $selectedMenu),
+        'BREADCRUMB'         => bradialBreadcrumb($fullMenu, $selectedMenu),
         // Módulos com visual próprio: não recebem o CSS das telas nativas
         'BV_CUSTOM_MODULE'   => bradialIsCustomModule($selectedMenu),
+        // Cabeçalho das telas nativas (título e descrição, como no protótipo)
+        'BV_PAGE_HEAD'       => !bradialIsCustomModule($selectedMenu) && bradialMenuType($fullMenu, $selectedMenu) !== 'framed',
+        'BV_PAGE_TITLE'      => bradialPageTitle($fullMenu, $selectedMenu),
+        'BV_PAGE_DESC'       => bradialPageDesc($selectedMenu),
+        'BV_MODULE'          => (string)$selectedMenu,
     ));
 }
 
@@ -71,9 +77,73 @@ function bradialPruneMenu($menu, $depth = 1)
         $type = isset($item['Type']) ? $item['Type'] : '';
         $isGroupShell = !$kids && ($type === 'module' || $type === '')
             && !is_file('modules/' . basename((string)$id) . '/index.php');
-        if ($isGroupShell) unset($menu[$id]);
+        if ($isGroupShell || in_array((string)$id, bradialHiddenMenus(), true)) unset($menu[$id]);
     }
     return $menu;
+}
+
+/* Itens que não aparecem no menu lateral. Continuam instalados e acessíveis pelas
+ * permissões de grupo; só saem de vista. */
+function bradialHiddenMenus()
+{
+    return array(
+        'packet_capture',  // Rede > Captura de pacotes
+        'upnpc',           // Rede > UPnP
+        'applet_admin',    // Preferências > Widgets do painel (dashboard antigo)
+        'shutdown',        // substituído por bv_energia (Reiniciar ou desligar)
+    );
+}
+
+function bradialFindItem($menu, $id)
+{
+    foreach ((array)$menu as $k => $v) {
+        if ((string)$k === (string)$id) return $v;
+        if (!empty($v['children'])) {
+            $r = bradialFindItem($v['children'], $id);
+            if ($r !== null) return $r;
+        }
+    }
+    return null;
+}
+
+function bradialMenuType($menu, $id)
+{
+    $it = bradialFindItem($menu, $id);
+    return ($it && isset($it['Type'])) ? $it['Type'] : '';
+}
+
+function bradialPageTitle($menu, $id)
+{
+    $it = bradialFindItem($menu, $id);
+    return ($it && isset($it['Name'])) ? $it['Name'] : '';
+}
+
+/* Uma frase sob o título de cada tela nativa, no tom do protótipo. */
+function bradialPageDesc($id)
+{
+    $d = array(
+        'userlist'           => 'Quem pode entrar no Issabel, com qual grupo e qual ramal.',
+        'grouplist'          => 'Grupos reúnem usuários com as mesmas permissões.',
+        'group_permission'   => 'O que cada grupo pode ver e usar no menu.',
+        'network_parameters' => 'Nome do servidor, gateway, DNS e interfaces de rede.',
+        'dhcp_server'        => 'Servidor DHCP para os aparelhos da rede local.',
+        'dhcp_clientlist'    => 'Aparelhos que receberam endereço deste servidor DHCP.',
+        'dhcp_by_mac'        => 'Endereço IP fixo para um aparelho, a partir do MAC.',
+        'ping'               => 'Teste de conexão com outro endereço da rede ou da internet.',
+        'sec_fb_admin'       => 'O Fail2ban bloqueia IPs após tentativas de acesso com falha.',
+        'sec_fb_banned'      => 'Endereços bloqueados agora pelo Fail2ban.',
+        'backup_restore'     => 'Cópias de segurança da configuração, com restauração e envio por FTP.',
+        'language'           => 'Idioma da interface.',
+        'time_config'        => 'Data, hora e fuso horário do servidor.',
+        'currency'           => 'Moeda usada nos relatórios de tarifação.',
+        'themes_system'      => 'Aparência da interface.',
+        'extensions_batch'   => 'Crie ou altere vários ramais de uma vez, por planilha CSV.',
+        'monitoring'         => 'Gravações das ligações, com busca por data e ramal.',
+        'cdrreport'          => 'Cada ligação registrada pelo Asterisk.',
+        'dashboard'          => 'Painel original do Issabel.',
+        'build_module'       => 'Ferramenta para criar módulos do Issabel.',
+    );
+    return isset($d[$id]) ? $d[$id] : '';
 }
 
 /* Ícones Lucide (nomes do sprite em assets/icons/sprite.svg) */
@@ -102,7 +172,7 @@ function bradialIcon($id)
         'summary_by_extension' => 'file-text', 'missed_calls' => 'phone-incoming',
         // Sistema
         'usermgr' => 'user-cog', 'network' => 'network', 'fail2ban' => 'shield',
-        'backup_restore' => 'database-backup', 'preferences' => 'settings', 'shutdown' => 'power',
+        'backup_restore' => 'database-backup', 'preferences' => 'settings', 'shutdown' => 'power', 'bv_energia' => 'power',
         'hardware_detector' => 'cpu', 'betachannel' => 'flask-conical', 'theme_designer' => 'settings',
         // Outras seções
         'security' => 'lock', 'sec_firewall' => 'shield', 'developer' => 'code', 'build_module' => 'code',

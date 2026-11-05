@@ -147,4 +147,10 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
         <div id="neo-contentbox-maincolumn">
             <input type="hidden" id="issabel_framework_module_id" value="{if empty($idSubMenu2Selected)}{$idSubMenuSelected}{else}{$idSubMenu2Selected}{/if}" />
             <input type="hidden" id="issabel_framework_webCommon" value="{$WEBCOMMON}" />
-            <div class="neo-module-content{if !$BV_CUSTOM_MODULE} bv-native{/if}">
+            {if $BV_PAGE_HEAD && $BV_PAGE_TITLE}
+            <div class="bv-page-head">
+                <h1>{$BV_PAGE_TITLE}</h1>
+                {if $BV_PAGE_DESC}<p>{$BV_PAGE_DESC}</p>{/if}
+            </div>
+            {/if}
+            <div class="neo-module-content{if !$BV_CUSTOM_MODULE} bv-native{/if}" data-bv-module="{$BV_MODULE|escape}">

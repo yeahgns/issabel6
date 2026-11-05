@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.0
+- Telas nativas: corrige a primeira coluna colada na borda e os textos cortados nas
+  listagens. A causa era o plugin colResizable do Issabel (zera o espaçamento das células e
+  fixa o layout da tabela); o redimensionamento de colunas sai.
+- Telas nativas ganham cabeçalho com título e uma frase de descrição, como no protótipo;
+  o título antigo do módulo sai. O rodapé que repetia os títulos das colunas também sai.
+- Formulários e caixas de seleção alinhados; cartões com a sombra do protótipo.
+- Nova tela **Reiniciar ou desligar** (módulo `bv_energia`), no layout do protótipo, com
+  confirmação, agendamento de 1 minuto e botão para cancelar. A tela nativa sai do menu.
+- Saem do menu lateral: Rede > Captura de pacotes, Rede > UPnP, Preferências > Widgets do
+  painel. Continuam instalados e controlados pelas permissões.
+- Ping e traceroute: exemplo de teste passa a ser www.bradial.com.br.
+- Preferências > Temas: o tema do projeto aparece como "Bradial v6" e o original (tenant)
+  como "Bradial v5".
+
 ## 1.2.1
 - Corrige o logo duplicado e o botão de recolher o menu que não apareciam: o navegador
   usava o CSS antigo em cache. Agora todo arquivo do tema leva `?v=<versão>-<commit>`,

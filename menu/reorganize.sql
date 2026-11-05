@@ -97,7 +97,10 @@ UPDATE menu SET Name='Moeda',       order_no=3 WHERE id='currency';
 UPDATE menu SET IdParent='preferences', Name='Widgets do painel', order_no=4 WHERE id='applet_admin';
 UPDATE menu SET Name='Temas',       order_no=99 WHERE id='themes_system';
 
-UPDATE menu SET IdParent='system', Name='Reiniciar ou desligar', order_no=6 WHERE id='shutdown';
+-- Reiniciar ou desligar: a tela do tema (bv_energia) substitui a nativa, que sai do menu
+-- lateral pelo themesetup.php (bradialHiddenMenus) mas continua instalada.
+UPDATE menu SET IdParent='system', Type='module', Name='Reiniciar ou desligar', order_no=6 WHERE id='bv_energia';
+UPDATE menu SET IdParent='system', Name='Shutdown (Issabel)', order_no=94 WHERE id='shutdown';
 UPDATE menu SET order_no=91 WHERE id='hardware_detector';
 UPDATE menu SET order_no=92 WHERE id='betachannel';
 UPDATE menu SET order_no=93 WHERE id='theme_designer';

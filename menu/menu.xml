@@ -4,5 +4,6 @@
 <module>
   <menulist>
     <menuitem menuid="bv_visao_geral" desc="Visão geral" parent="sysdash" module="yes" link="" order="1"></menuitem>
+    <menuitem menuid="bv_energia" desc="Reiniciar ou desligar" parent="system" module="yes" link="" order="6"></menuitem>
   </menulist>
 </module>

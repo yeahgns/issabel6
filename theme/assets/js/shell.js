@@ -69,4 +69,23 @@
     var top = active.getBoundingClientRect().top - side.getBoundingClientRect().top;
     if (top + active.offsetHeight > side.clientHeight - 60) side.scrollTop = top - side.clientHeight / 2;
   }
+
+  // Ajustes de texto em telas nativas, sem alterar os módulos do Issabel
+  var mod = document.querySelector('.neo-module-content');
+  var modId = mod ? mod.getAttribute('data-bv-module') : '';
+  if (modId === 'ping') {
+    // Exemplo de teste: o site da Bradial no lugar do Issabel
+    Array.prototype.forEach.call(mod.querySelectorAll('input[type=text]'), function (i) {
+      if (/^(https?:\/\/)?www\.issabel\.org\/?$/i.test(i.value)) i.value = 'www.bradial.com.br';
+      if (/issabel\.org/i.test(i.placeholder || '')) i.placeholder = 'www.bradial.com.br';
+    });
+  }
+  if (modId === 'themes_system') {
+    // Nomes dos temas: o nosso é a v6; o tenant (original) é a v5
+    var names = { bradial: 'Bradial v6', tenant: 'Bradial v5' };
+    Array.prototype.forEach.call(mod.querySelectorAll('option'), function (o) {
+      var k = (o.value || '').toLowerCase();
+      if (names[k]) o.textContent = names[k];
+    });
+  }
 })();

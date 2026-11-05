@@ -20,7 +20,9 @@ body.bv-body .bv-native pre { border: 0; border-radius: var(--radius-2xl); paddi
 body.bv-body .bv-native .required { color: var(--destructive); }
 body.bv-body .bv-native hr { border: 0; border-top: 1px solid var(--border); }
 
-/* Título do módulo vira o título da página */
+/* O tema já mostra o título da tela no cabeçalho; o título antigo do módulo sai */
+body.bv-body .bv-native .moduleTitle { display: none !important; }
+/* Título do módulo (quando não há cabeçalho do tema) */
 body.bv-body .bv-native .moduleTitle {
   padding: 0 0 16px !important; background: none !important; border: 0 !important;
   color: var(--foreground) !important; font-size: 22px !important; font-weight: 500 !important;
@@ -219,3 +221,50 @@ body.bv-body .ui-autocomplete .ui-menu-item, body.bv-body .ui-autocomplete .ui-m
 body.bv-body .ui-autocomplete .ui-state-active, body.bv-body .ui-autocomplete .ui-menu-item-wrapper.ui-state-active { margin: 0; background: var(--accent); color: var(--foreground); }
 body.bv-body .ui-datepicker .ui-datepicker-header { border-radius: var(--radius-xl); }
 body.bv-body .ui-datepicker td a, body.bv-body .ui-datepicker td span { text-align: center; border-radius: var(--radius-lg); }
+
+/* ---------- Correções gerais (1.3.0) ---------- */
+/* O plugin colResizable das listagens injeta "padding-left/right: 0 !important" e
+   "table-layout: fixed" com "overflow: hidden": é isso que colava a 1ª coluna na borda
+   e cortava textos. O redimensionamento de colunas sai; a tabela volta ao layout normal. */
+body.bv-body .bv-native table.JColResizer { table-layout: auto !important; }
+body.bv-body .bv-native table.JColResizer > tbody > tr > td,
+body.bv-body .bv-native table.JColResizer > tbody > tr > th,
+body.bv-body .bv-native table.JColResizer > thead > tr > th,
+body.bv-body .bv-native table.JColResizer > thead > tr > td {
+  padding-left: 16px !important; padding-right: 16px !important; overflow: visible !important;
+}
+body.bv-body .bv-native .JCLRgrips, body.bv-body .bv-native .JCLRgrip { display: none !important; }
+body.bv-body .bv-native table.issabel-standard-table > tbody > tr > td:first-child,
+body.bv-body .bv-native table.issabel-standard-table > thead > tr > th:first-child { padding-left: 24px !important; }
+body.bv-body .bv-native table.issabel-standard-table > tbody > tr > td:last-child,
+body.bv-body .bv-native table.issabel-standard-table > thead > tr > th:last-child { padding-right: 24px !important; }
+/* O rodapé que repete os títulos das colunas sai */
+body.bv-body .bv-native table.issabel-standard-table > tfoot { display: none; }
+body.bv-body .bv-native table.issabel-standard-table > tbody > tr:last-child > td { border-bottom: 0; }
+body.bv-body .bv-native .neo-table-header-row { padding-left: 24px; padding-right: 24px; }
+body.bv-body .bv-native .neo-table-footer-row { padding: 10px 24px 4px; }
+/* Caixas de seleção alinhadas (o Neon desloca rádios e checkboxes) */
+body.bv-body .bv-native input[type=radio], body.bv-body .bv-native input[type=checkbox] {
+  position: static; margin: 0 6px 0 0; float: none;
+}
+body.bv-body .bv-native td > input[type=radio]:only-child, body.bv-body .bv-native td > input[type=checkbox]:only-child { margin: 0; }
+/* Formulários: rótulos sem quebra estranha e campos com largura confortável */
+body.bv-body .bv-native table.tabForm { padding: 16px 12px; }
+body.bv-body .bv-native .tabForm td { padding: 10px 12px; }
+body.bv-body .bv-native .tabForm td.letra12, body.bv-body .bv-native .tabForm td:has(> b:only-child) { min-width: 160px; }
+body.bv-body .bv-native .tabForm input[type=text], body.bv-body .bv-native .tabForm input[type=password],
+body.bv-body .bv-native .tabForm input:not([type]), body.bv-body .bv-native .tabForm select:not([multiple]) { min-width: 240px; }
+body.bv-body .bv-native .tabForm input[readonly], body.bv-body .bv-native .tabForm input[disabled] { color: var(--muted-foreground); }
+/* Botões soltos acima dos cartões: alinhados e com respiro */
+body.bv-body .bv-native > form > table:first-child:not(.tabForm),
+body.bv-body .bv-native > table:first-child:not(.tabForm):not(.issabel-standard-table) { margin-bottom: 16px; }
+/* Tabelas simples (sem a classe da listagem) viram cartão */
+body.bv-body .bv-native table.table, body.bv-body .bv-native table.table_data {
+  width: 100%; background: var(--card); border-radius: var(--radius-4xl); box-shadow: var(--shadow-md), 0 0 0 1px var(--card-ring); border-collapse: separate; border-spacing: 0; overflow: hidden;
+}
+body.bv-body .bv-native table.table > thead > tr > th { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--muted-foreground); font-size: 13px; font-weight: 500; }
+body.bv-body .bv-native table.table > tbody > tr > td { padding: 12px 16px; border-top: 0; border-bottom: 1px solid var(--border); }
+/* Cartões no padrão do protótipo (sombra + anel) */
+body.bv-body .bv-native form.issabel-standard-formgrid,
+body.bv-body .bv-native table.tabForm,
+body.bv-body .bv-native .panel { box-shadow: var(--shadow-md), 0 0 0 1px var(--card-ring); }

@@ -37,7 +37,9 @@ Sistema      Usuários ▸ · Rede ▸ · Segurança ▸ · Backup e restauraç�
 ```
 
 Configurações do PABX abre o IssabelPBX inteiro dentro do layout, com a navegação
-própria dele. Nenhum item nativo é apagado: o que não está na lista acima vai para o fim da sua
+própria dele. Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
+no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel e o Shutdown original.
+Nenhum item nativo é apagado: o que não está na lista acima vai para o fim da sua
 seção e continua controlado pelas permissões de grupo.
 
 ## Instalação
@@ -128,6 +130,7 @@ theme/assets/icons/        sprite Lucide (ISC License)
 theme/assets/img/          logos Bradial Voz e favicon
 theme/assets/js/shell.js   barra lateral, menu recolhível, gaveta no celular
 modules/bv_visao_geral/    Visão geral (index.php, lib/VisaoGeral.php, assets/)
+modules/bv_energia/        Reiniciar ou desligar (usa o sudo de /sbin/shutdown do Issabel)
 menu/menu.xml              registro da Visão geral (issabel-menumerge)
 ```
 

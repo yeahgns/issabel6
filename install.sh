@@ -126,9 +126,11 @@ fi
 
 # ---------- Menu ----------
 if [ "$DO_MENU" = 1 ]; then
-    say "Registrando a Visão geral no menu"
+    say "Registrando os módulos do tema no menu (Visão geral, Reiniciar ou desligar)"
     issabel-menumerge "$DIR/menu/menu.xml"
-    [ "$(sqlite3 "$MENUDB" "SELECT COUNT(*) FROM menu WHERE id='bv_visao_geral';")" = 1 ] || fail "o item bv_visao_geral não foi criado pelo issabel-menumerge."
+    for id in bv_visao_geral bv_energia; do
+        [ "$(sqlite3 "$MENUDB" "SELECT COUNT(*) FROM menu WHERE id='$id';")" = 1 ] || fail "o item $id não foi criado pelo issabel-menumerge."
+    done
     say "Reorganizando o menu"
     sqlite3 "$MENUDB" < "$DIR/menu/reorganize.sql"
     chown asterisk:asterisk "$MENUDB" 2>/dev/null || true
