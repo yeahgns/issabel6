@@ -48,9 +48,6 @@ fail() { echo "Erro: $*" >&2; exit 1; }
 command -v sqlite3 >/dev/null || fail "sqlite3 não encontrado."
 [ -f "$MENUDB" ] || fail "$MENUDB não encontrado."
 [ -f "$SETDB" ]  || fail "$SETDB não encontrado."
-if [ "$DO_MENU" = 1 ]; then
-    command -v issabel-menumerge >/dev/null || fail "issabel-menumerge não encontrado (necessário para criar os atalhos do PBX). Use --sem-menu para pular o menu."
-fi
 
 MYSQLPWD=$(grep -i '^mysqlrootpwd' /etc/issabel.conf 2>/dev/null | head -1 | cut -d= -f2- || true)
 sqlq() { if [ -n "$MYSQLPWD" ]; then mysql -uroot -p"$MYSQLPWD" asterisk -N -B -e "$1"; else mysql -uroot asterisk -N -B -e "$1"; fi; }
@@ -103,11 +100,6 @@ fi
 
 # ---------- Menu ----------
 if [ "$DO_MENU" = 1 ]; then
-    say "Criando os atalhos do PBX (Ramais, Filas, Troncos, Rotas)"
-    issabel-menumerge "$DIR/menu/menu.xml"
-    for id in bv_ramais bv_filas bv_troncos bv_rotas_entrada bv_rotas_saida; do
-        [ "$(sqlite3 "$MENUDB" "SELECT COUNT(*) FROM menu WHERE id='$id';")" = 1 ] || fail "o item $id não foi criado pelo issabel-menumerge."
-    done
     say "Reorganizando o menu"
     sqlite3 "$MENUDB" < "$DIR/menu/reorganize.sql"
     chown asterisk:asterisk "$MENUDB" 2>/dev/null || true
@@ -144,8 +136,4 @@ printf 'versao=%s\ncommit=%s\ndata=%s\n' "$VERSION" "$COMMIT" "$STAMP" > "$STATE
 echo
 say "Pronto. Versão $VERSION ($COMMIT)."
 info "Recarregue o Issabel no navegador (Ctrl+Shift+R / Cmd+Shift+R)."
-if [ "$DO_MENU" = 1 ]; then
-    info "Os atalhos novos do PBX já valem para o grupo administrador. Para outros grupos,"
-    info "libere em Sistema > Usuários > Permissões: Ramais, Filas, Troncos, Rotas de entrada e Rotas de saída."
-fi
 info "Para desfazer: bash $DIR/uninstall.sh"

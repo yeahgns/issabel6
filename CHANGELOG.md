@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+- PBX: os cinco atalhos (Ramais, Filas, Troncos, Rotas) foram trocados por um item único,
+  "Configurações do PABX", que abre o IssabelPBX com a navegação própria dele.
+- `install.sh` não depende mais do `issabel-menumerge`.
+
 ## 1.0.1
 - Projeto preparado para o GitHub (`.gitignore`, `.gitattributes`, este changelog).
 - `install.sh` guarda só os 10 backups mais recentes e registra versão e commit

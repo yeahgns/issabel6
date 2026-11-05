@@ -23,16 +23,14 @@ UPDATE menu SET order_no=28, Name='Desenvolvedor' WHERE id='developer';
 -- Geral
 UPDATE menu SET IdParent='sysdash', Name='Visão geral', order_no=1 WHERE id='dashboard';
 
--- PBX (os itens bv_* são criados pelo menu.xml; aqui só nome e ordem)
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Name='Ramais',           order_no=1, Link='/admin/config.php?display=extensions' WHERE id='bv_ramais';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Name='Filas',            order_no=2, Link='/admin/config.php?display=queues'     WHERE id='bv_filas';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Name='Troncos',          order_no=3, Link='/admin/config.php?display=trunks'     WHERE id='bv_troncos';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Name='Rotas de entrada', order_no=4, Link='/admin/config.php?display=did'        WHERE id='bv_rotas_entrada';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Name='Rotas de saída',   order_no=5, Link='/admin/config.php?display=routing'    WHERE id='bv_rotas_saida';
-UPDATE menu SET Name='Configuração avançada', order_no=6 WHERE id='pbxadmin';
-UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=7 WHERE id='extensions_batch';
-UPDATE menu SET Name='Gravações',          order_no=8 WHERE id='monitoring';
-UPDATE menu SET IdParent='pbxconfig', Name='Painel do operador', order_no=9 WHERE id='painel_operador';
+-- PBX: por enquanto, a configuração do PABX fica num item só, porque o IssabelPBX
+-- já tem a própria navegação (Admin, Applications, Connectivity...). Os atalhos
+-- bv_* da 1.0 saem; voltam quando as telas próprias de Ramais e Filas existirem.
+DELETE FROM menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida');
+UPDATE menu SET Name='Configurações do PABX', order_no=1 WHERE id='pbxadmin';
+UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=2 WHERE id='extensions_batch';
+UPDATE menu SET Name='Gravações',          order_no=3 WHERE id='monitoring';
+UPDATE menu SET IdParent='pbxconfig', Name='Painel do operador', order_no=4 WHERE id='painel_operador';
 UPDATE menu SET order_no=51 WHERE id='voicemail';
 UPDATE menu SET order_no=52 WHERE id='endpoints';
 UPDATE menu SET order_no=53 WHERE id='conference';

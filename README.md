@@ -24,16 +24,15 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 
 ```
 Geral        Visão geral
-PBX          Ramais · Filas · Troncos · Rotas de entrada · Rotas de saída ·
-             Configuração avançada · Ramais em lote · Gravações · Painel do operador
+PBX          Configurações do PABX · Ramais em lote · Gravações · Painel do operador
 Call center  Painel · Console do agente · Campanhas · Formulários · Agentes · Pausas
 Relatórios   Registro de chamadas
 Sistema      Usuários ▸ · Rede ▸ · Segurança ▸ · Backup e restauração ·
              Preferências ▸ · Reiniciar ou desligar
 ```
 
-Ramais, Filas, Troncos e Rotas são atalhos que abrem a tela certa do IssabelPBX dentro
-do layout. Nenhum item é apagado: o que não está na lista acima vai para o fim da sua
+Configurações do PABX abre o IssabelPBX inteiro dentro do layout, com a navegação
+própria dele. Nenhum item nativo é apagado: o que não está na lista acima vai para o fim da sua
 seção e continua controlado pelas permissões de grupo.
 
 ## Instalação
@@ -82,13 +81,10 @@ backups ficam só no servidor, em `/var/lib/bradial-theme`.
 
 ## Depois de instalar
 
-1. **Permissões dos atalhos do PBX.** Já valem para o grupo administrador. Para outros
-   grupos, libere Ramais, Filas, Troncos, Rotas de entrada e Rotas de saída em
-   Sistema > Usuários > Permissões.
-2. **Relatórios.** O item visível é o Registro de chamadas (relatório de ligações v2,
+1. **Relatórios.** O item visível é o Registro de chamadas (relatório de ligações v2,
    em `modules/report`). Para esconder o CDR Report nativo dos clientes, remova a
    permissão dele nos grupos.
-3. **Build Module e Temas.** Sugerimos remover a permissão desses itens nos grupos de
+2. **Build Module e Temas.** Sugerimos remover a permissão desses itens nos grupos de
    cliente; trocar de tema pela interface desfaz a identidade visual.
 
 ## Remoção
@@ -118,7 +114,6 @@ do `install.sh` guarda outro em `/var/lib/bradial-theme/backup-<data>`.
 
 ```
 install.sh, uninstall.sh, VERSION, CHANGELOG.md
-menu/menu.xml              atalhos do PBX (issabel-menumerge)
 menu/reorganize.sql        organização do menu (menu.db)
 theme/_common/             index.tpl, _menu.tpl, login.tpl
 theme/themesetup.php       ícones, usuário, breadcrumb, avisos
