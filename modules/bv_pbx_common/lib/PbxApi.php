@@ -43,16 +43,46 @@ class BvPbxApi
         return $this->request('GET', $path);
     }
 
+    /* Os dados podem vir "achatados" ("extension_options.call_waiting" => "no"); o cliente
+     * sempre envia aninhado. Motivo: o PUT da API converte chaves achatadas para os nomes
+     * internos antes de validar e gravar, e aí os campos mapeados (chamada em espera, correio
+     * de voz, opções do aparelho...) são ignorados. Aninhado, eles passam pelo mesmo caminho
+     * da criação. Confirmado em teste no servidor (tools/pbxapi-teste.php). */
     public function post($resource, array $data)
     {
+        $data = self::nest($data);
         $data['reload'] = false;
         return $this->request('POST', $resource, $data);
     }
 
     public function put($resource, $id, array $data)
     {
+        $data = self::nest($data);
         $data['reload'] = false;
         return $this->request('PUT', $resource . '/' . rawurlencode($id), $data);
+    }
+
+    /* "a.b.c" => v  vira  array("a" => array("b" => array("c" => v))) */
+    public static function nest(array $flat)
+    {
+        $out = array();
+        foreach ($flat as $k => $v) {
+            if (is_array($v)) $v = self::nest($v);
+            if (strpos((string) $k, '.') === false) {
+                $out[$k] = (isset($out[$k]) && is_array($out[$k]) && is_array($v)) ? array_replace_recursive($out[$k], $v) : $v;
+                continue;
+            }
+            $ref = &$out;
+            $parts = explode('.', $k);
+            $last = array_pop($parts);
+            foreach ($parts as $p) {
+                if (!isset($ref[$p]) || !is_array($ref[$p])) $ref[$p] = array();
+                $ref = &$ref[$p];
+            }
+            $ref[$last] = $v;
+            unset($ref);
+        }
+        return $out;
     }
 
     public function delete($resource, $id)

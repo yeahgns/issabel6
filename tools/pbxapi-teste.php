@@ -46,6 +46,8 @@ foreach ($r['body']['results'] as $x) {
 $r = $api->post('extensions', array(
     'extension' => $num, 'name' => 'Teste Bradial', 'tech' => 'pjsip',
     'extension_options.call_waiting' => 'yes', 'voicemail.enabled' => 'no',
+    // valores incomuns, para conferir que a alteração seguinte não os reseta
+    'extension_options.internal_auto_answer' => 'yes', 'device_options.nat' => 'route',
 ));
 if ($r['code'] < 200 || $r['code'] >= 300) { bad('criar ramal: ' . BvPbxApi::errorText($r)); exit(1); }
 ok("criar ramal $num (HTTP {$r['code']})");
@@ -60,12 +62,17 @@ show('extension_options.call_waiting', pick($x, 'extension_options.call_waiting'
 show('voicemail.enabled', pick($x, 'voicemail.enabled'));
 show('secret gerado (tamanho)', strlen((string) pick($x, 'secret')));
 show('device_options.dtmf_mode', pick($x, 'device_options.dtmf_mode'));
+show('extension_options.internal_auto_answer', pick($x, 'extension_options.internal_auto_answer'));
+show('device_options.nat', pick($x, 'device_options.nat'));
 show('extension_options.ring_time', pick($x, 'extension_options.ring_time'));
 echo '         chaves de 1º nível: ' . implode(', ', array_keys($x)) . "\n";
 
-// 4. Alteração
+// 4. Alteração (o cliente envia aninhado): nome, opções do ramal e do aparelho
 $r = $api->put('extensions', $num, array(
-    'name' => 'Teste Bradial 2', 'extension_options.call_waiting' => 'no',
+    'name' => 'Teste Bradial 2',
+    'extension_options.call_waiting' => 'no',
+    'extension_options.ring_time' => '30',
+    'device_options.dtmf_mode' => 'info',
 ));
 if ($r['code'] < 200 || $r['code'] >= 300) bad('alterar ramal: ' . BvPbxApi::errorText($r));
 else ok("alterar ramal (HTTP {$r['code']})");
@@ -74,9 +81,17 @@ else ok("alterar ramal (HTTP {$r['code']})");
 $x = one($api, $num);
 show('name depois', pick($x, 'name'));
 show('call_waiting depois', pick($x, 'extension_options.call_waiting'));
+show('ring_time depois', pick($x, 'extension_options.ring_time'));
+show('dtmf_mode depois', pick($x, 'device_options.dtmf_mode'));
+show('secret mantido (tamanho)', strlen((string) pick($x, 'secret')));
 if (pick($x, 'name') === 'Teste Bradial 2') ok('nome alterado'); else bad('nome NÃO mudou');
-if (pick($x, 'extension_options.call_waiting') === 'no') ok('chamada em espera desligada');
-else bad('chamada em espera não ficou "no" (a tela vai precisar enviar o valor em outro formato)');
+if (pick($x, 'extension_options.call_waiting') === 'no') ok('chamada em espera desligada'); else bad('chamada em espera não mudou');
+if ((string) pick($x, 'extension_options.ring_time') === '30') ok('tempo de toque alterado'); else bad('tempo de toque não mudou');
+if (pick($x, 'device_options.dtmf_mode') === 'info') ok('DTMF alterado'); else bad('DTMF não mudou');
+if (strlen((string) pick($x, 'secret')) === 32) ok('senha do aparelho preservada'); else bad('senha do aparelho mudou ou sumiu');
+// Campos que NÃO foram enviados na alteração devem continuar como estavam
+if (pick($x, 'extension_options.internal_auto_answer') === 'yes') ok('atendimento automático preservado'); else bad('atendimento automático foi resetado: ' . var_export(pick($x, 'extension_options.internal_auto_answer'), true));
+if (pick($x, 'device_options.nat') === 'route') ok('NAT preservado'); else bad('NAT foi resetado: ' . var_export(pick($x, 'device_options.nat'), true));
 
 // 6. Exclusão (aplica na hora)
 $r = $api->delete('extensions', $num);

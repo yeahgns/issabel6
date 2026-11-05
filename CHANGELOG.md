@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.2
+- Cliente da API do PBX envia os dados aninhados. O teste no servidor mostrou que o PUT
+  ignora campos mapeados (ex.: chamada em espera) quando vêm "achatados".
+- Teste ampliado: confere tempo de toque, DTMF, senha preservada e que campos não enviados
+  na alteração continuam como estavam.
+
 ## 1.6.1
 - Base das telas próprias de PBX: `modules/bv_pbx_common/lib/PbxApi.php`, cliente da API
   REST do IssabelPBX. Gera no servidor um token de 5 minutos com a chave de
