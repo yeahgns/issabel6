@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+- Menu: grupos vazios (ex.: "Batch Configurations", que sobrava depois de Ramais em lote
+  sair dele) não aparecem mais. Antes, clicar neles dava "module could not be found".
+
 ## 1.1.0
 - PBX: os cinco atalhos (Ramais, Filas, Troncos, Rotas) foram trocados por um item único,
   "Configurações do PABX", que abre o IssabelPBX com a navegação própria dele.

@@ -11,6 +11,7 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
     $arrMainMenu = $smarty->get_template_vars('arrMainMenu');
     if (!is_array($arrMainMenu)) $arrMainMenu = array();
 
+    $arrMainMenu = bradialPruneMenu($arrMainMenu);
     foreach ($arrMainMenu as $idMenu => $menu) {
         $arrMainMenu[$idMenu]['bicon'] = bradialIcon($idMenu);
         if (!empty($menu['children']) && is_array($menu['children'])) {
@@ -51,6 +52,29 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
         // Módulos com visual próprio: não recebem o CSS das telas nativas
         'BV_CUSTOM_MODULE'   => bradialIsCustomModule($selectedMenu),
     ));
+}
+
+/* Remove do menu os grupos que ficaram vazios. Um grupo (ex.: "Batch Configurations")
+ * aparece quando o usuário tem permissão no próprio grupo mas em nenhum filho visível;
+ * como não há módulo com esse nome, clicar nele dá "module could not be found".
+ * Regra: item do tipo módulo, sem filhos e sem pasta em modules/ sai do menu.
+ * Seções de 1º nível que ficam sem itens também saem. */
+function bradialPruneMenu($menu, $depth = 1)
+{
+    if (!is_array($menu)) return array();
+    foreach ($menu as $id => $item) {
+        $kids = (!empty($item['children']) && is_array($item['children'])) ? $item['children'] : array();
+        if ($kids) {
+            $kids = bradialPruneMenu($kids, $depth + 1);
+            $menu[$id]['children'] = $kids;
+            $menu[$id]['HasChild'] = count($kids) > 0;
+        }
+        $type = isset($item['Type']) ? $item['Type'] : '';
+        $isGroupShell = !$kids && ($type === 'module' || $type === '')
+            && !is_file('modules/' . basename((string)$id) . '/index.php');
+        if ($isGroupShell) unset($menu[$id]);
+    }
+    return $menu;
 }
 
 /* Ícones Lucide (nomes do sprite em assets/icons/sprite.svg) */
