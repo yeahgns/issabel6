@@ -307,3 +307,18 @@ body.bv-body .bv-native input[size="5"], body.bv-body .bv-native input[size="6"]
 body.bv-body .bv-native input[maxlength="5"] { width: 96px; }
 /* Nenhum formulário passa da largura da coluna de conteúdo */
 body.bv-body .bv-native table.tabForm { max-width: 100%; }
+
+/* ---------- 1.4.3 ---------- */
+/* Botões que o próprio módulo pinta com cor de fundo (ex.: "Apagar" vermelho no Backup e
+   no IP fixo por MAC): texto e ícone em branco para ter contraste. */
+body.bv-body .bv-native .neo-table-toolbar-button[style*="background"],
+body.bv-body .bv-native button[style*="background"],
+body.bv-body .bv-native input[type=submit][style*="background"],
+body.bv-body .bv-native input[type=button][style*="background"] {
+  color: #fff !important; border-color: transparent !important;
+}
+body.bv-body .bv-native .neo-table-toolbar-button[style*="background"] *,
+body.bv-body .bv-native button[style*="background"] * { color: #fff !important; }
+/* Permissões: o ✓ dentro do botão azul fica branco */
+body.bv-body .bv-native[data-bv-module="group_permission"] .fa-check,
+body.bv-body .bv-native[data-bv-module="group_permission"] [class*="fa-check"] { color: #fff !important; }

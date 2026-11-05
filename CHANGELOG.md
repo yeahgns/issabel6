@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.3
+- Permissões: ✓ em branco dentro do botão azul.
+- Visão geral: serviços aparecem como "Online" (verde) ou "Offline" (vermelho).
+- Botões que o módulo pinta de cor (ex.: "Apagar" no Backup e no IP fixo por MAC) com
+  texto branco, para ficarem legíveis.
+
 ## 1.4.2
 - Permissões: some o checkbox duplicado. O tema reposicionava todos os checkboxes, o que
   fazia reaparecer o checkbox que o módulo esconde atrás do botão dele.

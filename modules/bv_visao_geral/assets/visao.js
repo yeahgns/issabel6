@@ -133,7 +133,7 @@
   });
 
   /* ---------- Serviços ---------- */
-  var ESTADO = { rodando: [tr('Rodando', 'Running'), 'bl-badge--secondary'], iniciando: [tr('Iniciando', 'Starting'), 'bl-badge--outline'], parado: [tr('Parado', 'Stopped'), 'bl-badge--destructive'] };
+  var ESTADO = { rodando: ['Online', 'bvg-st-on'], iniciando: [tr('Iniciando', 'Starting'), 'bl-badge--outline'], parado: ['Offline', 'bvg-st-off'] };
   function renderServicos(list) {
     $('bvg-services').innerHTML = (list || []).map(function (s) {
       var st = ESTADO[s.estado] || ESTADO.parado;

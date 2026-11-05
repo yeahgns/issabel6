@@ -75,5 +75,8 @@
 .bvg-svc-row { display: flex; align-items: center; gap: 12px; min-height: 38px; }
 .bvg-svc-ic { display: flex; color: var(--muted-foreground); }
 .bvg-svc-name { flex: 1; }
+/* Estado do serviço: verde online, vermelho offline */
+.bvg .bl-badge.bvg-st-on { background: oklch(0.95 0.06 150); color: oklch(0.45 0.14 150); box-shadow: none; }
+.bvg .bl-badge.bvg-st-off { background: var(--destructive-tint); color: var(--destructive); box-shadow: none; }
 
 @media (prefers-reduced-motion: reduce) { .bvg-track span, .bvg .bvg-kpi { transition: none; } }
