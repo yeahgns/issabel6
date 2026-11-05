@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.1
+- Corrige o logo duplicado e o botão de recolher o menu que não apareciam: o navegador
+  usava o CSS antigo em cache. Agora todo arquivo do tema leva `?v=<versão>-<commit>`,
+  trocado pelo `install.sh` a cada atualização.
+- Selo "v6" ao lado do logo, como no protótipo.
+- Sai o ícone de troca de senha do rodapé do menu.
+- Visão geral refeita no layout do protótipo: faixa com Chamadas ativas, Canais, Na fila,
+  Ramais online (por tecnologia) e Troncos; recursos do servidor; avisos do PBX em português,
+  com botão para dispensar os que o IssabelPBX permite; e o cartão Serviços só com Telefonia,
+  Banco de dados, Servidor web e Call center.
+
 ## 1.2.0
 - Nova **Visão geral** (módulo `bv_visao_geral`), tela inicial do Issabel: telefonia agora
   (mesmos números do Painel do Operador), recursos do servidor e avisos do PBX, atualizando

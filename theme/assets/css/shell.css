@@ -42,7 +42,8 @@ iframe.frameModule { display: block; width: 100%; min-height: calc(100vh - 60px)
   background: var(--sidebar); border-right: 1px solid var(--sidebar-border);
   overflow-y: auto; z-index: 40;
 }
-.bv-brand { display: flex; align-items: center; padding: 2px 8px; }
+.bv-brand { display: flex; align-items: center; gap: 10px; padding: 2px 8px; }
+.bv-ver { height: 22px; padding: 0 9px; border-radius: var(--radius-full); background: var(--muted); color: var(--foreground); font-size: 12px; font-weight: 500; line-height: 22px; }
 .bv-brand a { display: flex; align-items: center; }
 .bv-brand img { height: 28px; width: auto; display: block; }
 .bv-brand .bv-logo-icon { display: none; }
@@ -101,7 +102,7 @@ body.bv-body a.bv-nav-subitem.is-active { background: var(--sidebar-accent); col
 @media (min-width: 961px) {
   html.bv-collapsed .bv-sidebar { width: 72px; padding: 18px 12px 12px; overflow-x: hidden; }
   html.bv-collapsed .bv-brand { justify-content: center; padding: 2px 0; }
-  html.bv-collapsed .bv-brand .bv-logo-full { display: none; }
+  html.bv-collapsed .bv-brand .bv-logo-full, html.bv-collapsed .bv-ver { display: none; }
   html.bv-collapsed .bv-brand .bv-logo-icon { display: block; height: 26px; }
   html.bv-collapsed .bv-search,
   html.bv-collapsed .bv-nav-item > span,

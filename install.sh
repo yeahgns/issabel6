@@ -56,7 +56,10 @@ MYSQLPWD=$(grep -i '^mysqlrootpwd' /etc/issabel.conf 2>/dev/null | head -1 | cut
 sqlq() { if [ -n "$MYSQLPWD" ]; then mysql -uroot -p"$MYSQLPWD" asterisk -N -B -e "$1"; else mysql -uroot asterisk -N -B -e "$1"; fi; }
 sqlesc() { printf "%s" "${1//\'/\'\'}"; }
 
-say "Tema Bradial Voz $VERSION"
+COMMIT=$(git -C "$DIR" rev-parse --short HEAD 2>/dev/null || echo "local")
+# Sufixo ?v= dos arquivos do tema: muda a cada versão/commit e força o navegador a baixar de novo
+TAG=$(printf '%s-%s' "$VERSION" "$COMMIT" | tr -c 'A-Za-z0-9.-' '-')
+say "Tema Bradial Voz $VERSION ($COMMIT)"
 
 # ---------- Backup ----------
 backup_to() {
@@ -85,6 +88,7 @@ if [ "$DO_THEME" = 1 ]; then
     rm -rf "$THEME.new"
     cp -a "$WEB/themes/tenant" "$THEME.new"
     cp -a "$DIR/theme/." "$THEME.new/"
+    find "$THEME.new/_common" -name '*.tpl' -exec sed -i "s/__BV_VERSION__/$TAG/g" {} +
     chown -R asterisk:asterisk "$THEME.new"
     find "$THEME.new" -type d -exec chmod 755 {} +
     find "$THEME.new" -type f -exec chmod 644 {} +
@@ -109,7 +113,7 @@ if [ "$DO_THEME" = 1 ]; then
         say "Instalando o módulo $name"
         rm -rf "$WEB/modules/$name.new"
         cp -a "$m" "$WEB/modules/$name.new"
-        cp "$DIR/VERSION" "$WEB/modules/$name.new/VERSION"
+        printf '%s\n' "$TAG" > "$WEB/modules/$name.new/VERSION"
         chown -R asterisk:asterisk "$WEB/modules/$name.new"
         find "$WEB/modules/$name.new" -type d -exec chmod 755 {} +
         find "$WEB/modules/$name.new" -type f -exec chmod 644 {} +
@@ -155,7 +159,6 @@ if [ "$DO_PBX" = 1 ]; then
     fi
 fi
 
-COMMIT=$(git -C "$DIR" rev-parse --short HEAD 2>/dev/null || echo "sem git")
 printf 'versao=%s\ncommit=%s\ndata=%s\n' "$VERSION" "$COMMIT" "$STAMP" > "$STATE/instalado.txt"
 
 echo

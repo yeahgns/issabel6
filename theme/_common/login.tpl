@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Entrar · Bradial Voz</title>
     <link rel="icon" href="{$BV}/img/favicon.ico" />
-    <link rel="stylesheet" href="{$BV}/css/tokens.css" />
-    <link rel="stylesheet" href="{$BV}/css/components.css" />
-    <link rel="stylesheet" href="{$BV}/css/shell.css" />
+    <link rel="stylesheet" href="{$BV}/css/tokens.css?v=__BV_VERSION__" />
+    <link rel="stylesheet" href="{$BV}/css/components.css?v=__BV_VERSION__" />
+    <link rel="stylesheet" href="{$BV}/css/shell.css?v=__BV_VERSION__" />
 </head>
 <body class="bv-body bv-login-body">
 <main class="bv-login">
     <section class="bv-login-side">
-        <img src="{$BV}/img/bradial-voz.png" alt="Bradial Voz" />
+        <img src="{$BV}/img/bradial-voz.png?v=__BV_VERSION__" alt="Bradial Voz" />
 
         <form class="bv-login-form" method="post" autocomplete="off">
             <div>
@@ -23,7 +23,7 @@
 
             {if !empty($LOGIN_INCORRECT)}
             <div class="bv-alert" role="alert">
-                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#circle-alert"></use></svg>
+                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#circle-alert"></use></svg>
                 <span>Usuário ou senha incorretos. Confira e tente de novo.</span>
             </div>
             {/if}
@@ -37,8 +37,8 @@
                     <span>Senha</span>
                     <div class="bv-pass">
                         <input class="bl-input bl-input--lg" type="password" name="input_pass" id="input_pass" placeholder="Sua senha" autocomplete="current-password" required />
-                        <button type="button" class="bv-iconbtn" id="bv-toggle-pass" data-sprite="{$BV}/icons/sprite.svg" aria-label="Mostrar senha" aria-pressed="false">
-                            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#eye"></use></svg>
+                        <button type="button" class="bv-iconbtn" id="bv-toggle-pass" data-sprite="{$BV}/icons/sprite.svg?v=__BV_VERSION__" aria-label="Mostrar senha" aria-pressed="false">
+                            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#eye"></use></svg>
                         </button>
                     </div>
                 </label>

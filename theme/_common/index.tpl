@@ -25,10 +25,10 @@
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/rightbar.css" />
 
     {* Bradial Voz: sempre por último *}
-    <link rel="stylesheet" href="{$BV}/css/tokens.css" />
-    <link rel="stylesheet" href="{$BV}/css/components.css" />
-    <link rel="stylesheet" href="{$BV}/css/shell.css" />
-    <link rel="stylesheet" href="{$BV}/css/native.css" />
+    <link rel="stylesheet" href="{$BV}/css/tokens.css?v=__BV_VERSION__" />
+    <link rel="stylesheet" href="{$BV}/css/components.css?v=__BV_VERSION__" />
+    <link rel="stylesheet" href="{$BV}/css/shell.css?v=__BV_VERSION__" />
+    <link rel="stylesheet" href="{$BV}/css/native.css?v=__BV_VERSION__" />
 
     {$HEADER_LIBS_JQUERY}
     <script type="text/javascript" src="libs/js/base.js"></script>
@@ -48,7 +48,7 @@
                     {/if}
                     <div class="div_msg_errors_content">{$mb_message}</div>
                     <div class="div_msg_errors_dismiss" onclick="hide_message_error();" title="Fechar">
-                        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#x"></use></svg>
+                        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#x"></use></svg>
                     </div>
                 </div>
                 {/if}
@@ -67,7 +67,7 @@
     <div class="chat-inner">
         <h2 class="chat-header">
             <span id="panel-header-text">{$LBL_ISSABEL_PANELS_SIDEBAR|escape:html}</span>
-            <a href="#" class="chat-close" aria-label="Fechar"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#x"></use></svg></a>
+            <a href="#" class="chat-close" aria-label="Fechar"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#x"></use></svg></a>
         </h2>
         <div id="issabel-panels" class="panel-group joined">
             {foreach from=$ISSABEL_PANELS key=panelname item=paneldata name=issabelpanel}
@@ -99,6 +99,6 @@
 <script type="text/javascript" src="{$WEBPATH}themes/{$THEMENAME}/js/neon-api.js"></script>
 <script type="text/javascript" src="{$WEBPATH}themes/{$THEMENAME}/js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="{$WEBPATH}themes/{$THEMENAME}/js/neon-custom.js"></script>
-<script type="text/javascript" src="{$BV}/js/shell.js"></script>
+<script type="text/javascript" src="{$BV}/js/shell.js?v=__BV_VERSION__"></script>
 </body>
 </html>

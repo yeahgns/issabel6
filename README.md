@@ -14,7 +14,8 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 - **Barra superior** com o caminho da tela e o botão que recolhe o menu lateral (só ícones;
   a escolha fica salva no navegador).
 - **Visão geral própria** (módulo `bv_visao_geral`) como tela inicial: telefonia agora,
-  recursos do servidor e avisos do PBX. Os números de telefonia vêm do Painel do Operador,
+  recursos do servidor, avisos do PBX e o estado de Telefonia, Banco de dados, Servidor web
+  e Call center. Os números de telefonia vêm do Painel do Operador,
   quando instalado; sem ele, a tela mostra só o que o CLI do Asterisk informa.
 - **Telas nativas** (listagens, formulários, botões, painéis, diálogos) com as cores,
   a tipografia e os cantos do design system.

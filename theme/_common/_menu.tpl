@@ -47,13 +47,14 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 <aside class="bv-sidebar" id="bv-sidebar" aria-label="Menu">
     <div class="bv-brand">
         <a href="index.php" title="Bradial Voz">
-            <img class="bv-logo-full" src="{$BV}/img/bradial-voz.png" alt="Bradial Voz" />
-            <img class="bv-logo-icon" src="{$BV}/img/bradial-voz-icone.png" alt="" />
+            <img class="bv-logo-full" src="{$BV}/img/bradial-voz.png?v=__BV_VERSION__" alt="Bradial Voz" />
+            <img class="bv-logo-icon" src="{$BV}/img/bradial-voz-icone.png?v=__BV_VERSION__" alt="" />
         </a>
+        <span class="bv-ver">v6</span>
     </div>
 
     <form class="bv-search" method="get" action="" role="search">
-        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#search"></use></svg>
+        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#search"></use></svg>
         <label class="bv-sr" for="search_module_issabel">Buscar módulo</label>
         <input type="text" id="search_module_issabel" name="search_module_issabel" placeholder="Buscar módulo" autocomplete="off" />
     </form>
@@ -67,9 +68,9 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
                 {if $subMenu.children}
                     <div class="bv-nav-branch{if $idSubMenu eq $idSubMenuSelected} is-open has-active{/if}">
                         <button type="button" class="bv-nav-item" title="{$subMenu.Name|escape}" aria-expanded="{if $idSubMenu eq $idSubMenuSelected}true{else}false{/if}">
-                            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{$subMenu.bicon}"></use></svg>
+                            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#{$subMenu.bicon}"></use></svg>
                             <span>{$subMenu.Name}</span>
-                            <svg class="bv-i bv-chev" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#chevron-down"></use></svg>
+                            <svg class="bv-i bv-chev" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#chevron-down"></use></svg>
                         </button>
                         <div class="bv-nav-sub">
                         {foreach from=$subMenu.children key=idSubMenu2 item=subMenu2}
@@ -87,14 +88,14 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
                     {else}
                         <a class="bv-nav-item{if $idSubMenu eq $idSubMenuSelected} is-active{/if}" href="index.php?menu={$idSubMenu}" title="{$subMenu.Name|escape}"{if $idSubMenu eq $idSubMenuSelected} aria-current="page"{/if}>
                     {/if}
-                        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{$subMenu.bicon}"></use></svg>
+                        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#{$subMenu.bicon}"></use></svg>
                         <span>{$subMenu.Name}</span>
                     </a>
                 {/if}
             {/foreach}
         {else}
             <a class="bv-nav-item{if $idMenu eq $idMainMenuSelected} is-active{/if}" href="index.php?menu={$idMenu}" title="{$menu.Name|escape}">
-                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{$menu.bicon}"></use></svg>
+                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#{$menu.bicon}"></use></svg>
                 <span>{$menu.Name}</span>
             </a>
         {/if}
@@ -108,11 +109,8 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
             <strong>{$USER_LOGIN|escape}</strong>
             <span>{$SERVER_NAME|escape}</span>
         </div>
-        <a href="#" class="bv-iconbtn setadminpassword" title="{$CHANGE_PASSWORD}" aria-label="{$CHANGE_PASSWORD}">
-            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#key-round"></use></svg>
-        </a>
         <a href="index.php?logout=yes" class="bv-iconbtn" title="Sair" aria-label="Sair">
-            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#log-out"></use></svg>
+            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#log-out"></use></svg>
         </a>
     </div>
 </aside>
@@ -121,7 +119,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 <div class="bv-main">
     <header class="bv-topbar">
         <button type="button" class="bv-iconbtn bv-menu-toggle" title="Recolher ou expandir o menu" aria-label="Recolher ou expandir o menu" aria-controls="bv-sidebar" aria-expanded="true">
-            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#panel-left"></use></svg>
+            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#panel-left"></use></svg>
         </button>
 
         <nav class="bv-crumb" aria-label="Você está em">
@@ -130,7 +128,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
                 <span aria-current="page">{$value}</span>
             {else}
                 <span>{$value}</span>
-                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#chevron-right"></use></svg>
+                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#chevron-right"></use></svg>
             {/if}
         {/foreach}
         </nav>
@@ -138,7 +136,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
         <div class="bv-actions">
             {if $ISSABEL_PANELS}
             <button type="button" class="bv-iconbtn" id="header_open_sidebar" title="{$LBL_ISSABEL_PANELS_SIDEBAR}" aria-label="{$LBL_ISSABEL_PANELS_SIDEBAR}">
-                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#panel-right"></use></svg>
+                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#panel-right"></use></svg>
             </button>
             {/if}
         </div>

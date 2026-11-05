@@ -9,6 +9,21 @@ function _moduleContent(&$smarty, $module_name)
 {
     $action = isset($_REQUEST['action']) ? (string) $_REQUEST['action'] : '';
 
+    if ($action === 'dismiss') {
+        $tok = isset($_SERVER['HTTP_X_BV_TOKEN']) ? (string) $_SERVER['HTTP_X_BV_TOKEN'] : '';
+        $ok = $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['bv_csrf']) && hash_equals($_SESSION['bv_csrf'], $tok);
+        if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
+        if (!$ok) return bv_vg_json(array('erro' => 'Sessão expirada. Recarregue a página.'), 403);
+        require_once __DIR__ . '/lib/VisaoGeral.php';
+        try {
+            $v = new BvVisaoGeral();
+            $v->removeAviso(isset($_POST['modulo']) ? $_POST['modulo'] : '', isset($_POST['id']) ? $_POST['id'] : '');
+            return bv_vg_json(array('ok' => true));
+        } catch (Exception $e) {
+            return bv_vg_json(array('erro' => 'Não foi possível remover o aviso.'), 500);
+        }
+    }
+
     if ($action === 'snapshot') {
         // Só leitura: libera a sessão para não travar as outras abas do Issabel.
         if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
@@ -21,43 +36,49 @@ function _moduleContent(&$smarty, $module_name)
         }
     }
 
+    if (empty($_SESSION['bv_csrf'])) $_SESSION['bv_csrf'] = bin2hex(random_bytes(16));
     $mod = 'modules/' . rawurlencode($module_name);
-    $ver = trim((string) @file_get_contents(__DIR__ . '/VERSION')) ?: '1';
-    $api = htmlspecialchars('?menu=' . rawurlencode($module_name) . '&action=snapshot&rawmode=yes', ENT_QUOTES);
-    $pbx = htmlspecialchars('index.php?menu=pbxadmin', ENT_QUOTES);
-    $op  = is_dir('modules/painel_operador') ? htmlspecialchars('index.php?menu=painel_operador', ENT_QUOTES) : '';
+    $ver = htmlspecialchars(trim((string) @file_get_contents(__DIR__ . '/VERSION')) ?: '1', ENT_QUOTES);
+    $base = '?menu=' . rawurlencode($module_name) . '&rawmode=yes&action=';
+    $api = htmlspecialchars($base . 'snapshot', ENT_QUOTES);
+    $dis = htmlspecialchars($base . 'dismiss', ENT_QUOTES);
+    $tok = htmlspecialchars($_SESSION['bv_csrf'], ENT_QUOTES);
+    $op  = is_dir('modules/painel_operador') ? 'index.php?menu=painel_operador' : '';
 
     return <<<HTML
 <link rel="stylesheet" href="{$mod}/assets/visao.css?v={$ver}" />
-<div class="bvg" id="bvg" data-api="{$api}" data-pbx="{$pbx}" data-op="{$op}">
+<div class="bvg" id="bvg" data-api="{$api}" data-dismiss="{$dis}" data-token="{$tok}" data-op="{$op}" data-sprite="themes/bradial/assets/icons/sprite.svg?v={$ver}">
   <header class="bvg-head">
-    <div>
+    <div class="bvg-head-text">
       <h1>Visão geral</h1>
-      <p class="bvg-sub" id="bvg-sub">Lendo o servidor…</p>
+      <p id="bvg-sub">Lendo o servidor…</p>
     </div>
-    <span class="bvg-status" id="bvg-status" hidden><span class="bvg-dot"></span><span id="bvg-status-text"></span></span>
+    <span class="bvg-live" id="bvg-live" hidden><span class="bvg-dot"></span><span id="bvg-live-text"></span></span>
   </header>
 
   <section class="bvg-card bvg-kpis" id="bvg-kpis" aria-label="Telefonia agora"></section>
 
   <div class="bvg-grid">
-    <section class="bvg-card" aria-labelledby="bvg-h-srv">
-      <div class="bvg-card-head">
+    <section class="bvg-card bvg-res" aria-labelledby="bvg-h-srv">
+      <div>
         <h2 id="bvg-h-srv">Recursos do servidor</h2>
         <p class="bvg-muted" id="bvg-cpuinfo"></p>
       </div>
       <div class="bvg-bars" id="bvg-bars"></div>
-      <dl class="bvg-foot" id="bvg-srvfoot"></dl>
+      <div class="bvg-sep"></div>
+      <div class="bvg-foot" id="bvg-srvfoot"></div>
     </section>
 
-    <section class="bvg-card" aria-labelledby="bvg-h-av">
-      <div class="bvg-card-head bvg-row">
-        <h2 id="bvg-h-av">Avisos do PBX</h2>
-        <span class="bvg-muted" id="bvg-av-count"></span>
-      </div>
-      <ul class="bvg-notices" id="bvg-notices"></ul>
-      <a class="bvg-link" href="{$pbx}">Abrir as Configurações do PABX</a>
-    </section>
+    <div class="bvg-col">
+      <section class="bvg-card bvg-av" aria-labelledby="bvg-h-av">
+        <div class="bvg-av-head"><h2 id="bvg-h-av">Avisos do PBX</h2><span class="bvg-muted" id="bvg-av-count"></span></div>
+        <div class="bvg-notices" id="bvg-notices"></div>
+      </section>
+      <section class="bvg-card bvg-svc" aria-labelledby="bvg-h-svc">
+        <h2 id="bvg-h-svc">Serviços</h2>
+        <div id="bvg-services"></div>
+      </section>
+    </div>
   </div>
 </div>
 <script src="{$mod}/assets/visao.js?v={$ver}"></script>

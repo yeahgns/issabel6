@@ -34,6 +34,7 @@ class BvVisaoGeral
             'telefonia' => $this->telefonia(),
             'servidor'  => $this->servidor(),
             'avisos'    => $this->avisos(),
+            'servicos'  => $this->servicos(),
         );
         @file_put_contents($this->stateFile . '.tmp', json_encode($this->state));
         @rename($this->stateFile . '.tmp', $this->stateFile);
@@ -81,16 +82,17 @@ class BvVisaoGeral
         return $this->kpisSimples();
     }
 
-    /* Mesma regra da faixa do Painel do Operador (assets/painel.js). */
+    /* Números da faixa do topo, no formato do protótipo. A contagem segue a mesma
+     * regra da faixa do Painel do Operador (assets/painel.js). */
     private function kpisDoPainel(array $d, array $cfg)
     {
         $now = isset($d['now']) ? (int) $d['now'] : time();
         $sl = isset($cfg['service_level_seconds']) ? (int) $cfg['service_level_seconds'] : 20;
-        $up = 0; $in = 0; $outN = 0; $int = 0;
+        $up = 0; $ext = 0; $int = 0;
         foreach ((array) @$d['calls'] as $c) {
             if (@$c['state'] !== 'up') continue;
             $up++;
-            if (@$c['dir'] === 'in') $in++; elseif (@$c['dir'] === 'out') $outN++; else $int++;
+            if (@$c['dir'] === 'in' || @$c['dir'] === 'out') $ext++; else $int++;
         }
         $waiting = 0; $oldest = null;
         foreach ((array) @$d['queues'] as $q) {
@@ -99,12 +101,19 @@ class BvVisaoGeral
                 if (isset($w['since']) && ($oldest === null || $w['since'] < $oldest)) $oldest = (int) $w['since'];
             }
         }
-        $real = 0; $online = 0; $ringing = 0;
+        $real = 0; $online = 0; $byTech = array();
         foreach ((array) @$d['extensions'] as $e) {
             if (@$e['state'] === 'virtual') continue;
             $real++;
-            if (!empty($e['online'])) $online++;
-            if (@$e['state'] === 'ringing') $ringing++;
+            if (!empty($e['online'])) {
+                $online++;
+                $tech = strtoupper((string) @$e['tech']);
+                if ($tech !== '') $byTech[$tech] = (isset($byTech[$tech]) ? $byTech[$tech] : 0) + 1;
+            }
+        }
+        $tech = array();
+        foreach (array('PJSIP', 'SIP', 'IAX2') as $k) {
+            if (isset($byTech[$k]) || $k !== 'IAX2') $tech[] = $k . ' ' . (isset($byTech[$k]) ? $byTech[$k] : 0);
         }
         $tTotal = 0; $tOn = 0; $tOff = array();
         foreach ((array) @$d['trunks'] as $t) {
@@ -113,40 +122,48 @@ class BvVisaoGeral
             if (@$t['status'] === 'online' || @$t['status'] === 'warn') $tOn++;
             elseif (@$t['status'] === 'offline') $tOff[] = (string) @$t['label'];
         }
-        $mix = array();
-        if ($in) $mix[] = $in . ' entrando';
-        if ($outN) $mix[] = $outN . ' saindo';
-        if ($int) $mix[] = $int . ($int === 1 ? ' interna' : ' internas');
+        $canais = $this->canais();
 
         return array(
-            'fonte'   => 'painel',
-            'ligacao' => array('valor' => $up, 'detalhe' => $mix ? implode(', ', $mix) : 'nenhuma agora'),
-            'tocando' => array('valor' => $ringing, 'detalhe' => $ringing ? 'ramais chamando' : 'nenhum ramal'),
-            'fila'    => array('valor' => $waiting,
-                               'detalhe' => $oldest ? 'maior espera ' . $this->dur($now - $oldest) : 'ninguém esperando',
-                               'alerta' => $oldest !== null && ($now - $oldest) > $sl),
-            'ramais'  => array('valor' => $online, 'total' => $real, 'detalhe' => 'registrados'),
-            'troncos' => array('valor' => $tOn, 'total' => $tTotal,
-                               'detalhe' => $tOff ? 'fora: ' . implode(', ', $tOff) : 'todos respondendo',
-                               'alerta' => count($tOff) > 0),
+            'fonte'    => 'painel',
+            'chamadas' => array('valor' => $up,
+                                'detalhe' => $int . ($int === 1 ? ' interna' : ' internas') . ' · ' . $ext . ($ext === 1 ? ' externa' : ' externas')),
+            'canais'   => array('valor' => $canais, 'detalhe' => 'em uso agora'),
+            'fila'     => array('valor' => $waiting,
+                                'detalhe' => $oldest ? 'maior espera ' . $this->dur($now - $oldest) : 'ninguém esperando',
+                                'alerta' => $oldest !== null && ($now - $oldest) > $sl),
+            'ramais'   => array('valor' => $online, 'total' => $real, 'detalhe' => implode(' · ', $tech)),
+            'troncos'  => array('valor' => $tOn, 'total' => $tTotal,
+                                'detalhe' => $tOff ? 'fora: ' . implode(', ', $tOff) : 'todos respondendo',
+                                'alerta' => count($tOff) > 0),
         );
+    }
+
+    private function canais()
+    {
+        $lines = $this->cli('core show channels count');
+        if ($lines === null) return null;
+        foreach ($lines as $l) {
+            if (preg_match('/(\d+)\s+active channel/i', $l, $m)) return (int) $m[1];
+        }
+        return null;
     }
 
     /* Sem o Painel do Operador: só o que o CLI dá de forma confiável. */
     private function kpisSimples()
     {
-        $calls = null; $chans = null;
+        $calls = null;
         $lines = $this->cli('core show channels count');
         if ($lines !== null) {
             foreach ($lines as $l) {
                 if (preg_match('/(\d+)\s+active call/i', $l, $m)) $calls = (int) $m[1];
-                if (preg_match('/(\d+)\s+active channel/i', $l, $m)) $chans = (int) $m[1];
             }
         }
         return array(
-            'fonte'   => 'cli',
-            'ligacao' => array('valor' => $calls, 'detalhe' => $chans === null ? 'sem leitura' : $chans . ' canais em uso'),
-            'tocando' => null, 'fila' => null, 'ramais' => null, 'troncos' => null,
+            'fonte'    => 'cli',
+            'chamadas' => array('valor' => $calls, 'detalhe' => 'em andamento'),
+            'canais'   => array('valor' => $this->canais(), 'detalhe' => 'em uso agora'),
+            'fila' => null, 'ramais' => null, 'troncos' => null,
         );
     }
 
@@ -267,7 +284,7 @@ class BvVisaoGeral
     {
         try {
             $pdo = $this->pbxDb();
-            $rows = $pdo->query('SELECT module, id, level, display_text, timestamp FROM notifications ORDER BY level ASC, timestamp DESC LIMIT 8')->fetchAll(PDO::FETCH_ASSOC);
+            $rows = $pdo->query('SELECT module, id, level, display_text, candelete, timestamp FROM notifications ORDER BY level ASC, timestamp DESC LIMIT 8')->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             return array('erro' => 'Não foi possível ler os avisos do PBX.', 'itens' => array());
         }
@@ -281,12 +298,40 @@ class BvVisaoGeral
             elseif ($lvl === 500) $tipo = 'aviso';
             else $tipo = 'info';
             $itens[] = array(
-                'tipo'  => $tipo,
-                'texto' => (string) $r['display_text'],
-                'quando'=> $r['timestamp'] ? (int) $r['timestamp'] : null,
+                'tipo'      => $tipo,
+                'texto'     => self::traduz((string) $r['display_text']),
+                'quando'    => $r['timestamp'] ? (int) $r['timestamp'] : null,
+                'modulo'    => (string) $r['module'],
+                'id'        => (string) $r['id'],
+                'removivel' => !empty($r['candelete']),
             );
         }
         return array('erro' => null, 'itens' => $itens);
+    }
+
+    /* Remove um aviso, só se o próprio IssabelPBX marcou como removível. */
+    public function removeAviso($modulo, $id)
+    {
+        $st = $this->pbxDb()->prepare('DELETE FROM notifications WHERE module = ? AND id = ? AND candelete = 1');
+        $st->execute(array((string) $modulo, (string) $id));
+        return $st->rowCount() > 0;
+    }
+
+    /* Textos mais comuns do IssabelPBX em português; o resto fica como veio. */
+    public static function traduz($s)
+    {
+        $map = array(
+            '/^There (?:are|is) (\d+) bad destinations?$/i'                 => '$1 destinos inválidos',
+            '/^There (?:are|is) (\d+) modules? available for online upgrades?$/i' => '$1 módulos com atualização disponível',
+            '/^No email address for online update checks$/i'               => 'Sem e-mail para avisos de atualização',
+            '/^Symlink Conflict Resolved$/i'                               => 'Conflito de links simbólicos resolvido',
+            '/^Default SIP Secret Used$/i'                                 => 'Senha SIP padrão em uso',
+            '/^(\d+) extensions? (?:have|has) weak secrets?$/i'             => '$1 ramais com senha fraca',
+        );
+        foreach ($map as $re => $pt) {
+            if (preg_match($re, trim($s))) return preg_replace($re, $pt, trim($s));
+        }
+        return $s;
     }
 
     private function pbxDb()
@@ -304,6 +349,32 @@ class BvVisaoGeral
         $pass = isset($amp['AMPDBPASS']) ? $amp['AMPDBPASS'] : '';
         return new PDO("mysql:host=$host;dbname=$name;charset=utf8", $user, $pass,
             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3));
+    }
+
+    /* ------------------------------------------------------------ Serviços */
+
+    /* Só os quatro que importam para a operação. systemctl is-active não exige root. */
+    public function servicos()
+    {
+        $lista = array(
+            array('nome' => 'Telefonia (Asterisk)', 'icone' => 'phone',    'units' => array('asterisk')),
+            array('nome' => 'Banco de dados',       'icone' => 'database', 'units' => array('mariadb', 'mysqld')),
+            array('nome' => 'Servidor web',         'icone' => 'globe',    'units' => array('httpd')),
+            array('nome' => 'Call center',          'icone' => 'headset',  'units' => array('issabeldialer')),
+        );
+        $out = array();
+        foreach ($lista as $s) {
+            $estado = 'parado';
+            $res = array(); $rc = 1;
+            @exec('/usr/bin/systemctl is-active ' . implode(' ', array_map('escapeshellarg', $s['units'])) . ' 2>/dev/null', $res, $rc);
+            foreach ($res as $r) {
+                $r = trim($r);
+                if ($r === 'active') { $estado = 'rodando'; break; }
+                if ($r === 'activating' || $r === 'reloading') $estado = 'iniciando';
+            }
+            $out[] = array('nome' => $s['nome'], 'icone' => $s['icone'], 'estado' => $estado);
+        }
+        return $out;
     }
 
     /* ------------------------------------------------------------ util */
