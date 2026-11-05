@@ -39,7 +39,8 @@ SISTEMA      Usuários ▸ · Rede ▸ · Segurança ▸
              Avançado ▸ Dashboard do Issabel · Construtor de módulo · Remover módulo
 ```
 
-Os itens de PBX abrem a tela correspondente do IssabelPBX dentro do layout
+Ramais tem tela própria (módulo `bv_pbx_ramais`). Os demais itens de PBX abrem a tela
+correspondente do IssabelPBX dentro do layout
 (por enquanto; as telas próprias vêm depois). A tela completa do IssabelPBX segue
 disponível no tema v5 (Preferências > Temas > Bradial v5). Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
 no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel, Moeda, Gravações, o Shutdown original,
@@ -144,6 +145,9 @@ theme/assets/js/shell.js   barra lateral, menu recolhível, gaveta no celular
 theme/lib/BvLangShim.php   rótulos dos módulos antigos do Issabel 4
 modules/bv_visao_geral/    Visão geral (index.php, lib/VisaoGeral.php, assets/)
 modules/bv_energia/        Reiniciar ou desligar (usa o sudo de /sbin/shutdown do Issabel)
+modules/bv_pbx_ramais/     Ramais (lista e formulário sobre a API do PBX)
+modules/bv_pbx_common/     cliente da API do PBX (lib/PbxApi.php), sem item de menu
+tools/pbxapi-teste.php     teste da API do PBX com um ramal temporário
 menu/menu.xml              registro da Visão geral (issabel-menumerge)
 ```
 

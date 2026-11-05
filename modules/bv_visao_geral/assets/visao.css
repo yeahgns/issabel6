@@ -1,7 +1,7 @@
 /* Visão geral (Bradial Voz), no layout do protótipo Bradial Voz v6.
    Usa os tokens e os componentes .bl-* do tema (themes/bradial/assets/css). */
 .bvg { display: flex; flex-direction: column; gap: 24px; color: var(--foreground); font-family: var(--font-sans); font-size: 14px; line-height: 20px; }
-.bvg *, .bvg *::before, .bvg *::after { box-sizing: border-box; }
+#bvg *, #bvg *::before, #bvg *::after { box-sizing: border-box; }
 .bvg h1, .bvg h2, .bvg p { margin: 0; font-family: var(--font-sans); color: var(--foreground); }
 .bvg h1 { font-size: 22px; line-height: 1.3; font-weight: 500; letter-spacing: -0.01em; }
 .bvg h2 { font-size: 16px; line-height: 1.4; font-weight: 500; }

@@ -33,7 +33,8 @@ UPDATE menu SET IdParent='sysdash', Name='Registro de chamadas',  order_no=5 WHE
 -- (bradialHiddenMenus), mas continuam acessíveis no tema v5.
 -- Os grupos da 1.5.0 (bv_pbx_config, bv_cc_config) e o grupo Módulos (bv_modulos) saem.
 DELETE FROM menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida');
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=extensions', Name='Ramais', order_no=1 WHERE id='bv_pbx_ramais';
+-- Ramais é tela própria do tema (módulo bv_pbx_ramais); os demais ainda abrem o PBX
+UPDATE menu SET IdParent='pbxconfig', Type='module', Link='', Name='Ramais', order_no=1 WHERE id='bv_pbx_ramais';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=queues', Name='Filas', order_no=2 WHERE id='bv_pbx_filas';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=ivr', Name='URA', order_no=3 WHERE id='bv_pbx_ura';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=trunks', Name='Troncos', order_no=4 WHERE id='bv_pbx_troncos';

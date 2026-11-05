@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.7.0
+- **Ramais**: primeira tela própria de PBX (módulo `bv_pbx_ramais`), no lugar do atalho
+  para o IssabelPBX. Lista com tecnologia, status ao vivo, filas e IP (vindos do Painel do
+  operador), filtros e busca; formulário com Identificação, Chamadas (chamada em espera,
+  atendimento automático, correio de voz, gravação) e Avançado (DTMF, NAT, toque,
+  chamadas simultâneas, dial options, CallerID externo). "Todas as opções no PBX" abre a
+  página original do ramal numa janela, para o que ficou de fora.
+- Gravações via API do PBX pelo servidor, com verificação de sessão; alterações ficam
+  pendentes até "Aplicar alterações". Excluir aplica na hora (comportamento da API).
+- Cada criação, alteração, exclusão e aplicação fica registrada no log do servidor web.
+- Correção: os módulos do tema usam `box-sizing: border-box` mesmo com o CSS do Issabel
+  forçando o contrário (campos encostavam uns nos outros).
+
 ## 1.6.2
 - Cliente da API do PBX envia os dados aninhados. O teste no servidor mostrou que o PUT
   ignora campos mapeados (ex.: chamada em espera) quando vêm "achatados".

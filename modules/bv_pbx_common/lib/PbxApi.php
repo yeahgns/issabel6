@@ -23,7 +23,7 @@ class BvPbxApi
 
     public function __construct()
     {
-        $conf = self::readConf(self::CONF);
+        $conf = self::readConf(getenv('BV_TEST_ISSABEL_CONF') ?: self::CONF);
         if (empty($conf['pbxapijwtsecret'])) {
             throw new RuntimeException('A chave da API do PBX (pbxapijwtsecret) não foi encontrada em ' . self::CONF . '.');
         }
@@ -111,10 +111,11 @@ class BvPbxApi
             // Conexão local (127.0.0.1): o certificado é do domínio, não do endereço.
             'ssl' => array('verify_peer' => false, 'verify_peer_name' => false),
         ));
-        $raw = @file_get_contents(self::BASE . '/' . ltrim($path, '/'), false, $ctx);
+        $base = getenv('BV_TEST_PBXAPI') ?: self::BASE; // só para testes fora do servidor
+        $raw = @file_get_contents($base . '/' . ltrim($path, '/'), false, $ctx);
         $hdrs = isset($http_response_header) ? $http_response_header : array();
         if ($raw === false && !$hdrs) {
-            throw new RuntimeException('Não foi possível falar com a API do PBX em ' . self::BASE . '.');
+            throw new RuntimeException('Não foi possível falar com a API do PBX em ' . $base . '.');
         }
         $code = 0; $location = null;
         foreach ($hdrs as $h) {
