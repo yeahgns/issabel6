@@ -6,5 +6,17 @@
     <menuitem menuid="bv_visao_geral" desc="Visão geral" parent="sysdash" module="yes" link="" order="1"></menuitem>
     <menuitem menuid="bv_energia" desc="Reiniciar ou desligar" parent="system" module="yes" link="" order="6"></menuitem>
     <menuitem menuid="bv_modulos" desc="Módulos" parent="developer" module="no" link="" order="1"></menuitem>
+    <menuitem menuid="bv_pbx_config" desc="Configurações" parent="pbxconfig" module="no" link="" order="2"></menuitem>
+    <menuitem menuid="bv_pbx_ramais" desc="Ramais" parent="bv_pbx_config" module="no" link="/admin/config.php?display=extensions" order="1"></menuitem>
+    <menuitem menuid="bv_pbx_filas" desc="Filas" parent="bv_pbx_config" module="no" link="/admin/config.php?display=queues" order="2"></menuitem>
+    <menuitem menuid="bv_pbx_ura" desc="URA" parent="bv_pbx_config" module="no" link="/admin/config.php?display=ivr" order="3"></menuitem>
+    <menuitem menuid="bv_pbx_troncos" desc="Troncos" parent="bv_pbx_config" module="no" link="/admin/config.php?display=trunks" order="4"></menuitem>
+    <menuitem menuid="bv_pbx_rotas" desc="Rotas" parent="bv_pbx_config" module="no" link="/admin/config.php?display=did" order="5"></menuitem>
+    <menuitem menuid="bv_pbx_anuncios" desc="Anúncios" parent="bv_pbx_config" module="no" link="/admin/config.php?display=announcement" order="6"></menuitem>
+    <menuitem menuid="bv_pbx_tempo" desc="Condições de tempo" parent="bv_pbx_config" module="no" link="/admin/config.php?display=timeconditions" order="7"></menuitem>
+    <menuitem menuid="bv_pbx_conferencias" desc="Conferências" parent="bv_pbx_config" module="no" link="/admin/config.php?display=conferences" order="8"></menuitem>
+    <menuitem menuid="bv_pbx_estacionamento" desc="Estacionamento" parent="bv_pbx_config" module="no" link="/admin/config.php?display=parking" order="9"></menuitem>
+    <menuitem menuid="bv_pbx_blacklist" desc="Lista de bloqueio" parent="bv_pbx_config" module="no" link="/admin/config.php?display=blacklist" order="10"></menuitem>
+    <menuitem menuid="bv_cc_config" desc="Configurações" parent="call_center" module="no" link="" order="3"></menuitem>
   </menulist>
 </module>

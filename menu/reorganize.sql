@@ -18,21 +18,32 @@ UPDATE menu SET order_no=24 WHERE id='addons';
 UPDATE menu SET order_no=25 WHERE id='my_extension';
 UPDATE menu SET order_no=26 WHERE id='extras';
 UPDATE menu SET order_no=27 WHERE id='security';
-UPDATE menu SET order_no=28, Name='Desenvolvedor' WHERE id='developer';
+UPDATE menu SET order_no=5, Name='Desenvolvedor' WHERE id='developer';
 
 -- Geral: a Visão geral do tema (bv_visao_geral, criada pelo menu.xml) é a tela inicial.
 -- O dashboard nativo do Issabel continua disponível no fim de Sistema.
 UPDATE menu SET IdParent='sysdash', Type='module', Name='Visão geral', order_no=1 WHERE id='bv_visao_geral';
-UPDATE menu SET IdParent='system', Name='Dashboard do Issabel', order_no=90 WHERE id='dashboard';
+UPDATE menu SET IdParent='developer', Name='Dashboard do Issabel', order_no=1 WHERE id='dashboard';
 
--- PBX: por enquanto, a configuração do PABX fica num item só, porque o IssabelPBX
--- já tem a própria navegação (Admin, Applications, Connectivity...). Os atalhos
--- bv_* da 1.0 saem; voltam quando as telas próprias de Ramais e Filas existirem.
+-- PBX: Painel do operador e o grupo Configurações (bv_pbx_config), com os atalhos para
+-- as telas do IssabelPBX. "Configurações do PBX" (o /admin inteiro) e "Ramais em lote"
+-- saem do menu lateral do tema (bradialHiddenMenus), mas continuam acessíveis no tema v5.
 DELETE FROM menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida');
-UPDATE menu SET Name='Configurações do PBX', order_no=1 WHERE id='pbxadmin';
-UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=2 WHERE id='extensions_batch';
-UPDATE menu SET Name='Gravações',          order_no=3 WHERE id='monitoring';
-UPDATE menu SET IdParent='pbxconfig', Name='Painel do operador', order_no=4 WHERE id='painel_operador';
+UPDATE menu SET IdParent='pbxconfig', Name='Painel do operador', order_no=1 WHERE id='painel_operador';
+UPDATE menu SET IdParent='pbxconfig', Type='module', Link='', Name='Configurações', order_no=2 WHERE id='bv_pbx_config';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=extensions', Name='Ramais', order_no=1 WHERE id='bv_pbx_ramais';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=queues', Name='Filas', order_no=2 WHERE id='bv_pbx_filas';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=ivr', Name='URA', order_no=3 WHERE id='bv_pbx_ura';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=trunks', Name='Troncos', order_no=4 WHERE id='bv_pbx_troncos';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=did', Name='Rotas', order_no=5 WHERE id='bv_pbx_rotas';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=announcement', Name='Anúncios', order_no=6 WHERE id='bv_pbx_anuncios';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=timeconditions', Name='Condições de tempo', order_no=7 WHERE id='bv_pbx_tempo';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=conferences', Name='Conferências', order_no=8 WHERE id='bv_pbx_conferencias';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=parking', Name='Estacionamento', order_no=9 WHERE id='bv_pbx_estacionamento';
+UPDATE menu SET IdParent='bv_pbx_config', Type='framed', Link='/admin/config.php?display=blacklist', Name='Lista de bloqueio', order_no=10 WHERE id='bv_pbx_blacklist';
+UPDATE menu SET Name='Configurações do PBX', order_no=50 WHERE id='pbxadmin';
+UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=59 WHERE id='extensions_batch';
+UPDATE menu SET Name='Gravações', order_no=60 WHERE id='monitoring';
 UPDATE menu SET order_no=51 WHERE id='voicemail';
 UPDATE menu SET order_no=52 WHERE id='endpoints';
 UPDATE menu SET order_no=53 WHERE id='conference';
@@ -45,10 +56,11 @@ UPDATE menu SET order_no=58 WHERE id='avalia_o';
 -- Call center
 UPDATE menu SET IdParent='call_center', Name='Painel',            order_no=1 WHERE id='ccx_painel';
 UPDATE menu SET IdParent='call_center', Name='Console do agente', order_no=2 WHERE id='agent_console';
-UPDATE menu SET IdParent='call_center', Name='Campanhas',         order_no=3 WHERE id='ccx_campanhas';
-UPDATE menu SET IdParent='call_center', Name='Formulários',       order_no=4 WHERE id='ccx_formularios';
-UPDATE menu SET IdParent='call_center', Name='Agentes',           order_no=5 WHERE id='ccx_agentes';
-UPDATE menu SET IdParent='call_center', Name='Pausas',            order_no=6 WHERE id='ccx_pausas';
+UPDATE menu SET IdParent='call_center', Type='module', Link='', Name='Configurações', order_no=3 WHERE id='bv_cc_config';
+UPDATE menu SET IdParent='bv_cc_config', Name='Campanhas',   order_no=1 WHERE id='ccx_campanhas';
+UPDATE menu SET IdParent='bv_cc_config', Name='Formulários', order_no=2 WHERE id='ccx_formularios';
+UPDATE menu SET IdParent='bv_cc_config', Name='Agentes',     order_no=3 WHERE id='ccx_agentes';
+UPDATE menu SET IdParent='bv_cc_config', Name='Pausas',      order_no=4 WHERE id='ccx_pausas';
 UPDATE menu SET order_no=51 WHERE id='outgoing_calls';
 UPDATE menu SET order_no=52 WHERE id='ingoing_calls';
 UPDATE menu SET order_no=53 WHERE id='agentoptions';
@@ -88,25 +100,24 @@ UPDATE menu SET IdParent='system', Name='Segurança', order_no=3 WHERE id='fail2
 UPDATE menu SET IdParent='fail2ban', Name='Fail2ban',       order_no=1 WHERE id='sec_fb_admin';
 UPDATE menu SET IdParent='fail2ban', Name='IPs bloqueados', order_no=2 WHERE id='sec_fb_banned';
 
-UPDATE menu SET IdParent='system', Name='Backup e restauração', order_no=4 WHERE id='backup_restore';
 
-UPDATE menu SET IdParent='system', Name='Preferências', order_no=5 WHERE id='preferences';
-UPDATE menu SET Name='Idioma',      order_no=1 WHERE id='language';
-UPDATE menu SET Name='Data e hora', order_no=2 WHERE id='time_config';
-UPDATE menu SET Name='Moeda',       order_no=3 WHERE id='currency';
-UPDATE menu SET IdParent='preferences', Name='Widgets do painel', order_no=4 WHERE id='applet_admin';
-UPDATE menu SET Name='Temas',       order_no=99 WHERE id='themes_system';
-
--- Reiniciar ou desligar: a tela do tema (bv_energia) substitui a nativa, que sai do menu
--- lateral pelo themesetup.php (bradialHiddenMenus) mas continua instalada.
-UPDATE menu SET IdParent='system', Type='module', Name='Reiniciar ou desligar', order_no=6 WHERE id='bv_energia';
+-- Preferências: Backup e restauração, Reiniciar ou desligar, Idioma, Data e hora, Temas.
+-- Reiniciar ou desligar é a tela do tema (bv_energia); o Shutdown nativo sai do menu lateral.
+UPDATE menu SET IdParent='system', Name='Preferências', order_no=4 WHERE id='preferences';
+UPDATE menu SET IdParent='preferences', Name='Backup e restauração', order_no=1 WHERE id='backup_restore';
+UPDATE menu SET IdParent='preferences', Type='module', Name='Reiniciar ou desligar', order_no=2 WHERE id='bv_energia';
+UPDATE menu SET Name='Idioma',      order_no=3 WHERE id='language';
+UPDATE menu SET Name='Data e hora', order_no=4 WHERE id='time_config';
+UPDATE menu SET Name='Temas',       order_no=5 WHERE id='themes_system';
+UPDATE menu SET Name='Moeda',       order_no=98 WHERE id='currency';
+UPDATE menu SET IdParent='preferences', Name='Widgets do painel', order_no=99 WHERE id='applet_admin';
 UPDATE menu SET IdParent='system', Name='Shutdown (Issabel)', order_no=94 WHERE id='shutdown';
 UPDATE menu SET order_no=91 WHERE id='hardware_detector';
 UPDATE menu SET order_no=92 WHERE id='betachannel';
 UPDATE menu SET order_no=93 WHERE id='theme_designer';
 
 -- Desenvolvedor > Módulos (grupo bv_modulos, criado pelo menu.xml): Construir e Remover módulo
-UPDATE menu SET IdParent='developer', Type='module', Link='', Name='Módulos', order_no=1 WHERE id='bv_modulos';
+UPDATE menu SET IdParent='developer', Type='module', Link='', Name='Módulos', order_no=2 WHERE id='bv_modulos';
 UPDATE menu SET IdParent='bv_modulos', Name='Construtor de módulo', order_no=1 WHERE id='build_module';
 UPDATE menu SET IdParent='bv_modulos', Name='Remover módulo', order_no=2 WHERE id='delete_module';
 UPDATE menu SET Name='Traduções', order_no=5 WHERE id='language_admin';

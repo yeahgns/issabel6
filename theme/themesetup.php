@@ -97,6 +97,9 @@ function bradialHiddenMenus()
         'shutdown',        // substituído por bv_energia (Reiniciar ou desligar)
         'currency',        // Preferências > Moeda
         'monitoring',      // PBX > Gravações
+        'pbxadmin',        // Configurações do PBX (o /admin inteiro): segue acessível no tema v5
+        'extensions_batch',// Ramais em lote: vai para dentro da tela de Ramais
+        'language_admin',  // Desenvolvedor > Traduções
     );
 }
 
@@ -160,6 +163,15 @@ function bradialMenuNames()
         // Geral e PBX
         'bv_visao_geral' => array('Visão geral', 'Overview'),
         'pbxadmin' => array('Configurações do PBX', 'PBX settings'),
+        'bv_pbx_config' => array('Configurações', 'Settings'),
+        'bv_pbx_ramais' => array('Ramais', 'Extensions'), 'bv_pbx_filas' => array('Filas', 'Queues'),
+        'bv_pbx_ura' => array('URA', 'IVR'), 'bv_pbx_troncos' => array('Troncos', 'Trunks'),
+        'bv_pbx_rotas' => array('Rotas', 'Routes'), 'bv_pbx_anuncios' => array('Anúncios', 'Announcements'),
+        'bv_pbx_tempo' => array('Condições de tempo', 'Time conditions'),
+        'bv_pbx_conferencias' => array('Conferências', 'Conferences'),
+        'bv_pbx_estacionamento' => array('Estacionamento', 'Parking'),
+        'bv_pbx_blacklist' => array('Lista de bloqueio', 'Blacklist'),
+        'bv_cc_config' => array('Configurações', 'Settings'),
         'extensions_batch' => array('Ramais em lote', 'Batch extensions'),
         'monitoring' => array('Gravações', 'Recordings'),
         'painel_operador' => array('Painel do operador', 'Operator panel'),
@@ -240,7 +252,7 @@ function bradialIcon($id)
         // PBX
         'bv_ramais' => 'phone', 'bv_filas' => 'users', 'bv_troncos' => 'cable',
         'bv_rotas_entrada' => 'phone-incoming', 'bv_rotas_saida' => 'phone-outgoing',
-        'pbxadmin' => 'sliders-horizontal', 'extensions_batch' => 'list-plus',
+        'pbxadmin' => 'sliders-horizontal', 'bv_pbx_config' => 'sliders-horizontal', 'bv_cc_config' => 'sliders-horizontal', 'extensions_batch' => 'list-plus',
         'monitoring' => 'audio-lines', 'painel_operador' => 'monitor',
         'voicemail' => 'mail', 'conference' => 'users-round', 'tools' => 'wrench',
         'endpoints' => 'list-plus', 'endpoint_configurator' => 'cpu', 'control_panel' => 'monitor',

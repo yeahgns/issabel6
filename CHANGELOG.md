@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.5.0
+- Menu reorganizado:
+  - PBX: Painel do operador e **Configurações** (Ramais, Filas, URA, Troncos, Rotas,
+    Anúncios, Condições de tempo, Conferências, Estacionamento, Lista de bloqueio). Cada
+    item abre a tela correspondente do IssabelPBX; as telas próprias vêm depois.
+  - Call center: Painel, Console do agente e **Configurações** (Campanhas, Formulários,
+    Agentes, Pausas).
+  - Sistema > Preferências passa a reunir Backup e restauração, Reiniciar ou desligar,
+    Idioma, Data e hora e Temas.
+  - Desenvolvedor: Dashboard do Issabel e Módulos, logo depois de Sistema.
+- Saem do menu lateral (continuam no tema v5): Configurações do PBX, Ramais em lote e
+  Desenvolvedor > Traduções.
+
 ## 1.4.3
 - Permissões: ✓ em branco dentro do botão azul.
 - Visão geral: serviços aparecem como "Online" (verde) ou "Offline" (vermelho).

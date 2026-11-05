@@ -28,21 +28,24 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 ## Menu
 
 ```
-Geral        Visão geral
-PBX          Configurações do PBX · Ramais em lote · Painel do operador
-Relatórios   Registro de chamadas
-Call center  Painel · Console do agente · Campanhas · Formulários · Agentes · Pausas
-Sistema      Usuários ▸ · Rede ▸ · Segurança ▸ · Backup e restauração ·
-             Preferências ▸ · Reiniciar ou desligar · Dashboard do Issabel
-Desenvolvedor  Módulos ▸ (Construtor de módulo · Remover módulo)
-
-Os nomes acompanham o idioma escolhido em Sistema > Preferências > Idioma (português ou
-inglês); a lista fica em `bradialMenuNames()`, no `themesetup.php`.
+GERAL          Visão geral
+PBX            Painel do operador
+               Configurações ▸ Ramais · Filas · URA · Troncos · Rotas · Anúncios ·
+                 Condições de tempo · Conferências · Estacionamento · Lista de bloqueio
+RELATÓRIOS     Registro de chamadas · Relatório CDR
+CALL CENTER    Painel · Console do agente
+               Configurações ▸ Campanhas · Formulários · Agentes · Pausas
+SISTEMA        Usuários ▸ · Rede ▸ · Segurança ▸
+               Preferências ▸ Backup e restauração · Reiniciar ou desligar · Idioma ·
+                 Data e hora · Temas
+DESENVOLVEDOR  Dashboard do Issabel · Módulos ▸ (Construtor de módulo · Remover módulo)
 ```
 
-Configurações do PBX abre o IssabelPBX inteiro dentro do layout, com a navegação
-própria dele. Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
-no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel, Moeda, Gravações e o Shutdown original.
+Os itens de PBX > Configurações abrem a tela correspondente do IssabelPBX dentro do layout
+(por enquanto; as telas próprias vêm depois). A tela completa do IssabelPBX segue
+disponível no tema v5 (Preferências > Temas > Bradial v5). Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
+no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel, Moeda, Gravações, o Shutdown original,
+Configurações do PBX, Ramais em lote e Traduções.
 Nenhum item nativo é apagado: o que não está na lista acima vai para o fim da sua
 seção e continua controlado pelas permissões de grupo.
 
