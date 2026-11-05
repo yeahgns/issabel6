@@ -23,6 +23,8 @@ body.bv-body a:hover, body.bv-body a:focus { color: var(--foreground); }
 .bv-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 #neo-contentbox.bv-content { flex: 1; padding: 28px 28px 32px; }
 #neo-contentbox-maincolumn { max-width: 1280px; margin: 0 auto; padding: 0; }
+/* O content.css do Issabel pinta a área do módulo de branco; o fundo vem do tema */
+body.bv-body div.neo-module-content { background: transparent; margin-top: 0; }
 .bv-footer { padding: 0 28px 20px; font-size: var(--text-xs); color: var(--muted-foreground); text-align: center; }
 
 /* Telas em iframe (PBX, relatórios): ocupam toda a área, sem moldura */
@@ -33,6 +35,7 @@ iframe.frameModule { display: block; width: 100%; min-height: calc(100vh - 60px)
 
 /* ---------- Barra lateral ---------- */
 .bv-sidebar {
+  transition: width .18s ease, padding .18s ease;
   position: sticky; top: 0; height: 100vh; width: 256px; flex-shrink: 0;
   display: flex; flex-direction: column; gap: 16px;
   padding: 18px 12px 12px;
@@ -40,7 +43,9 @@ iframe.frameModule { display: block; width: 100%; min-height: calc(100vh - 60px)
   overflow-y: auto; z-index: 40;
 }
 .bv-brand { display: flex; align-items: center; padding: 2px 8px; }
+.bv-brand a { display: flex; align-items: center; }
 .bv-brand img { height: 28px; width: auto; display: block; }
+.bv-brand .bv-logo-icon { display: none; }
 
 .bv-search { position: relative; margin: 0; }
 .bv-search .bv-i { position: absolute; left: 12px; top: 10px; color: var(--muted-foreground); pointer-events: none; }
@@ -92,6 +97,26 @@ body.bv-body a.bv-nav-subitem.is-active { background: var(--sidebar-accent); col
 .bv-user-text strong { font-weight: 500; }
 .bv-user-text span { font-size: var(--text-xs); color: var(--muted-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* ---------- Menu recolhido (só no computador; no celular o menu vira gaveta) ---------- */
+@media (min-width: 961px) {
+  html.bv-collapsed .bv-sidebar { width: 72px; padding: 18px 12px 12px; overflow-x: hidden; }
+  html.bv-collapsed .bv-brand { justify-content: center; padding: 2px 0; }
+  html.bv-collapsed .bv-brand .bv-logo-full { display: none; }
+  html.bv-collapsed .bv-brand .bv-logo-icon { display: block; height: 26px; }
+  html.bv-collapsed .bv-search,
+  html.bv-collapsed .bv-nav-item > span,
+  html.bv-collapsed .bv-nav-item .bv-chev,
+  html.bv-collapsed .bv-nav-sub,
+  html.bv-collapsed .bv-user-text,
+  html.bv-collapsed .bv-user .setadminpassword { display: none !important; }
+  html.bv-collapsed .bv-nav { gap: 6px; }
+  html.bv-collapsed .bv-nav-label { height: 1px; padding: 0; margin: 6px 8px; overflow: hidden; color: transparent; background: var(--sidebar-border); }
+  html.bv-collapsed .bv-nav-group:first-child .bv-nav-label { display: none; }
+  html.bv-collapsed .bv-nav-item { justify-content: center; gap: 0; padding: 0; }
+  html.bv-collapsed .bv-nav-branch.has-active > .bv-nav-item { background: var(--sidebar-accent); }
+  html.bv-collapsed .bv-user { flex-direction: column; gap: 6px; padding: 12px 0 4px; }
+}
+
 /* ---------- Botões de ícone ---------- */
 .bv-iconbtn, body.bv-body a.bv-iconbtn {
   display: inline-flex; align-items: center; justify-content: center; position: relative;
@@ -109,7 +134,6 @@ body.bv-body a.bv-nav-subitem.is-active { background: var(--sidebar-accent); col
   display: flex; align-items: center; gap: 12px; padding: 0 28px;
   background: var(--background); border-bottom: 1px solid var(--border);
 }
-.bv-menu-toggle { display: none; }
 .bv-crumb { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; color: var(--muted-foreground); white-space: nowrap; overflow: hidden; }
 .bv-crumb .bv-i { width: 14px; height: 14px; }
 .bv-crumb [aria-current] { color: var(--foreground); font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
@@ -162,7 +186,6 @@ body.bv-body #chat .chat-header .chat-close { order: 3; margin-left: auto; color
   .bv-sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-105%); transition: transform .2s ease; box-shadow: var(--elevation-dialog); }
   body.bv-nav-open .bv-sidebar { transform: none; }
   body.bv-nav-open .bv-backdrop { display: block; position: fixed; inset: 0; z-index: 35; background: rgb(0 0 0 / .3); }
-  .bv-menu-toggle { display: inline-flex; }
   .bv-topbar { padding: 0 16px; }
   #neo-contentbox.bv-content { padding: 20px 16px 28px; }
   .bv-noti { width: min(340px, 90vw); }

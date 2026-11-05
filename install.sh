@@ -48,6 +48,9 @@ fail() { echo "Erro: $*" >&2; exit 1; }
 command -v sqlite3 >/dev/null || fail "sqlite3 não encontrado."
 [ -f "$MENUDB" ] || fail "$MENUDB não encontrado."
 [ -f "$SETDB" ]  || fail "$SETDB não encontrado."
+if [ "$DO_MENU" = 1 ]; then
+    command -v issabel-menumerge >/dev/null || fail "issabel-menumerge não encontrado (necessário para registrar a Visão geral). Use --sem-menu para pular o menu."
+fi
 
 MYSQLPWD=$(grep -i '^mysqlrootpwd' /etc/issabel.conf 2>/dev/null | head -1 | cut -d= -f2- || true)
 sqlq() { if [ -n "$MYSQLPWD" ]; then mysql -uroot -p"$MYSQLPWD" asterisk -N -B -e "$1"; else mysql -uroot asterisk -N -B -e "$1"; fi; }
@@ -98,8 +101,30 @@ if [ "$DO_THEME" = 1 ]; then
     info "Tema ativo: $(sqlite3 "$SETDB" "SELECT value FROM settings WHERE key='theme';")"
 fi
 
+# ---------- Módulos próprios ----------
+if [ "$DO_THEME" = 1 ]; then
+    for m in "$DIR"/modules/*/; do
+        [ -d "$m" ] || continue
+        name=$(basename "$m")
+        say "Instalando o módulo $name"
+        rm -rf "$WEB/modules/$name.new"
+        cp -a "$m" "$WEB/modules/$name.new"
+        cp "$DIR/VERSION" "$WEB/modules/$name.new/VERSION"
+        chown -R asterisk:asterisk "$WEB/modules/$name.new"
+        find "$WEB/modules/$name.new" -type d -exec chmod 755 {} +
+        find "$WEB/modules/$name.new" -type f -exec chmod 644 {} +
+        rm -rf "$WEB/modules/$name.old"
+        [ -d "$WEB/modules/$name" ] && mv "$WEB/modules/$name" "$WEB/modules/$name.old"
+        mv "$WEB/modules/$name.new" "$WEB/modules/$name"
+        rm -rf "$WEB/modules/$name.old"
+    done
+fi
+
 # ---------- Menu ----------
 if [ "$DO_MENU" = 1 ]; then
+    say "Registrando a Visão geral no menu"
+    issabel-menumerge "$DIR/menu/menu.xml"
+    [ "$(sqlite3 "$MENUDB" "SELECT COUNT(*) FROM menu WHERE id='bv_visao_geral';")" = 1 ] || fail "o item bv_visao_geral não foi criado pelo issabel-menumerge."
     say "Reorganizando o menu"
     sqlite3 "$MENUDB" < "$DIR/menu/reorganize.sql"
     chown asterisk:asterisk "$MENUDB" 2>/dev/null || true

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bradial Voz: módulos próprios do tema. Registrados com issabel-menumerge para criar
+     também o recurso de permissão. Nome e ordem finais vêm do reorganize.sql. -->
+<module>
+  <menulist>
+    <menuitem menuid="bv_visao_geral" desc="Visão geral" parent="sysdash" module="yes" link="" order="1"></menuitem>
+  </menulist>
+</module>

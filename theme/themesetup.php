@@ -48,7 +48,6 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
         'IMG_BOOKMARKS'      => menuIsBookmark($pdbACL, $idUser, $selectedMenu) ? 'bookmarkon.png' : 'bookmark.png',
         'SHORTCUT'           => loadShortcut($pdbACL, $idUser, $smarty),
         'BREADCRUMB'         => bradialBreadcrumb($arrMainMenu, $selectedMenu),
-        'NOTIFICATIONS'      => bradialNotifications($pdbACL, $idUser),
         // Módulos com visual próprio: não recebem o CSS das telas nativas
         'BV_CUSTOM_MODULE'   => bradialIsCustomModule($selectedMenu),
     ));
@@ -82,7 +81,7 @@ function bradialIcon($id)
 {
     $map = array(
         // Geral
-        'sysdash' => 'layout-dashboard', 'dashboard' => 'layout-dashboard',
+        'sysdash' => 'layout-dashboard', 'bv_visao_geral' => 'layout-dashboard', 'dashboard' => 'chart-column',
         // PBX
         'bv_ramais' => 'phone', 'bv_filas' => 'users', 'bv_troncos' => 'cable',
         'bv_rotas_entrada' => 'phone-incoming', 'bv_rotas_saida' => 'phone-outgoing',
@@ -115,7 +114,7 @@ function bradialIcon($id)
 
 function bradialIsCustomModule($id)
 {
-    if (strpos((string)$id, 'ccx_') === 0) return TRUE;
+    if (strpos((string)$id, 'ccx_') === 0 || strpos((string)$id, 'bv_') === 0) return TRUE;
     return in_array($id, array('painel_operador', 'agent_console'));
 }
 
@@ -143,21 +142,4 @@ function bradialBreadcrumb($arrMainMenu, $currentMenu)
     return array();
 }
 
-function bradialNotifications($pdbACL, $idUser)
-{
-    require_once 'libs/paloSantoNotification.class.php';
-    $pNot = new paloNotification($pdbACL);
-    $pub = $pNot->listPublicNotifications(5);
-    $priv = $pNot->listUserNotifications($idUser, 5);
-    $pub = is_array($pub) ? $pub : array();
-    $priv = is_array($priv) ? $priv : array();
-    return array(
-        'LBL_NOTIFICATION_SYSTEM' => _tr('System'),
-        'LBL_NOTIFICATION_USER'   => _tr('User'),
-        'NOTIFICATIONS_PUBLIC'    => $pub,
-        'NOTIFICATIONS_PRIVATE'   => $priv,
-        'TXT_NO_NOTIFICATIONS'    => _tr('No notifications'),
-        'COUNT'                   => count($pub) + count($priv),
-    );
-}
 ?>

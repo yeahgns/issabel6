@@ -60,8 +60,9 @@ UPDATE main.menu SET
   Type     = (SELECT Type     FROM o.menu AS om WHERE om.id = main.menu.id),
   order_no = (SELECT order_no FROM o.menu AS om WHERE om.id = main.menu.id)
 WHERE main.menu.id IN (SELECT id FROM o.menu);
-DELETE FROM main.menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida')
+DELETE FROM main.menu WHERE id LIKE 'bv\_%' ESCAPE '\'
   AND id NOT IN (SELECT id FROM o.menu);
+INSERT INTO main.menu SELECT * FROM o.menu WHERE id NOT IN (SELECT id FROM main.menu);
 COMMIT;
 DETACH DATABASE o;
 SQL
@@ -88,6 +89,14 @@ if [ -s "$ORIG/amportal-brand.txt" ] && [ -f "$AMP" ]; then
     done < "$ORIG/amportal-brand.txt"
 fi
 
+# ---------- Módulos próprios ----------
+for m in "$WEB"/modules/bv_*/; do
+    [ -d "$m" ] || continue
+    mkdir -p "$STATE/modulos-removidos-$STAMP"
+    mv "$m" "$STATE/modulos-removidos-$STAMP/"
+    info "Módulo $(basename "$m") movido para $STATE/modulos-removidos-$STAMP"
+done
+
 # ---------- Arquivos do tema ----------
 if [ "$KEEP" = 0 ] && [ -d "$THEME" ]; then
     mv "$THEME" "$STATE/tema-removido-$STAMP"
@@ -96,5 +105,5 @@ fi
 
 echo
 say "Pronto. Recarregue o Issabel no navegador."
-info "Os recursos de permissão dos atalhos (bv_*) continuam cadastrados, sem efeito."
+info "Os recursos de permissão dos itens bv_* continuam cadastrados, sem efeito."
 info "O backup original segue em $ORIG. Apague $STATE quando não precisar mais."

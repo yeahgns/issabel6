@@ -11,7 +11,11 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 - **Login** no estilo do protótipo, com aviso claro de usuário ou senha incorretos.
 - **Barra lateral clara**, com seções, ícones, grupos recolhíveis e busca de módulos;
   usuário, troca de senha e saída no rodapé. No celular, vira uma gaveta.
-- **Barra superior** com o caminho da tela, ajuda, anotação e avisos do sistema.
+- **Barra superior** com o caminho da tela e o botão que recolhe o menu lateral (só ícones;
+  a escolha fica salva no navegador).
+- **Visão geral própria** (módulo `bv_visao_geral`) como tela inicial: telefonia agora,
+  recursos do servidor e avisos do PBX. Os números de telefonia vêm do Painel do Operador,
+  quando instalado; sem ele, a tela mostra só o que o CLI do Asterisk informa.
 - **Telas nativas** (listagens, formulários, botões, painéis, diálogos) com as cores,
   a tipografia e os cantos do design system.
 - **Módulos próprios** (Call Center `ccx_*`, Painel do Operador, Console do agente)
@@ -25,10 +29,10 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 ```
 Geral        Visão geral
 PBX          Configurações do PABX · Ramais em lote · Gravações · Painel do operador
-Call center  Painel · Console do agente · Campanhas · Formulários · Agentes · Pausas
 Relatórios   Registro de chamadas
+Call center  Painel · Console do agente · Campanhas · Formulários · Agentes · Pausas
 Sistema      Usuários ▸ · Rede ▸ · Segurança ▸ · Backup e restauração ·
-             Preferências ▸ · Reiniciar ou desligar
+             Preferências ▸ · Reiniciar ou desligar · Dashboard do Issabel
 ```
 
 Configurações do PABX abre o IssabelPBX inteiro dentro do layout, com a navegação
@@ -121,7 +125,9 @@ theme/assets/css/          tokens, components (.bl-*), shell, native, pbx
 theme/assets/fonts/        Inter (SIL Open Font License)
 theme/assets/icons/        sprite Lucide (ISC License)
 theme/assets/img/          logos Bradial Voz e favicon
-theme/assets/js/shell.js   barra lateral, gaveta no celular, painel lateral
+theme/assets/js/shell.js   barra lateral, menu recolhível, gaveta no celular
+modules/bv_visao_geral/    Visão geral (index.php, lib/VisaoGeral.php, assets/)
+menu/menu.xml              registro da Visão geral (issabel-menumerge)
 ```
 
 Os componentes `.bl-*` do design system ficam disponíveis em todas as telas, para os

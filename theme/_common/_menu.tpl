@@ -46,7 +46,10 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 
 <aside class="bv-sidebar" id="bv-sidebar" aria-label="Menu">
     <div class="bv-brand">
-        <a href="index.php"><img src="{$BV}/img/bradial-voz.png" alt="Bradial Voz" /></a>
+        <a href="index.php" title="Bradial Voz">
+            <img class="bv-logo-full" src="{$BV}/img/bradial-voz.png" alt="Bradial Voz" />
+            <img class="bv-logo-icon" src="{$BV}/img/bradial-voz-icone.png" alt="" />
+        </a>
     </div>
 
     <form class="bv-search" method="get" action="" role="search">
@@ -63,7 +66,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
             {foreach from=$menu.children key=idSubMenu item=subMenu}
                 {if $subMenu.children}
                     <div class="bv-nav-branch{if $idSubMenu eq $idSubMenuSelected} is-open has-active{/if}">
-                        <button type="button" class="bv-nav-item" aria-expanded="{if $idSubMenu eq $idSubMenuSelected}true{else}false{/if}">
+                        <button type="button" class="bv-nav-item" title="{$subMenu.Name|escape}" aria-expanded="{if $idSubMenu eq $idSubMenuSelected}true{else}false{/if}">
                             <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{$subMenu.bicon}"></use></svg>
                             <span>{$subMenu.Name}</span>
                             <svg class="bv-i bv-chev" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#chevron-down"></use></svg>
@@ -80,9 +83,9 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
                     </div>
                 {else}
                     {if $subMenu.Type eq "popup"}
-                        <a class="bv-nav-item" href="{$subMenu.Link}" target="{$idSubMenu}">
+                        <a class="bv-nav-item" href="{$subMenu.Link}" target="{$idSubMenu}" title="{$subMenu.Name|escape}">
                     {else}
-                        <a class="bv-nav-item{if $idSubMenu eq $idSubMenuSelected} is-active{/if}" href="index.php?menu={$idSubMenu}"{if $idSubMenu eq $idSubMenuSelected} aria-current="page"{/if}>
+                        <a class="bv-nav-item{if $idSubMenu eq $idSubMenuSelected} is-active{/if}" href="index.php?menu={$idSubMenu}" title="{$subMenu.Name|escape}"{if $idSubMenu eq $idSubMenuSelected} aria-current="page"{/if}>
                     {/if}
                         <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{$subMenu.bicon}"></use></svg>
                         <span>{$subMenu.Name}</span>
@@ -90,7 +93,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
                 {/if}
             {/foreach}
         {else}
-            <a class="bv-nav-item{if $idMenu eq $idMainMenuSelected} is-active{/if}" href="index.php?menu={$idMenu}">
+            <a class="bv-nav-item{if $idMenu eq $idMainMenuSelected} is-active{/if}" href="index.php?menu={$idMenu}" title="{$menu.Name|escape}">
                 <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{$menu.bicon}"></use></svg>
                 <span>{$menu.Name}</span>
             </a>
@@ -117,8 +120,8 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 
 <div class="bv-main">
     <header class="bv-topbar">
-        <button type="button" class="bv-iconbtn bv-menu-toggle" aria-label="Abrir menu" aria-controls="bv-sidebar" aria-expanded="false">
-            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#menu"></use></svg>
+        <button type="button" class="bv-iconbtn bv-menu-toggle" title="Recolher ou expandir o menu" aria-label="Recolher ou expandir o menu" aria-controls="bv-sidebar" aria-expanded="true">
+            <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#panel-left"></use></svg>
         </button>
 
         <nav class="bv-crumb" aria-label="Você está em">
@@ -133,55 +136,6 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
         </nav>
 
         <div class="bv-actions">
-            <div class="dropdown" id="header_registration_info">
-                <button type="button" class="bv-iconbtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Ajuda" aria-label="Ajuda">
-                    <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#circle-question-mark"></use></svg>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="#" onclick="popUp('help/?id_nodo={if !empty($idSubMenu2Selected)}{$idSubMenu2Selected}&name_nodo={$nameSubMenu2Selected}{else}{$idSubMenuSelected}&name_nodo={$nameSubMenuSelected}{/if}','1000','460'); return false;">
-                        <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#circle-question-mark"></use></svg>Ajuda desta tela</a></li>
-                    <li><a href="#" id="viewDetailsRPMs"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#package"></use></svg>{$VersionDetails}</a></li>
-                    <li><a href="#" id="dialogaboutissabel"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#info"></use></svg>{$ABOUT_ISSABEL2}</a></li>
-                    <li><a href="#" class="register_link"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#key-round"></use></svg>{$Registered}</a></li>
-                </ul>
-            </div>
-
-            <button type="button" class="bv-iconbtn" id="togglestickynote1" title="Anotação desta tela" aria-label="Anotação desta tela">
-                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#sticky-note"></use></svg>
-            </button>
-
-            <div class="dropdown" id="header_notification_bar">
-                <button type="button" class="bv-iconbtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Avisos" aria-label="Avisos">
-                    <svg class="bv-i" id="notibell" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#bell"></use></svg>
-                    {if $NOTIFICATIONS.COUNT > 0}<span class="bv-dot" aria-hidden="true"></span>{/if}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right bv-noti">
-                    <li class="bv-menu-title">{$NOTIFICATIONS.LBL_NOTIFICATION_SYSTEM}</li>
-                    {foreach from=$NOTIFICATIONS.NOTIFICATIONS_PUBLIC item=NOTI}
-                        <li id="notiitem{$NOTI.id}" class="{if $NOTI.level eq 'warning'}is-warning{elseif $NOTI.level eq 'error'}is-error{/if}">
-                            <a href="#" onclick='readNoti("{$NOTI.id}"); return false;'>
-                                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#{if $NOTI.level eq 'info'}info{elseif $NOTI.level eq 'warning'}triangle-alert{else}circle-alert{/if}"></use></svg>
-                                <span>{$NOTI.content}</span>
-                            </a>
-                        </li>
-                    {foreachelse}
-                        <li class="bv-noti-empty">{$NOTIFICATIONS.TXT_NO_NOTIFICATIONS}</li>
-                    {/foreach}
-                    <li class="divider" role="separator"></li>
-                    <li class="bv-menu-title">{$NOTIFICATIONS.LBL_NOTIFICATION_USER}</li>
-                    {foreach from=$NOTIFICATIONS.NOTIFICATIONS_PRIVATE item=NOTI}
-                        <li class="{if $NOTI.level eq 'warning'}is-warning{elseif $NOTI.level eq 'error'}is-error{/if}">
-                            <a href="#" onclick="return false;">
-                                <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#info"></use></svg>
-                                <span>{$NOTI.content}</span>
-                            </a>
-                        </li>
-                    {foreachelse}
-                        <li class="bv-noti-empty">{$NOTIFICATIONS.TXT_NO_NOTIFICATIONS}</li>
-                    {/foreach}
-                </ul>
-            </div>
-
             {if $ISSABEL_PANELS}
             <button type="button" class="bv-iconbtn" id="header_open_sidebar" title="{$LBL_ISSABEL_PANELS_SIDEBAR}" aria-label="{$LBL_ISSABEL_PANELS_SIDEBAR}">
                 <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg#panel-right"></use></svg>

@@ -3,11 +3,33 @@
   'use strict';
   var body = document.body;
 
-  // Grupos recolhíveis da barra lateral (Usuários, Rede, Segurança, Preferências)
+  var html = document.documentElement;
+  var mobile = window.matchMedia ? window.matchMedia('(max-width: 960px)') : { matches: false };
+
+  // Menu recolhido: só ícones. A escolha fica salva neste navegador.
+  function setCollapsed(on) {
+    html.classList.toggle('bv-collapsed', on);
+    try { localStorage.setItem('bv-nav', on ? 'recolhido' : 'expandido'); } catch (err) {}
+    var t = document.querySelector('.bv-menu-toggle');
+    if (t) t.setAttribute('aria-expanded', on ? 'false' : 'true');
+  }
+  if (html.classList.contains('bv-collapsed')) {
+    var t0 = document.querySelector('.bv-menu-toggle');
+    if (t0) t0.setAttribute('aria-expanded', 'false');
+  }
+
+  // Grupos recolhíveis da barra lateral (Usuários, Rede, Segurança, Preferências).
+  // Com o menu recolhido, clicar num grupo expande o menu e abre o grupo.
   document.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.bv-nav-branch > .bv-nav-item');
     if (!btn) return;
     var branch = btn.parentNode;
+    if (html.classList.contains('bv-collapsed') && !mobile.matches) {
+      setCollapsed(false);
+      branch.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+      return;
+    }
     var open = branch.classList.toggle('is-open');
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
@@ -19,7 +41,10 @@
     if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
   document.addEventListener('click', function (e) {
-    if (e.target.closest && e.target.closest('.bv-menu-toggle')) { setNav(!body.classList.contains('bv-nav-open')); }
+    if (e.target.closest && e.target.closest('.bv-menu-toggle')) {
+      if (mobile.matches) setNav(!body.classList.contains('bv-nav-open'));
+      else setCollapsed(!html.classList.contains('bv-collapsed'));
+    }
     else if (e.target.classList && e.target.classList.contains('bv-backdrop')) { setNav(false); }
   });
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0
+- Nova **Visão geral** (módulo `bv_visao_geral`), tela inicial do Issabel: telefonia agora
+  (mesmos números do Painel do Operador), recursos do servidor e avisos do PBX, atualizando
+  a cada 5 s. Sem News, Processes Status e avisos de licença do Issabel Network.
+  O dashboard nativo segue disponível em Sistema > Dashboard do Issabel.
+- Menu lateral recolhível (só ícones), com a escolha salva no navegador.
+- Relatórios agora vem antes de Call center.
+- Barra superior sem os ícones de ajuda, anotação e avisos do Issabel.
+- `uninstall.sh` remove os módulos `bv_*` e recria itens de menu que tenham sumido.
+
 ## 1.1.1
 - Menu: grupos vazios (ex.: "Batch Configurations", que sobrava depois de Ramais em lote
   sair dele) não aparecem mais. Antes, clicar neles dava "module could not be found".

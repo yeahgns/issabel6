@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bradial Voz</title>
     <link rel="icon" href="{$BV}/img/favicon.ico" />
+    {literal}<script>try{if(localStorage.getItem('bv-nav')==='recolhido')document.documentElement.classList.add('bv-collapsed');}catch(e){}</script>{/literal}
 
     {* CSS do Issabel: os módulos nativos dependem dele *}
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/bootstrap.css" />
@@ -20,7 +21,6 @@
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/header.css" />
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/content.css" />
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/applet.css" />
-    <link rel="stylesheet" href="{$WEBPATH}libs/js/sticky_note/sticky_note.css" />
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/table.css" />
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/rightbar.css" />
 
@@ -32,7 +32,6 @@
 
     {$HEADER_LIBS_JQUERY}
     <script type="text/javascript" src="libs/js/base.js"></script>
-    <script type="text/javascript" src="libs/js/sticky_note/sticky_note.js"></script>
     <script type="text/javascript" src="libs/js/iframe.js"></script>
     {$HEADER}
     {$HEADER_MODULES}
@@ -62,25 +61,6 @@
 
 </div><!-- bv-main -->
 </div><!-- bv-shell -->
-
-<div id="neo-sticky-note">
-    <div id="neo-sticky-note-text"></div>
-    <div id="neo-sticky-note-text-edit">
-        <textarea id="neo-sticky-note-textarea"></textarea>
-        <div id="neo-sticky-note-text-char-count"></div>
-        <input type="button" value="{$SAVE_NOTE}" id="neo-submit-button" />
-        <div id="auto-popup">AutoPopUp <input type="checkbox" id="neo-sticky-note-auto-popup" value="1" /></div>
-    </div>
-    <div id="neo-sticky-note-text-edit-delete"></div>
-</div>
-{if $AUTO_POPUP eq '1'}{literal}
-<script type='text/javascript'>
-$(document).ready(function(e) {
-    $("#neo-sticky-note-auto-popup").prop('checked', true);
-    $('#togglestickynote1').click();
-});
-</script>
-{/literal}{/if}
 
 {if $ISSABEL_PANELS}
 <div id="chat" class="fixed" aria-label="{$LBL_ISSABEL_PANELS_SIDEBAR|escape:html}">

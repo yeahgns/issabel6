@@ -7,8 +7,8 @@ BEGIN TRANSACTION;
 -- Seções (1º nível)
 UPDATE menu SET IdParent='', Type='', Name='Geral',       order_no=0 WHERE id='sysdash';
 UPDATE menu SET Name='PBX',         order_no=1 WHERE id='pbxconfig';
-UPDATE menu SET Name='Call center', order_no=2 WHERE id='call_center';
-UPDATE menu SET Name='Relatórios',  order_no=3 WHERE id='reports';
+UPDATE menu SET Name='Relatórios',  order_no=2 WHERE id='reports';
+UPDATE menu SET Name='Call center', order_no=3 WHERE id='call_center';
 UPDATE menu SET Name='Sistema',     order_no=4 WHERE id='system';
 -- Demais seções vêm depois, na ordem original
 UPDATE menu SET order_no=21 WHERE id='email_admin';
@@ -20,8 +20,10 @@ UPDATE menu SET order_no=26 WHERE id='extras';
 UPDATE menu SET order_no=27 WHERE id='security';
 UPDATE menu SET order_no=28, Name='Desenvolvedor' WHERE id='developer';
 
--- Geral
-UPDATE menu SET IdParent='sysdash', Name='Visão geral', order_no=1 WHERE id='dashboard';
+-- Geral: a Visão geral do tema (bv_visao_geral, criada pelo menu.xml) é a tela inicial.
+-- O dashboard nativo do Issabel continua disponível no fim de Sistema.
+UPDATE menu SET IdParent='sysdash', Type='module', Name='Visão geral', order_no=1 WHERE id='bv_visao_geral';
+UPDATE menu SET IdParent='system', Name='Dashboard do Issabel', order_no=90 WHERE id='dashboard';
 
 -- PBX: por enquanto, a configuração do PABX fica num item só, porque o IssabelPBX
 -- já tem a própria navegação (Admin, Applications, Connectivity...). Os atalhos
