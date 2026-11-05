@@ -111,6 +111,13 @@ Use `--manter-tema` para deixá-la no lugar.
 Backups: o estado original fica em `/var/lib/bradial-theme/original`, e cada execução
 do `install.sh` guarda outro em `/var/lib/bradial-theme/backup-<data>`.
 
+## Correções em módulos nativos
+
+O Construtor de módulo e o Remover módulo (pacote `issabel-developer`) foram feitos para o
+Issabel 4 e, no Issabel 5, aparecem sem rótulos. O `install.sh` insere uma linha em cada um
+para corrigir isso (procure por `BV_LANG_SHIM`), guarda o original e o `uninstall.sh` o
+devolve. Se o pacote for atualizado, rode o `install.sh` de novo.
+
 ## Limitações conhecidas
 
 - A tela de **autenticação em dois fatores** continua no tema `tenant`: o `index.php`
@@ -133,6 +140,7 @@ theme/assets/fonts/        Inter (SIL Open Font License)
 theme/assets/icons/        sprite Lucide (ISC License)
 theme/assets/img/          logos Bradial Voz e favicon
 theme/assets/js/shell.js   barra lateral, menu recolhível, gaveta no celular
+theme/lib/BvLangShim.php   rótulos dos módulos antigos do Issabel 4
 modules/bv_visao_geral/    Visão geral (index.php, lib/VisaoGeral.php, assets/)
 modules/bv_energia/        Reiniciar ou desligar (usa o sudo de /sbin/shutdown do Issabel)
 menu/menu.xml              registro da Visão geral (issabel-menumerge)

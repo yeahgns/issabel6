@@ -97,6 +97,17 @@ for m in "$WEB"/modules/bv_*/; do
     info "Módulo $(basename "$m") movido para $STATE/modulos-removidos-$STAMP"
 done
 
+# ---------- Módulos nativos corrigidos pelo tema ----------
+if [ -d "$STATE/modulos-nativos" ]; then
+    for d in "$STATE"/modulos-nativos/*/; do
+        name=$(basename "$d")
+        if [ -f "$d/index.php" ] && [ -d "$WEB/modules/$name" ]; then
+            cp -p "$d/index.php" "$WEB/modules/$name/index.php"
+            info "Módulo $name restaurado ao original."
+        fi
+    done
+fi
+
 # ---------- Arquivos do tema ----------
 if [ "$KEEP" = 0 ] && [ -d "$THEME" ]; then
     mv "$THEME" "$STATE/tema-removido-$STAMP"

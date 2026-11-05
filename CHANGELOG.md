@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.1
+- Construtor de módulo e Remover módulo voltam a mostrar os rótulos. Os dois foram feitos
+  para o Issabel 4 e leem os textos de `$arrLangModule`, que o Issabel 5 não preenche mais.
+  O `install.sh` insere uma linha em cada um (marcada `BV_LANG_SHIM`) que usa o
+  `theme/lib/BvLangShim.php`: devolve o texto original, quando existe, ou a tradução do
+  Issabel. O original fica em `/var/lib/bradial-theme/modulos-nativos` e o `uninstall.sh`
+  o devolve. Como uma atualização do pacote `issabel-developer` desfaz a linha, basta rodar
+  o `install.sh` de novo.
+
 ## 1.4.0
 - **Idioma sincronizado** com Sistema > Preferências > Idioma: menu, cabeçalhos das telas,
   barra lateral, Visão geral e Reiniciar ou desligar em português ou inglês. Itens nativos

@@ -124,6 +124,36 @@ if [ "$DO_THEME" = 1 ]; then
     done
 fi
 
+# ---------- Rótulos dos módulos antigos (Construtor e Remover módulo) ----------
+# No Issabel 5 esses módulos aparecem sem rótulos: leem $arrLangModule, que não é mais
+# preenchido. Uma linha inserida em cada um troca $arrLangModule pelo BvLangShim do tema.
+# O original fica guardado e o uninstall.sh o devolve. Reaplicado a cada instalação,
+# porque uma atualização do pacote issabel-developer desfaz a correção.
+SHIM='    /* BV_LANG_SHIM (tema Bradial) */ if (is_file("themes/bradial/lib/BvLangShim.php")) { if (function_exists("load_language_module")) load_language_module($module_name); require_once "themes/bradial/lib/BvLangShim.php"; $arrLangModule = new BvLangShim(isset($arrLangModule) \&\& is_array($arrLangModule) ? $arrLangModule : array()); }'
+lang_fix() {
+    local f="$WEB/modules/$1/index.php" anchor=$2
+    [ -f "$f" ] || return 0
+    grep -q 'BV_LANG_SHIM' "$f" && return 0
+    if ! grep -q "$anchor" "$f"; then warn "$1: ponto de inserção não encontrado; rótulos não corrigidos."; return 0; fi
+    mkdir -p "$STATE/modulos-nativos/$1"
+    [ -f "$STATE/modulos-nativos/$1/index.php" ] || cp -p "$f" "$STATE/modulos-nativos/$1/index.php"
+    cp -p "$f" "$f.bvtmp"
+    sed -i "0,/$anchor/{/$anchor/a\\
+$SHIM
+}" "$f"
+    if command -v php >/dev/null && ! php -l "$f" >/dev/null 2>&1; then
+        mv "$f.bvtmp" "$f"; warn "$1: a correção dos rótulos não passou na verificação do PHP e foi desfeita."
+        return 0
+    fi
+    rm -f "$f.bvtmp"
+    info "$1: rótulos corrigidos."
+}
+if [ "$DO_THEME" = 1 ]; then
+    say "Corrigindo os rótulos do Construtor de módulo e do Remover módulo"
+    lang_fix build_module  'load_language_module(\$module_name);'
+    lang_fix delete_module 'include_once("modules\/\$module_name\/lang\/en.lang");'
+fi
+
 # ---------- Menu ----------
 if [ "$DO_MENU" = 1 ]; then
     say "Registrando os módulos do tema no menu (Visão geral, Reiniciar ou desligar)"
