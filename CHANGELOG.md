@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.1
+- Base das telas próprias de PBX: `modules/bv_pbx_common/lib/PbxApi.php`, cliente da API
+  REST do IssabelPBX. Gera no servidor um token de 5 minutos com a chave de
+  `/etc/issabel.conf`; o token nunca vai para o navegador. Gravações não aplicam na hora
+  (o "Apply Config" fica para um botão "Aplicar alterações").
+- `tools/pbxapi-teste.php`: cria, lê, altera e apaga um ramal de teste para confirmar o
+  formato que a API aceita antes de construir a tela de Ramais.
+
 ## 1.6.0
 - Menu organizado pelo que a pessoa está fazendo, como no protótipo:
   - **Operação** (antiga Geral): Visão geral, Painel do operador, Painel do call center,
