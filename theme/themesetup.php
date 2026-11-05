@@ -11,6 +11,8 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
     $arrMainMenu = $smarty->get_template_vars('arrMainMenu');
     if (!is_array($arrMainMenu)) $arrMainMenu = array();
 
+    $L = bradialLang($lang);
+    $arrMainMenu = bradialTranslateMenu($arrMainMenu, $L);
     $fullMenu = $arrMainMenu;
     $arrMainMenu = bradialPruneMenu($arrMainMenu);
     foreach ($arrMainMenu as $idMenu => $menu) {
@@ -54,7 +56,9 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
         // Cabeçalho das telas nativas (título e descrição, como no protótipo)
         'BV_PAGE_HEAD'       => !bradialIsCustomModule($selectedMenu) && bradialMenuType($fullMenu, $selectedMenu) !== 'framed',
         'BV_PAGE_TITLE'      => bradialPageTitle($fullMenu, $selectedMenu),
-        'BV_PAGE_DESC'       => bradialPageDesc($selectedMenu),
+        'BV_PAGE_DESC'       => bradialPageDesc($selectedMenu, $L),
+        'BV_LANG'            => $L,
+        'BVT'                => bradialStrings($L),
         'BV_MODULE'          => (string)$selectedMenu,
     ));
 }
@@ -91,6 +95,8 @@ function bradialHiddenMenus()
         'upnpc',           // Rede > UPnP
         'applet_admin',    // Preferências > Widgets do painel (dashboard antigo)
         'shutdown',        // substituído por bv_energia (Reiniciar ou desligar)
+        'currency',        // Preferências > Moeda
+        'monitoring',      // PBX > Gravações
     );
 }
 
@@ -118,32 +124,111 @@ function bradialPageTitle($menu, $id)
     return ($it && isset($it['Name'])) ? $it['Name'] : '';
 }
 
+/* Idioma da interface: "pt" para português (br, pt, pt-br) e "en" para o resto.
+ * Segue o que está em Sistema > Preferências > Idioma. */
+function bradialLang($lang)
+{
+    $l = strtolower((string)$lang);
+    return (strpos($l, 'br') === 0 || strpos($l, 'pt') === 0) ? 'pt' : 'en';
+}
+
+/* Textos da casca (barra lateral e barra superior) */
+function bradialStrings($L)
+{
+    $s = array(
+        'search'   => array('pt' => 'Buscar módulo', 'en' => 'Search module'),
+        'toggle'   => array('pt' => 'Recolher ou expandir o menu', 'en' => 'Collapse or expand the menu'),
+        'logout'   => array('pt' => 'Sair', 'en' => 'Log out'),
+        'crumb'    => array('pt' => 'Você está em', 'en' => 'You are here'),
+        'menu'     => array('pt' => 'Menu', 'en' => 'Menu'),
+        'close'    => array('pt' => 'Fechar', 'en' => 'Close'),
+    );
+    $out = array();
+    foreach ($s as $k => $v) $out[$k] = $v[$L];
+    return $out;
+}
+
+/* Nomes do menu nos dois idiomas. Itens fora da lista ficam com a tradução do próprio
+ * Issabel. Assim o menu acompanha o idioma escolhido, em vez de misturar os dois. */
+function bradialMenuNames()
+{
+    return array(
+        // seções
+        'sysdash' => array('Geral', 'General'), 'pbxconfig' => array('PBX', 'PBX'),
+        'reports' => array('Relatórios', 'Reports'), 'call_center' => array('Call center', 'Call center'),
+        'system' => array('Sistema', 'System'), 'developer' => array('Desenvolvedor', 'Developer'),
+        // Geral e PBX
+        'bv_visao_geral' => array('Visão geral', 'Overview'),
+        'pbxadmin' => array('Configurações do PBX', 'PBX settings'),
+        'extensions_batch' => array('Ramais em lote', 'Batch extensions'),
+        'monitoring' => array('Gravações', 'Recordings'),
+        'painel_operador' => array('Painel do operador', 'Operator panel'),
+        // Relatórios
+        'registro_de_chamadas' => array('Registro de chamadas', 'Call log'),
+        'cdrreport' => array('Relatório CDR', 'CDR report'),
+        // Call center
+        'ccx_painel' => array('Painel', 'Dashboard'), 'agent_console' => array('Console do agente', 'Agent console'),
+        'ccx_campanhas' => array('Campanhas', 'Campaigns'), 'ccx_formularios' => array('Formulários', 'Forms'),
+        'ccx_agentes' => array('Agentes', 'Agents'), 'ccx_pausas' => array('Pausas', 'Breaks'),
+        // Sistema
+        'usermgr' => array('Usuários', 'Users'), 'userlist' => array('Usuários', 'Users'),
+        'grouplist' => array('Grupos', 'Groups'), 'group_permission' => array('Permissões', 'Permissions'),
+        'network' => array('Rede', 'Network'), 'network_parameters' => array('Parâmetros de rede', 'Network parameters'),
+        'dhcp_server' => array('Servidor DHCP', 'DHCP server'), 'dhcp_clientlist' => array('Clientes DHCP', 'DHCP clients'),
+        'dhcp_by_mac' => array('IP fixo por MAC', 'Static IP by MAC'), 'ping' => array('Ping e traceroute', 'Ping and traceroute'),
+        'fail2ban' => array('Segurança', 'Security'), 'sec_fb_admin' => array('Fail2ban', 'Fail2ban'),
+        'sec_fb_banned' => array('IPs bloqueados', 'Banned IPs'),
+        'backup_restore' => array('Backup e restauração', 'Backup and restore'),
+        'preferences' => array('Preferências', 'Preferences'), 'language' => array('Idioma', 'Language'),
+        'time_config' => array('Data e hora', 'Date and time'), 'currency' => array('Moeda', 'Currency'),
+        'themes_system' => array('Temas', 'Themes'),
+        'bv_energia' => array('Reiniciar ou desligar', 'Restart or shut down'),
+        'dashboard' => array('Dashboard do Issabel', 'Issabel dashboard'),
+        // Desenvolvedor
+        'bv_modulos' => array('Módulos', 'Modules'),
+        'build_module' => array('Construtor de módulo', 'Module builder'),
+        'delete_module' => array('Remover módulo', 'Delete module'),
+        'language_admin' => array('Traduções', 'Translations'),
+    );
+}
+
+function bradialTranslateMenu($menu, $L)
+{
+    static $names = null;
+    if ($names === null) $names = bradialMenuNames();
+    $i = $L === 'pt' ? 0 : 1;
+    foreach ((array)$menu as $id => $item) {
+        if (isset($names[$id])) $menu[$id]['Name'] = $names[$id][$i];
+        if (!empty($item['children'])) $menu[$id]['children'] = bradialTranslateMenu($item['children'], $L);
+    }
+    return $menu;
+}
+
 /* Uma frase sob o título de cada tela nativa, no tom do protótipo. */
-function bradialPageDesc($id)
+function bradialPageDesc($id, $L = 'pt')
 {
     $d = array(
-        'userlist'           => 'Quem pode entrar no Issabel, com qual grupo e qual ramal.',
-        'grouplist'          => 'Grupos reúnem usuários com as mesmas permissões.',
-        'group_permission'   => 'O que cada grupo pode ver e usar no menu.',
-        'network_parameters' => 'Nome do servidor, gateway, DNS e interfaces de rede.',
-        'dhcp_server'        => 'Servidor DHCP para os aparelhos da rede local.',
-        'dhcp_clientlist'    => 'Aparelhos que receberam endereço deste servidor DHCP.',
-        'dhcp_by_mac'        => 'Endereço IP fixo para um aparelho, a partir do MAC.',
-        'ping'               => 'Teste de conexão com outro endereço da rede ou da internet.',
-        'sec_fb_admin'       => 'O Fail2ban bloqueia IPs após tentativas de acesso com falha.',
-        'sec_fb_banned'      => 'Endereços bloqueados agora pelo Fail2ban.',
-        'backup_restore'     => 'Cópias de segurança da configuração, com restauração e envio por FTP.',
-        'language'           => 'Idioma da interface.',
-        'time_config'        => 'Data, hora e fuso horário do servidor.',
-        'currency'           => 'Moeda usada nos relatórios de tarifação.',
-        'themes_system'      => 'Aparência da interface.',
-        'extensions_batch'   => 'Crie ou altere vários ramais de uma vez, por planilha CSV.',
-        'monitoring'         => 'Gravações das ligações, com busca por data e ramal.',
-        'cdrreport'          => 'Cada ligação registrada pelo Asterisk.',
-        'dashboard'          => 'Painel original do Issabel.',
-        'build_module'       => 'Ferramenta para criar módulos do Issabel.',
+        'userlist'           => array('Quem pode entrar no Issabel, com qual grupo e qual ramal.', 'Who can sign in to Issabel, with which group and extension.'),
+        'grouplist'          => array('Grupos reúnem usuários com as mesmas permissões.', 'Groups bring together users with the same permissions.'),
+        'group_permission'   => array('O que cada grupo pode ver e usar no menu.', 'What each group can see and use in the menu.'),
+        'network_parameters' => array('Nome do servidor, gateway, DNS e interfaces de rede.', 'Server name, gateway, DNS and network interfaces.'),
+        'dhcp_server'        => array('Servidor DHCP para os aparelhos da rede local.', 'DHCP server for devices on the local network.'),
+        'dhcp_clientlist'    => array('Aparelhos que receberam endereço deste servidor DHCP.', 'Devices that got an address from this DHCP server.'),
+        'dhcp_by_mac'        => array('Endereço IP fixo para um aparelho, a partir do MAC.', 'A fixed IP address for a device, by its MAC.'),
+        'ping'               => array('Teste de conexão com outro endereço da rede ou da internet.', 'Connectivity test to another address on the network or the internet.'),
+        'sec_fb_admin'       => array('O Fail2ban bloqueia IPs após tentativas de acesso com falha.', 'Fail2ban blocks IPs after failed access attempts.'),
+        'sec_fb_banned'      => array('Endereços bloqueados agora pelo Fail2ban.', 'Addresses currently blocked by Fail2ban.'),
+        'backup_restore'     => array('Cópias de segurança da configuração, com restauração e envio por FTP.', 'Configuration backups, with restore and FTP upload.'),
+        'language'           => array('Idioma da interface.', 'Interface language.'),
+        'time_config'        => array('Data, hora e fuso horário do servidor.', 'Server date, time and time zone.'),
+        'themes_system'      => array('Aparência da interface.', 'Interface appearance.'),
+        'extensions_batch'   => array('Crie ou altere vários ramais de uma vez, por planilha CSV.', 'Create or change many extensions at once, from a CSV file.'),
+        'cdrreport'          => array('Cada ligação registrada pelo Asterisk.', 'Every call recorded by Asterisk.'),
+        'dashboard'          => array('Painel original do Issabel.', 'The original Issabel dashboard.'),
+        'build_module'       => array('Crie um item de menu: um formulário, uma listagem ou uma página externa.', 'Create a menu item: a form, a list or an external page.'),
+        'delete_module'      => array('Remova um item de menu e, se quiser, os arquivos dele.', 'Remove a menu item and, optionally, its files.'),
     );
-    return isset($d[$id]) ? $d[$id] : '';
+    return isset($d[$id]) ? $d[$id][$L === 'pt' ? 0 : 1] : '';
 }
 
 /* Ícones Lucide (nomes do sprite em assets/icons/sprite.svg) */
@@ -175,7 +260,7 @@ function bradialIcon($id)
         'backup_restore' => 'database-backup', 'preferences' => 'settings', 'shutdown' => 'power', 'bv_energia' => 'power',
         'hardware_detector' => 'cpu', 'betachannel' => 'flask-conical', 'theme_designer' => 'settings',
         // Outras seções
-        'security' => 'lock', 'sec_firewall' => 'shield', 'developer' => 'code', 'build_module' => 'code',
+        'security' => 'lock', 'sec_firewall' => 'shield', 'developer' => 'code', 'build_module' => 'code', 'bv_modulos' => 'package', 'delete_module' => 'x', 'language_admin' => 'globe',
         'email_admin' => 'mail', 'agenda' => 'book-user', 'fax' => 'printer', 'addons' => 'puzzle',
         'addons_availables' => 'package', 'my_extension' => 'phone', 'extras' => 'puzzle',
     );

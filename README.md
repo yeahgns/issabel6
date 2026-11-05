@@ -29,16 +29,20 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 
 ```
 Geral        Visão geral
-PBX          Configurações do PABX · Ramais em lote · Gravações · Painel do operador
+PBX          Configurações do PBX · Ramais em lote · Painel do operador
 Relatórios   Registro de chamadas
 Call center  Painel · Console do agente · Campanhas · Formulários · Agentes · Pausas
 Sistema      Usuários ▸ · Rede ▸ · Segurança ▸ · Backup e restauração ·
              Preferências ▸ · Reiniciar ou desligar · Dashboard do Issabel
+Desenvolvedor  Módulos ▸ (Construtor de módulo · Remover módulo)
+
+Os nomes acompanham o idioma escolhido em Sistema > Preferências > Idioma (português ou
+inglês); a lista fica em `bradialMenuNames()`, no `themesetup.php`.
 ```
 
-Configurações do PABX abre o IssabelPBX inteiro dentro do layout, com a navegação
+Configurações do PBX abre o IssabelPBX inteiro dentro do layout, com a navegação
 própria dele. Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
-no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel e o Shutdown original.
+no `themesetup.php`): Captura de pacotes, UPnP, Widgets do painel, Moeda, Gravações e o Shutdown original.
 Nenhum item nativo é apagado: o que não está na lista acima vai para o fim da sua
 seção e continua controlado pelas permissões de grupo.
 

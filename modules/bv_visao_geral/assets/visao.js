@@ -10,10 +10,13 @@
   var OP = root.getAttribute('data-op');
   var SPRITE = root.getAttribute('data-sprite') || 'themes/bradial/assets/icons/sprite.svg';
   var POLL = 5000;
+  var EN = root.getAttribute('data-lang') === 'en';
+  function tr(pt, en) { return EN ? en : pt; }
+  var LOC = EN ? 'en-US' : 'pt-BR';
   var lastOk = 0, timer = null, busy = false, hidden = {};
 
-  var nf = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
-  var nf1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+  var nf = new Intl.NumberFormat(LOC, { maximumFractionDigits: 0 });
+  var nf1 = new Intl.NumberFormat(LOC, { maximumFractionDigits: 1 });
   function $(id) { return document.getElementById(id); }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -46,7 +49,7 @@
   function kpi(label, k, total, href) {
     var v = k && k.valor != null ? nf.format(k.valor) : '—';
     var of = k && total && k.total != null ? '<span class="bvg-kpi-of">/' + nf.format(k.total) + '</span>' : '';
-    var det = k ? k.detalhe : 'com o Painel do Operador';
+    var det = k ? k.detalhe : tr('com o Painel do Operador', 'with the Operator panel');
     var tag = href ? 'a href="' + href + '"' : 'div';
     return '<' + tag + ' class="bvg-kpi' + (k && k.alerta ? ' is-alert' : '') + '">' +
       '<span class="bvg-kpi-label">' + esc(label) + '</span>' +
@@ -55,9 +58,9 @@
   }
   function renderKpis(t) {
     $('bvg-kpis').innerHTML =
-      kpi('Chamadas ativas', t.chamadas, false, OP) + kpi('Canais', t.canais, false, OP) +
-      kpi('Na fila', t.fila, false, OP) + kpi('Ramais online', t.ramais, true, OP) +
-      kpi('Troncos', t.troncos, true, OP);
+      kpi(tr('Chamadas ativas', 'Active calls'), t.chamadas, false, OP) + kpi(tr('Canais', 'Channels'), t.canais, false, OP) +
+      kpi(tr('Na fila', 'In queue'), t.fila, false, OP) + kpi(tr('Ramais online', 'Extensions online'), t.ramais, true, OP) +
+      kpi(tr('Troncos', 'Trunks'), t.troncos, true, OP);
   }
 
   /* ---------- Recursos do servidor ---------- */
@@ -71,27 +74,27 @@
       '<div class="bvg-track" role="progressbar" aria-label="' + esc(label) + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + p + '">' +
       '<span style="width:' + p + '%"></span></div></div>';
   }
-  function useText(u, unit) { return u ? bytes(u.usado, unit) + ' de ' + bytes(u.total, unit) : 'sem leitura'; }
+  function useText(u, unit) { return u ? bytes(u.usado, unit) + tr(' de ', ' of ') + bytes(u.total, unit) : tr('sem leitura', 'no data'); }
   function renderServidor(s, a) {
     var c = s.cpu || {};
     var info = [];
     if (c.modelo) info.push(c.modelo.replace(/\s+version\s+/i, ' '));
     if (c.mhz) info.push(nf.format(c.mhz) + ' MHz');
-    if (s.ligado != null) info.push('ligado há ' + dur(s.ligado));
+    if (s.ligado != null) info.push(tr('ligado há ', 'up ') + dur(s.ligado));
     $('bvg-cpuinfo').textContent = info.join(' · ');
     var memUnit = s.memoria && s.memoria.total < 64 * Math.pow(1024, 3) ? 'MB' : null;
     var swUnit = s.swap && s.swap.total < 64 * Math.pow(1024, 3) ? 'MB' : null;
     $('bvg-bars').innerHTML =
-      bar('CPU', c.pct, c.nucleos ? c.nucleos + (c.nucleos === 1 ? ' núcleo' : ' núcleos') : '') +
-      bar('Memória', s.memoria && s.memoria.pct, useText(s.memoria, memUnit)) +
-      bar('Swap', s.swap && s.swap.pct, s.swap ? useText(s.swap, swUnit) : 'sem swap') +
-      bar('Disco /', s.disco && s.disco.pct, useText(s.disco));
+      bar('CPU', c.pct, c.nucleos ? c.nucleos + (c.nucleos === 1 ? tr(' núcleo', ' core') : tr(' núcleos', ' cores')) : '') +
+      bar(tr('Memória', 'Memory'), s.memoria && s.memoria.pct, useText(s.memoria, memUnit)) +
+      bar('Swap', s.swap && s.swap.pct, s.swap ? useText(s.swap, swUnit) : tr('sem swap', 'no swap')) +
+      bar(tr('Disco /', 'Disk /'), s.disco && s.disco.pct, useText(s.disco));
     var r = s.rede;
     $('bvg-srvfoot').innerHTML =
-      '<div><span class="bvg-muted">Rede' + (r ? ' ' + esc(r.iface) : '') + '</span><strong>' +
+      '<div><span class="bvg-muted">' + tr('Rede', 'Network') + (r ? ' ' + esc(r.iface) : '') + '</span><strong>' +
       (r ? rate(r.rx) + ' in · ' + rate(r.tx) + ' out' : '—') + '</strong></div>' +
-      '<div><span class="bvg-muted">Último reload</span><strong>' +
-      (a && a.reload != null ? 'há ' + dur(a.reload) : '—') + '</strong></div>';
+      '<div><span class="bvg-muted">' + tr('Último reload', 'Last reload') + '</span><strong>' +
+      (a && a.reload != null ? (EN ? dur(a.reload) + ' ago' : 'há ' + dur(a.reload)) : '—') + '</strong></div>';
   }
 
   /* ---------- Avisos do PBX ---------- */
@@ -103,14 +106,14 @@
     var box = $('bvg-notices');
     if (av.erro) { box.innerHTML = '<p class="bvg-empty">' + esc(av.erro) + '</p>'; $('bvg-av-count').textContent = ''; return; }
     var it = (av.itens || []).filter(function (n) { return !hidden[n.modulo + '|' + n.id]; });
-    $('bvg-av-count').textContent = it.length ? it.length + (it.length === 1 ? ' pendente' : ' pendentes') : '';
-    if (!it.length) { box.innerHTML = '<p class="bvg-empty">Nenhum aviso pendente.</p>'; return; }
+    $('bvg-av-count').textContent = it.length ? it.length + (it.length === 1 ? tr(' pendente', ' pending') : tr(' pendentes', ' pending')) : '';
+    if (!it.length) { box.innerHTML = '<p class="bvg-empty">' + tr('Nenhum aviso pendente.', 'No pending notices.') + '</p>'; return; }
     box.innerHTML = it.map(function (n) {
       var t = TIPO[n.tipo] || TIPO.info;
       if (n.tipo === 'info' && !/e-mail|email/i.test(n.texto)) t = ['info', ''];
       return '<div class="bvg-notice ' + t[1] + '">' + '<span class="bvg-notice-ic">' + icon(t[0]) + '</span>' +
         '<div class="bvg-notice-text"><span>' + esc(n.texto) + '</span><small>' + esc(when(n.quando)) + '</small></div>' +
-        (n.removivel ? '<button type="button" class="bvg-x" data-mod="' + esc(n.modulo) + '" data-id="' + esc(n.id) + '" title="Dispensar aviso" aria-label="Dispensar aviso">' + icon('x') + '</button>' : '') +
+        (n.removivel ? '<button type="button" class="bvg-x" data-mod="' + esc(n.modulo) + '" data-id="' + esc(n.id) + '" title="' + tr('Dispensar aviso', 'Dismiss notice') + '" aria-label="' + tr('Dispensar aviso', 'Dismiss notice') + '">' + icon('x') + '</button>' : '') +
         '</div>';
     }).join('');
   }
@@ -130,7 +133,7 @@
   });
 
   /* ---------- Serviços ---------- */
-  var ESTADO = { rodando: ['Rodando', 'bl-badge--secondary'], iniciando: ['Iniciando', 'bl-badge--outline'], parado: ['Parado', 'bl-badge--destructive'] };
+  var ESTADO = { rodando: [tr('Rodando', 'Running'), 'bl-badge--secondary'], iniciando: [tr('Iniciando', 'Starting'), 'bl-badge--outline'], parado: [tr('Parado', 'Stopped'), 'bl-badge--destructive'] };
   function renderServicos(list) {
     $('bvg-services').innerHTML = (list || []).map(function (s) {
       var st = ESTADO[s.estado] || ESTADO.parado;
@@ -145,8 +148,8 @@
     var sub = $('bvg-sub');
     if (lastOk) {
       var ago = Math.round((Date.now() - lastOk) / 1000);
-      sub.textContent = ago < 8 ? 'Atualizado agora' : 'Atualizado há ' + ago + 's';
-      if (ago > 30) sub.textContent += ' · sem resposta do servidor, tentando de novo';
+      sub.textContent = ago < 8 ? tr('Atualizado agora', 'Updated just now') : (EN ? 'Updated ' + ago + 's ago' : 'Atualizado há ' + ago + 's');
+      if (ago > 30) sub.textContent += tr(' · sem resposta do servidor, tentando de novo', ' · no response from the server, retrying');
     }
     if (!d) return;
     var a = d.asterisk || {}, t = d.telefonia || {}, live = $('bvg-live');
@@ -154,8 +157,8 @@
     live.classList.toggle('is-off', !a.ativo);
     var calls = t.chamadas && t.chamadas.valor != null ? t.chamadas.valor : null;
     $('bvg-live-text').textContent = a.ativo
-      ? 'Asterisk ativo' + (calls != null ? ' · ' + calls + (calls === 1 ? ' chamada agora' : ' chamadas agora') : '')
-      : 'Asterisk sem resposta';
+      ? tr('Asterisk ativo', 'Asterisk running') + (calls != null ? ' · ' + calls + (calls === 1 ? tr(' chamada agora', ' call now') : tr(' chamadas agora', ' calls now')) : '')
+      : tr('Asterisk sem resposta', 'Asterisk not responding');
   }
 
   function render(d) {
@@ -179,7 +182,7 @@
         lastOk = Date.now(); render(d);
       })
       .catch(function () {
-        if (!lastOk) $('bvg-sub').textContent = 'Não foi possível ler o servidor. Tentando de novo…';
+        if (!lastOk) $('bvg-sub').textContent = tr('Não foi possível ler o servidor. Tentando de novo…', 'Could not read the server. Retrying…');
         renderHead(null);
       })
       .then(function () {

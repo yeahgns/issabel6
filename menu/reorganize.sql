@@ -29,7 +29,7 @@ UPDATE menu SET IdParent='system', Name='Dashboard do Issabel', order_no=90 WHER
 -- já tem a própria navegação (Admin, Applications, Connectivity...). Os atalhos
 -- bv_* da 1.0 saem; voltam quando as telas próprias de Ramais e Filas existirem.
 DELETE FROM menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida');
-UPDATE menu SET Name='Configurações do PABX', order_no=1 WHERE id='pbxadmin';
+UPDATE menu SET Name='Configurações do PBX', order_no=1 WHERE id='pbxadmin';
 UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=2 WHERE id='extensions_batch';
 UPDATE menu SET Name='Gravações',          order_no=3 WHERE id='monitoring';
 UPDATE menu SET IdParent='pbxconfig', Name='Painel do operador', order_no=4 WHERE id='painel_operador';
@@ -104,5 +104,11 @@ UPDATE menu SET IdParent='system', Name='Shutdown (Issabel)', order_no=94 WHERE 
 UPDATE menu SET order_no=91 WHERE id='hardware_detector';
 UPDATE menu SET order_no=92 WHERE id='betachannel';
 UPDATE menu SET order_no=93 WHERE id='theme_designer';
+
+-- Desenvolvedor > Módulos (grupo bv_modulos, criado pelo menu.xml): Construir e Remover módulo
+UPDATE menu SET IdParent='developer', Type='module', Link='', Name='Módulos', order_no=1 WHERE id='bv_modulos';
+UPDATE menu SET IdParent='bv_modulos', Name='Construtor de módulo', order_no=1 WHERE id='build_module';
+UPDATE menu SET IdParent='bv_modulos', Name='Remover módulo', order_no=2 WHERE id='delete_module';
+UPDATE menu SET Name='Traduções', order_no=5 WHERE id='language_admin';
 
 COMMIT;

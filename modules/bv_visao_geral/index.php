@@ -16,7 +16,7 @@ function _moduleContent(&$smarty, $module_name)
         if (!$ok) return bv_vg_json(array('erro' => 'Sessão expirada. Recarregue a página.'), 403);
         require_once __DIR__ . '/lib/VisaoGeral.php';
         try {
-            $v = new BvVisaoGeral();
+            $v = new BvVisaoGeral(bv_vg_lang());
             $v->removeAviso(isset($_POST['modulo']) ? $_POST['modulo'] : '', isset($_POST['id']) ? $_POST['id'] : '');
             return bv_vg_json(array('ok' => true));
         } catch (Exception $e) {
@@ -29,7 +29,7 @@ function _moduleContent(&$smarty, $module_name)
         if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
         require_once __DIR__ . '/lib/VisaoGeral.php';
         try {
-            $v = new BvVisaoGeral();
+            $v = new BvVisaoGeral(bv_vg_lang());
             return bv_vg_json($v->snapshot());
         } catch (Exception $e) {
             return bv_vg_json(array('erro' => 'Não foi possível ler o servidor: ' . $e->getMessage()), 500);
@@ -45,23 +45,27 @@ function _moduleContent(&$smarty, $module_name)
     $tok = htmlspecialchars($_SESSION['bv_csrf'], ENT_QUOTES);
     $op  = is_dir('modules/painel_operador') ? 'index.php?menu=painel_operador' : '';
 
+    $L = bv_vg_lang();
+    $T = $L === 'en'
+        ? array('title' => 'Overview', 'reading' => 'Reading the server…', 'now' => 'Telephony now', 'res' => 'Server resources', 'notices' => 'PBX notices', 'services' => 'Services')
+        : array('title' => 'Visão geral', 'reading' => 'Lendo o servidor…', 'now' => 'Telefonia agora', 'res' => 'Recursos do servidor', 'notices' => 'Avisos do PBX', 'services' => 'Serviços');
     return <<<HTML
 <link rel="stylesheet" href="{$mod}/assets/visao.css?v={$ver}" />
-<div class="bvg" id="bvg" data-api="{$api}" data-dismiss="{$dis}" data-token="{$tok}" data-op="{$op}" data-sprite="themes/bradial/assets/icons/sprite.svg?v={$ver}">
+<div class="bvg" id="bvg" data-api="{$api}" data-dismiss="{$dis}" data-token="{$tok}" data-op="{$op}" data-lang="{$L}" data-sprite="themes/bradial/assets/icons/sprite.svg?v={$ver}">
   <header class="bvg-head">
     <div class="bvg-head-text">
-      <h1>Visão geral</h1>
-      <p id="bvg-sub">Lendo o servidor…</p>
+      <h1>{$T['title']}</h1>
+      <p id="bvg-sub">{$T['reading']}</p>
     </div>
     <span class="bvg-live" id="bvg-live" hidden><span class="bvg-dot"></span><span id="bvg-live-text"></span></span>
   </header>
 
-  <section class="bvg-card bvg-kpis" id="bvg-kpis" aria-label="Telefonia agora"></section>
+  <section class="bvg-card bvg-kpis" id="bvg-kpis" aria-label="{$T['now']}"></section>
 
   <div class="bvg-grid">
     <section class="bvg-card bvg-res" aria-labelledby="bvg-h-srv">
       <div>
-        <h2 id="bvg-h-srv">Recursos do servidor</h2>
+        <h2 id="bvg-h-srv">{$T['res']}</h2>
         <p class="bvg-muted" id="bvg-cpuinfo"></p>
       </div>
       <div class="bvg-bars" id="bvg-bars"></div>
@@ -71,11 +75,11 @@ function _moduleContent(&$smarty, $module_name)
 
     <div class="bvg-col">
       <section class="bvg-card bvg-av" aria-labelledby="bvg-h-av">
-        <div class="bvg-av-head"><h2 id="bvg-h-av">Avisos do PBX</h2><span class="bvg-muted" id="bvg-av-count"></span></div>
+        <div class="bvg-av-head"><h2 id="bvg-h-av">{$T['notices']}</h2><span class="bvg-muted" id="bvg-av-count"></span></div>
         <div class="bvg-notices" id="bvg-notices"></div>
       </section>
       <section class="bvg-card bvg-svc" aria-labelledby="bvg-h-svc">
-        <h2 id="bvg-h-svc">Serviços</h2>
+        <h2 id="bvg-h-svc">{$T['services']}</h2>
         <div id="bvg-services"></div>
       </section>
     </div>
@@ -93,4 +97,11 @@ function bv_vg_json($data, $code = 200)
         header('Cache-Control: no-store');
     }
     return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR);
+}
+
+/* Idioma da interface (Sistema > Preferências > Idioma): 'pt' ou 'en' */
+function bv_vg_lang()
+{
+    $l = function_exists('get_language') ? strtolower((string) get_language()) : 'pt';
+    return (strpos($l, 'br') === 0 || strpos($l, 'pt') === 0) ? 'pt' : 'en';
 }

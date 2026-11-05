@@ -44,7 +44,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 <input type="hidden" id="issabel_theme_name" value="{$THEMENAME}" />
 <input type="hidden" id="lbl_no_description" value="{$LBL_NO_STICKY}" />
 
-<aside class="bv-sidebar" id="bv-sidebar" aria-label="Menu">
+<aside class="bv-sidebar" id="bv-sidebar" aria-label="{$BVT.menu}">
     <div class="bv-brand">
         <a href="index.php" title="Bradial Voz">
             <img class="bv-logo-full" src="{$BV}/img/bradial-voz.png?v=__BV_VERSION__" alt="Bradial Voz" />
@@ -55,8 +55,8 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 
     <form class="bv-search" method="get" action="" role="search">
         <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#search"></use></svg>
-        <label class="bv-sr" for="search_module_issabel">Buscar módulo</label>
-        <input type="text" id="search_module_issabel" name="search_module_issabel" placeholder="Buscar módulo" autocomplete="off" />
+        <label class="bv-sr" for="search_module_issabel">{$BVT.search}</label>
+        <input type="text" id="search_module_issabel" name="search_module_issabel" placeholder="{$BVT.search}" autocomplete="off" />
     </form>
 
     <nav class="bv-nav">
@@ -109,7 +109,7 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
             <strong>{$USER_LOGIN|escape}</strong>
             <span>{$SERVER_NAME|escape}</span>
         </div>
-        <a href="index.php?logout=yes" class="bv-iconbtn" title="Sair" aria-label="Sair">
+        <a href="index.php?logout=yes" class="bv-iconbtn" title="{$BVT.logout}" aria-label="{$BVT.logout}">
             <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#log-out"></use></svg>
         </a>
     </div>
@@ -118,11 +118,11 @@ function removeNeoDisplayOnMouseOver(ref){ $(ref).find('div').removeClass('neo-d
 
 <div class="bv-main">
     <header class="bv-topbar">
-        <button type="button" class="bv-iconbtn bv-menu-toggle" title="Recolher ou expandir o menu" aria-label="Recolher ou expandir o menu" aria-controls="bv-sidebar" aria-expanded="true">
+        <button type="button" class="bv-iconbtn bv-menu-toggle" title="{$BVT.toggle}" aria-label="{$BVT.toggle}" aria-controls="bv-sidebar" aria-expanded="true">
             <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#panel-left"></use></svg>
         </button>
 
-        <nav class="bv-crumb" aria-label="Você está em">
+        <nav class="bv-crumb" aria-label="{$BVT.crumb}">
         {foreach from=$BREADCRUMB item=value name=crumb}
             {if $smarty.foreach.crumb.last}
                 <span aria-current="page">{$value}</span>

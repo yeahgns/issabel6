@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0
+- **Idioma sincronizado** com Sistema > Preferências > Idioma: menu, cabeçalhos das telas,
+  barra lateral, Visão geral e Reiniciar ou desligar em português ou inglês. Itens nativos
+  ganham nome nos dois idiomas (ex.: "CDR Report" vira "Relatório CDR"). A tela de login
+  continua em português.
+- "Configurações do PABX" passa a "Configurações do PBX".
+- Saem do menu lateral: Preferências > Moeda e PBX > Gravações.
+- Desenvolvedor > **Módulos**: Construtor de módulo e Remover módulo agrupados.
+- Construtor de módulo: os títulos de seção (Informações gerais, Localização, Descrição)
+  voltam a aparecer e os campos cabem no cartão. Formulários com muitas colunas se ajustam.
+- Botões com "remove" no nome deixam de ficar vermelhos (só "delete" fica).
+
 ## 1.3.0
 - Telas nativas: corrige a primeira coluna colada na borda e os textos cortados nas
   listagens. A causa era o plugin colResizable do Issabel (zera o espaçamento das células e

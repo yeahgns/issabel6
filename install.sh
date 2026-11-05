@@ -128,7 +128,7 @@ fi
 if [ "$DO_MENU" = 1 ]; then
     say "Registrando os módulos do tema no menu (Visão geral, Reiniciar ou desligar)"
     issabel-menumerge "$DIR/menu/menu.xml"
-    for id in bv_visao_geral bv_energia; do
+    for id in bv_visao_geral bv_energia bv_modulos; do
         [ "$(sqlite3 "$MENUDB" "SELECT COUNT(*) FROM menu WHERE id='$id';")" = 1 ] || fail "o item $id não foi criado pelo issabel-menumerge."
     done
     say "Reorganizando o menu"

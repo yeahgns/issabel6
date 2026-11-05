@@ -18,9 +18,12 @@ class BvVisaoGeral
 
     private $state;
     private $stateFile;
+    private $L;
 
-    public function __construct()
+    /* $L: 'pt' ou 'en', conforme Sistema > Preferências > Idioma */
+    public function __construct($L = 'pt')
     {
+        $this->L = $L === 'en' ? 'en' : 'pt';
         $this->stateFile = sys_get_temp_dir() . '/bv-visao-geral.json';
         $s = @json_decode((string) @file_get_contents($this->stateFile), true);
         $this->state = is_array($s) ? $s : array();
@@ -127,14 +130,14 @@ class BvVisaoGeral
         return array(
             'fonte'    => 'painel',
             'chamadas' => array('valor' => $up,
-                                'detalhe' => $int . ($int === 1 ? ' interna' : ' internas') . ' · ' . $ext . ($ext === 1 ? ' externa' : ' externas')),
-            'canais'   => array('valor' => $canais, 'detalhe' => 'em uso agora'),
+                                'detalhe' => $int . ($int === 1 ? $this->t(' interna', ' internal') : $this->t(' internas', ' internal')) . ' · ' . $ext . ($ext === 1 ? $this->t(' externa', ' external') : $this->t(' externas', ' external'))),
+            'canais'   => array('valor' => $canais, 'detalhe' => $this->t('em uso agora', 'in use now')),
             'fila'     => array('valor' => $waiting,
-                                'detalhe' => $oldest ? 'maior espera ' . $this->dur($now - $oldest) : 'ninguém esperando',
+                                'detalhe' => $oldest ? $this->t('maior espera ', 'longest wait ') . $this->dur($now - $oldest) : $this->t('ninguém esperando', 'nobody waiting'),
                                 'alerta' => $oldest !== null && ($now - $oldest) > $sl),
             'ramais'   => array('valor' => $online, 'total' => $real, 'detalhe' => implode(' · ', $tech)),
             'troncos'  => array('valor' => $tOn, 'total' => $tTotal,
-                                'detalhe' => $tOff ? 'fora: ' . implode(', ', $tOff) : 'todos respondendo',
+                                'detalhe' => $tOff ? $this->t('fora: ', 'down: ') . implode(', ', $tOff) : $this->t('todos respondendo', 'all responding'),
                                 'alerta' => count($tOff) > 0),
         );
     }
@@ -161,8 +164,8 @@ class BvVisaoGeral
         }
         return array(
             'fonte'    => 'cli',
-            'chamadas' => array('valor' => $calls, 'detalhe' => 'em andamento'),
-            'canais'   => array('valor' => $this->canais(), 'detalhe' => 'em uso agora'),
+            'chamadas' => array('valor' => $calls, 'detalhe' => $this->t('em andamento', 'in progress')),
+            'canais'   => array('valor' => $this->canais(), 'detalhe' => $this->t('em uso agora', 'in use now')),
             'fila' => null, 'ramais' => null, 'troncos' => null,
         );
     }
@@ -286,7 +289,7 @@ class BvVisaoGeral
             $pdo = $this->pbxDb();
             $rows = $pdo->query('SELECT module, id, level, display_text, candelete, timestamp FROM notifications ORDER BY level ASC, timestamp DESC LIMIT 8')->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            return array('erro' => 'Não foi possível ler os avisos do PBX.', 'itens' => array());
+            return array('erro' => $this->t('Não foi possível ler os avisos do PBX.', 'Could not read the PBX notices.'), 'itens' => array());
         }
         $itens = array();
         foreach ($rows as $r) {
@@ -299,7 +302,7 @@ class BvVisaoGeral
             else $tipo = 'info';
             $itens[] = array(
                 'tipo'      => $tipo,
-                'texto'     => self::traduz((string) $r['display_text']),
+                'texto'     => $this->L === 'pt' ? self::traduz((string) $r['display_text']) : (string) $r['display_text'],
                 'quando'    => $r['timestamp'] ? (int) $r['timestamp'] : null,
                 'modulo'    => (string) $r['module'],
                 'id'        => (string) $r['id'],
@@ -357,10 +360,10 @@ class BvVisaoGeral
     public function servicos()
     {
         $lista = array(
-            array('nome' => 'Telefonia (Asterisk)', 'icone' => 'phone',    'units' => array('asterisk')),
-            array('nome' => 'Banco de dados',       'icone' => 'database', 'units' => array('mariadb', 'mysqld')),
-            array('nome' => 'Servidor web',         'icone' => 'globe',    'units' => array('httpd')),
-            array('nome' => 'Call center',          'icone' => 'headset',  'units' => array('issabeldialer')),
+            array('nome' => $this->t('Telefonia (Asterisk)', 'Telephony (Asterisk)'), 'icone' => 'phone',    'units' => array('asterisk')),
+            array('nome' => $this->t('Banco de dados', 'Database'), 'icone' => 'database', 'units' => array('mariadb', 'mysqld')),
+            array('nome' => $this->t('Servidor web', 'Web server'), 'icone' => 'globe',    'units' => array('httpd')),
+            array('nome' => 'Call center', 'icone' => 'headset',  'units' => array('issabeldialer')),
         );
         $out = array();
         foreach ($lista as $s) {
@@ -378,6 +381,8 @@ class BvVisaoGeral
     }
 
     /* ------------------------------------------------------------ util */
+
+    private function t($pt, $en) { return $this->L === 'en' ? $en : $pt; }
 
     private function dur($s)
     {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {assign var=BV value="`$WEBPATH`themes/`$THEMENAME`/assets"}
-<html lang="pt-BR">
+<html lang="{if $BV_LANG eq 'en'}en{else}pt-BR{/if}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,7 +47,7 @@
                     <div class="div_msg_errors_title"><b>{$mb_title}</b></div>
                     {/if}
                     <div class="div_msg_errors_content">{$mb_message}</div>
-                    <div class="div_msg_errors_dismiss" onclick="hide_message_error();" title="Fechar">
+                    <div class="div_msg_errors_dismiss" onclick="hide_message_error();" title="{$BVT.close}">
                         <svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#x"></use></svg>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
     <div class="chat-inner">
         <h2 class="chat-header">
             <span id="panel-header-text">{$LBL_ISSABEL_PANELS_SIDEBAR|escape:html}</span>
-            <a href="#" class="chat-close" aria-label="Fechar"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#x"></use></svg></a>
+            <a href="#" class="chat-close" aria-label="{$BVT.close}"><svg class="bv-i" aria-hidden="true"><use href="{$BV}/icons/sprite.svg?v=__BV_VERSION__#x"></use></svg></a>
         </h2>
         <div id="issabel-panels" class="panel-group joined">
             {foreach from=$ISSABEL_PANELS key=panelname item=paneldata name=issabelpanel}
