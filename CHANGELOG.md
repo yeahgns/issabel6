@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0
+- **Criar ramais em lote**, dentro de Ramais: baixa os ramais atuais (ou um modelo vazio)
+  no formato do Batch of Extensions do Issabel 5, recebe a planilha de volta (.csv do
+  Issabel ou do Excel em português) e mostra uma prévia antes de gravar. Diferente do lote
+  nativo, a mesma planilha cria os ramais novos e atualiza os existentes, só nas colunas
+  que mudaram. Células vazias mantêm o valor atual; a planilha nunca exclui ramais.
+  As senhas não aparecem na prévia.
+- **Grupos de chamada e de captura**: no formulário do ramal, na lista (coluna Grupos) e
+  num filtro por grupo. Os grupos de todos os ramais vêm do banco do PBX numa consulta só
+  (leitura).
+
 ## 1.7.0
 - **Ramais**: primeira tela própria de PBX (módulo `bv_pbx_ramais`), no lugar do atalho
   para o IssabelPBX. Lista com tecnologia, status ao vivo, filas e IP (vindos do Painel do

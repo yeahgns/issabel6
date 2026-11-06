@@ -8,7 +8,7 @@
   var EN = root.getAttribute('data-lang') === 'en';
   function tr(pt, en) { return EN ? en : pt; }
 
-  var state = { itens: [], aoVivo: false, pendente: null, filtro: 'todos', busca: '', view: 'list', atual: null };
+  var state = { itens: [], aoVivo: false, pendente: null, filtro: 'todos', grupo: '', busca: '', view: 'list', atual: null };
   var refreshTimer = null;
 
   function esc(s) {
@@ -50,14 +50,40 @@
     state.itens.forEach(function (x) { if (x.online === true) on++; else if (x.online === false) off++; });
     return { todos: state.itens.length, online: on, offline: off };
   }
+  /* "1,3-4" -> [1,3,4] */
+  function groupNums(s) {
+    var out = [];
+    String(s || '').split(',').forEach(function (p) {
+      var m = p.trim().match(/^(\d+)(?:-(\d+))?$/);
+      if (!m) return;
+      var a = +m[1], b = m[2] ? +m[2] : a;
+      for (var i = a; i <= b && i - a < 64; i++) if (out.indexOf(i) === -1) out.push(i);
+    });
+    return out;
+  }
+  function allGroups() {
+    var g = [];
+    state.itens.forEach(function (x) { groupNums(x.call_group).concat(groupNums(x.pickup_group)).forEach(function (n) { if (g.indexOf(n) === -1) g.push(n); }); });
+    return g.sort(function (a, b) { return a - b; });
+  }
   function filtered() {
     var q = state.busca.trim().toLowerCase();
     return state.itens.filter(function (x) {
       if (state.filtro === 'online' && x.online !== true) return false;
       if (state.filtro === 'offline' && x.online !== false) return false;
       if (q && (x.ext + ' ' + x.name).toLowerCase().indexOf(q) === -1) return false;
+      if (state.grupo !== '') {
+        var gn = +state.grupo;
+        if (groupNums(x.call_group).indexOf(gn) === -1 && groupNums(x.pickup_group).indexOf(gn) === -1) return false;
+      }
       return true;
     });
+  }
+  function groupsCell(x) {
+    var parts = [];
+    if (x.call_group) parts.push('<span class="bvr-grp" title="' + tr('Grupo de chamada', 'Call group') + '"><em>' + tr('Chamada', 'Call') + '</em> ' + esc(x.call_group) + '</span>');
+    if (x.pickup_group) parts.push('<span class="bvr-grp" title="' + tr('Grupo de captura', 'Pickup group') + '"><em>' + tr('Captura', 'Pickup') + '</em> ' + esc(x.pickup_group) + '</span>');
+    return parts.length ? '<div class="bvr-grps">' + parts.join('') + '</div>' : '<span class="bvr-muted">—</span>';
   }
   function renderList() {
     var c = counts();
@@ -73,22 +99,30 @@
       return '<tr data-ext="' + esc(x.ext) + '" tabindex="0">' +
         '<td><strong class="bvr-num">' + esc(x.ext) + '</strong>' + esc(x.name) + '</td>' +
         '<td><span class="bvr-chip">' + esc((x.tech || '').toUpperCase()) + '</span></td>' +
-        '<td>' + st + '</td><td><div class="bvr-chips">' + filas + '</div></td>' +
+        '<td>' + st + '</td><td>' + groupsCell(x) + '</td><td><div class="bvr-chips">' + filas + '</div></td>' +
         '<td class="bvr-muted">' + (x.ip ? esc(x.ip) : '—') + '</td>' +
         '<td class="bvr-go">' + icon('chevron-right') + '</td></tr>';
     }).join('');
-    if (!rows) rows = '<tr class="bvr-empty"><td colspan="6">' + tr('Nenhum ramal encontrado.', 'No extensions found.') + '</td></tr>';
+    if (!rows) rows = '<tr class="bvr-empty"><td colspan="7">' + tr('Nenhum ramal encontrado.', 'No extensions found.') + '</td></tr>';
 
     root.innerHTML = pendingBar() +
       '<header class="bvr-head"><div><h1>' + tr('Ramais', 'Extensions') + '</h1><p>' + esc(sub) + '</p></div>' +
-      '<div class="bvr-actions"><button type="button" class="bl-btn bl-btn--primary" data-act="novo">' + icon('phone') + tr('Novo ramal', 'New extension') + '</button></div></header>' +
+      '<div class="bvr-actions">' +
+        '<button type="button" class="bl-btn bl-btn--outline" data-act="lote">' + icon('list-plus') + tr('Criar ramais em lote', 'Batch extensions') + '</button>' +
+        '<button type="button" class="bl-btn bl-btn--primary" data-act="novo">' + icon('phone') + tr('Novo ramal', 'New extension') + '</button></div></header>' +
       '<div class="bvr-toolbar"><div class="bvr-segs" role="tablist">' +
         (state.aoVivo ? tab('todos', tr('Todos', 'All')) + tab('online', 'Online') + tab('offline', 'Offline') : '') +
-      '</div><label class="bvr-search">' + icon('search') +
+      '</div>' + (function () {
+        var g = allGroups(); if (!g.length) return '';
+        return '<select class="bvr-gsel" id="bvr-g" aria-label="' + tr('Filtrar por grupo', 'Filter by group') + '"><option value="">' + tr('Todos os grupos', 'All groups') + '</option>' +
+          g.map(function (n) { return '<option value="' + n + '"' + (String(n) === state.grupo ? ' selected' : '') + '>' + tr('Grupo ', 'Group ') + n + '</option>'; }).join('') + '</select>';
+      })() + '<label class="bvr-search">' + icon('search') +
         '<input type="search" id="bvr-q" placeholder="' + tr('Número ou nome', 'Number or name') + '" value="' + esc(state.busca) + '" /></label></div>' +
       '<div class="bvr-card"><table class="bvr-table"><thead><tr><th>' + tr('Ramal', 'Extension') + '</th><th>' +
-        tr('Tecnologia', 'Technology') + '</th><th>Status</th><th>' + tr('Filas', 'Queues') + '</th><th>IP</th><th></th></tr></thead><tbody>' +
+        tr('Tecnologia', 'Technology') + '</th><th>Status</th><th>' + tr('Grupos', 'Groups') + '</th><th>' + tr('Filas', 'Queues') + '</th><th>IP</th><th></th></tr></thead><tbody>' +
         rows + '</tbody></table></div>';
+    var gs = document.getElementById('bvr-g');
+    if (gs) gs.addEventListener('change', function () { state.grupo = gs.value; renderList(); });
     var q = document.getElementById('bvr-q');
     q.addEventListener('input', function () { state.busca = q.value; var pos = q.selectionStart; renderList(); var n = document.getElementById('bvr-q'); n.focus(); n.setSelectionRange(pos, pos); });
   }
@@ -155,7 +189,12 @@
         '</div><div class="bvr-grid bvr-vm"' + (r.voicemail ? '' : ' hidden') + '>' +
         field('vm_pin', tr('Senha do correio de voz', 'Voicemail PIN'), '<input class="bl-input" name="vm_pin" inputmode="numeric" value="' + esc(r.vm_pin) + '" />', tr('Se ficar vazia, usa o número do ramal.', 'If empty, the extension number is used.')) +
         field('vm_email', tr('Enviar recados para', 'Send messages to'), '<input class="bl-input" name="vm_email" type="email" value="' + esc(r.vm_email) + '" />', tr('Opcional.', 'Optional.')) +
-        '</div><div class="bvr-grid">' + field('recording', tr('Gravação', 'Recording'), sel('recording', r.recording, recOpts)) + '</div></section>' +
+        '</div><div class="bvr-grid">' +
+        field('call_group', tr('Grupo de chamada', 'Call group'), '<input class="bl-input" name="call_group" inputmode="numeric" value="' + esc(r.call_group || '') + '" placeholder="' + tr('Nenhum', 'None') + '" />',
+          tr('Grupo(s) a que o ramal pertence. Ex.: 1 ou 1,2.', 'Group(s) the extension belongs to. E.g. 1 or 1,2.')) +
+        field('pickup_group', tr('Grupo de captura', 'Pickup group'), '<input class="bl-input" name="pickup_group" inputmode="numeric" value="' + esc(r.pickup_group || '') + '" placeholder="' + tr('Nenhum', 'None') + '" />',
+          tr('Pode puxar (*8) chamadas que tocam nesses grupos de chamada.', 'Can pick up (*8) calls ringing in these call groups.')) +
+        field('recording', tr('Gravação', 'Recording'), sel('recording', r.recording, recOpts)) + '</div></section>' +
       // Avançado
       '<details class="bvr-card bvr-sec bvr-adv"><summary><span><strong>' + tr('Avançado', 'Advanced') + '</strong><small>' +
         tr('DTMF, NAT, toque, chamadas simultâneas, dial options, CallerID externo', 'DTMF, NAT, ring time, concurrent calls, dial options, outbound CallerID') + '</small></span>' + icon('chevron-down') + '</summary><div class="bvr-grid">' +
@@ -193,7 +232,8 @@
       tech: f.elements['tech'] ? f.elements['tech'].value : '', call_waiting: f.elements['call_waiting'].checked, auto_answer: f.elements['auto_answer'].checked,
       voicemail: f.elements['voicemail'].checked, vm_pin: f.elements['vm_pin'].value, vm_email: f.elements['vm_email'].value,
       recording: f.elements['recording'].value, dtmf: f.elements['dtmf'].value, nat: f.elements['nat'].value, ring_time: f.elements['ring_time'].value,
-      concurrency: f.elements['concurrency'].value, dial_options: f.elements['dial_options'].value, outbound_cid: f.elements['outbound_cid'].value
+      concurrency: f.elements['concurrency'].value, dial_options: f.elements['dial_options'].value, outbound_cid: f.elements['outbound_cid'].value,
+      call_group: f.elements['call_group'].value, pickup_group: f.elements['pickup_group'].value
     };
     call('save', { post: true, json: data }).then(function (d) {
       state.pendente = d.pendente; state.view = 'list';
@@ -204,10 +244,88 @@
   }
 
   function openForm(ext) {
-    if (!ext) { state.atual = null; renderForm({ ext: '', name: '', call_waiting: true, auto_answer: false, voicemail: false, vm_pin: '', vm_email: '', recording: 'dontcare', dtmf: 'rfc2833', nat: 'yes', ring_time: '0', concurrency: '0', dial_options: '', outbound_cid: '' }, true); return; }
+    if (!ext) { state.atual = null; renderForm({ ext: '', name: '', call_waiting: true, auto_answer: false, voicemail: false, vm_pin: '', vm_email: '', recording: 'dontcare', dtmf: 'rfc2833', nat: 'yes', ring_time: '0', concurrency: '0', dial_options: '', outbound_cid: '', call_group: '', pickup_group: '' }, true); return; }
     root.innerHTML = '<div class="bvr-loading">' + tr('Carregando o ramal…', 'Loading extension…') + '</div>';
     call('get', { qs: '&ext=' + encodeURIComponent(ext) }).then(function (d) { state.atual = d.ramal; renderForm(d.ramal, false); })
       .catch(function (e) { toast(e.message, true); state.view = 'list'; renderList(); });
+  }
+
+  /* ---------------- criar ramais em lote (planilha) ---------------- */
+  function renderLote() {
+    state.view = 'lote'; clearTimeout(refreshTimer);
+    root.innerHTML = pendingBar() +
+      '<header class="bvr-head"><div><button type="button" class="bvr-back" data-act="voltar">' + icon('chevron-right') + tr('Ramais', 'Extensions') + '</button>' +
+      '<h1>' + tr('Criar ramais em lote', 'Batch extensions') + '</h1><p>' +
+      tr('Crie e edite vários ramais de uma vez com uma planilha no formato do Issabel.', 'Create and edit many extensions at once with an Issabel-format spreadsheet.') + '</p></div></header>' +
+      '<section class="bvr-card bvr-sec"><div class="bvr-sec-head"><h2>1. ' + tr('Baixe a planilha', 'Download the spreadsheet') + '</h2><p>' +
+        tr('Comece pelos ramais atuais para editar e acrescentar linhas, ou pelo modelo vazio.', 'Start from the current extensions to edit and add rows, or from the blank template.') + '</p></div>' +
+        '<div class="bvr-actions"><a class="bl-btn bl-btn--outline" href="' + BASE + 'export" download>' + icon('download') + tr('Ramais atuais', 'Current extensions') + '</a>' +
+        '<a class="bl-btn bl-btn--ghost" href="' + BASE + 'template" download>' + tr('Modelo vazio', 'Blank template') + '</a></div>' +
+        '<ul class="bvr-rules"><li>' + tr('Ramal que ainda não existe é <strong>criado</strong>.', 'An extension that does not exist is <strong>created</strong>.') + '</li>' +
+        '<li>' + tr('Ramal que já existe é <strong>atualizado</strong>, só nas colunas que mudaram.', 'An existing extension is <strong>updated</strong>, only in the columns that changed.') + '</li>' +
+        '<li>' + tr('Célula vazia mantém o valor atual. A planilha <strong>nunca exclui</strong> ramais.', 'Empty cells keep the current value. The spreadsheet <strong>never deletes</strong> extensions.') + '</li></ul>' +
+      '</section>' +
+      '<section class="bvr-card bvr-sec"><div class="bvr-sec-head"><h2>2. ' + tr('Envie a planilha', 'Upload the spreadsheet') + '</h2><p>' +
+        tr('Arquivo .csv do Issabel ou salvo pelo Excel. Você confere tudo antes de gravar.', 'Issabel .csv or saved from Excel. You review everything before saving.') + '</p></div>' +
+        '<label class="bvr-drop" id="bvr-drop"><input type="file" id="bvr-file" accept=".csv,text/csv" />' + icon('list-plus') +
+        '<span><strong>' + tr('Escolha o arquivo', 'Choose the file') + '</strong> ' + tr('ou arraste para cá', 'or drag it here') + '</span></label>' +
+      '</section><div id="bvr-preview"></div>';
+    var fi = document.getElementById('bvr-file'), drop = document.getElementById('bvr-drop');
+    fi.addEventListener('change', function () { if (fi.files && fi.files[0]) upload(fi.files[0]); });
+    ['dragover', 'dragenter'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-over'); }); });
+    drop.addEventListener('drop', function (e) { var f = e.dataTransfer.files[0]; if (f) upload(f); });
+  }
+  function upload(file) {
+    var box = document.getElementById('bvr-preview');
+    box.innerHTML = '<div class="bvr-loading">' + tr('Lendo a planilha e comparando com o PBX…', 'Reading the spreadsheet and comparing with the PBX…') + '</div>';
+    var fd = new FormData(); fd.append('planilha', file);
+    fetch(BASE + 'import_preview', { method: 'POST', credentials: 'same-origin', headers: { 'X-BV-Token': TOKEN }, body: fd })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok || j.erro) throw new Error(j.erro || 'Falha'); return j; }); })
+      .then(function (p) { preview(p, file.name); })
+      .catch(function (e) { box.innerHTML = '<div class="bvr-error">' + esc(e.message) + '</div>'; });
+  }
+  function preview(p, fname) {
+    var box = document.getElementById('bvr-preview');
+    var n = p.novos.length, a = p.alterados.length;
+    var body = '';
+    if (n) body += '<h3>' + tr('Ramais novos', 'New extensions') + '</h3><div class="bvr-chips">' +
+      p.novos.map(function (x) { return '<span class="bvr-chip">' + esc(x.ext) + ' · ' + esc(x.name) + '</span>'; }).join('') + '</div>';
+    if (a) body += '<h3>' + tr('Ramais alterados', 'Changed extensions') + '</h3>' + p.alterados.map(function (x) {
+      return '<details class="bvr-lote-item"><summary><strong>' + esc(x.ext) + '</strong> ' + esc(x.name) + ' <span class="bvr-muted">· ' +
+        x.mudancas.length + (x.mudancas.length === 1 ? tr(' campo', ' field') : tr(' campos', ' fields')) + '</span></summary><table>' +
+        x.mudancas.map(function (m) {
+          return '<tr><td>' + esc(m.campo) + '</td><td class="bvr-muted">' + (m.senha ? tr('alterada', 'changed') : esc(m.de || '—')) + '</td><td>' + (m.senha ? '' : '→ ' + esc(m.para)) + '</td></tr>';
+        }).join('') + '</table></details>';
+    }).join('');
+    if (p.erros.length) body += '<h3>' + tr('Linhas com erro (serão ignoradas)', 'Rows with errors (will be skipped)') + '</h3><ul class="bvr-lote-err">' +
+      p.erros.map(function (e) { return '<li>' + tr('Linha ', 'Row ') + e.linha + ': ' + esc(e.msg) + '</li>'; }).join('') + '</ul>';
+    if (p.ignoradas.length) body += '<p class="bvr-muted bvr-lote-ign">' + tr('Colunas que esta tela não grava (o PBX mantém o valor atual): ', 'Columns this screen does not write (the PBX keeps the current value): ') + esc(p.ignoradas.join(', ')) + '.</p>';
+    if (!n && !a) body += '<p class="bvr-muted">' + tr('Nada a fazer: a planilha é igual ao que já está no PBX.', 'Nothing to do: the spreadsheet matches the PBX.') + '</p>';
+
+    box.innerHTML = '<section class="bvr-card bvr-sec"><div class="bvr-sec-head"><h2>3. ' + tr('Confira e aplique', 'Review and apply') + '</h2><p>' + esc(fname) + '</p></div>' +
+      '<div class="bvr-lote-sum"><div><strong>' + n + '</strong><span>' + tr('para criar', 'to create') + '</span></div>' +
+      '<div><strong>' + a + '</strong><span>' + tr('para alterar', 'to change') + '</span></div>' +
+      '<div><strong>' + p.iguais + '</strong><span>' + tr('sem mudança', 'unchanged') + '</span></div>' +
+      '<div class="' + (p.erros.length ? 'is-bad' : '') + '"><strong>' + p.erros.length + '</strong><span>' + tr('com erro', 'with errors') + '</span></div></div>' +
+      '<div class="bvr-lote-body">' + body + '</div><p class="bvr-error" id="bvr-lerr" hidden></p>' +
+      (n || a ? '<div class="bvr-actions bvr-actions--end"><button type="button" class="bl-btn bl-btn--primary" id="bvr-lapply">' +
+        (EN ? 'Save ' + (n + a) + ' extensions' : 'Gravar ' + (n + a) + (n + a === 1 ? ' ramal' : ' ramais')) + '</button></div>' : '') + '</section>';
+    var ok = document.getElementById('bvr-lapply'), err = document.getElementById('bvr-lerr');
+    if (ok) ok.addEventListener('click', function () {
+      ok.disabled = true; ok.textContent = tr('Gravando…', 'Saving…'); err.hidden = true;
+      call('import_apply', { post: true, form: { id: p.id } }).then(function (r) {
+        state.pendente = r.pendente;
+        var msg = (EN ? r.criados + ' created, ' + r.alterados + ' changed.' : r.criados + ' criados, ' + r.alterados + ' alterados.') +
+          ' ' + tr('Aplique as alterações para valer no PBX.', 'Apply the changes for the PBX to use them.');
+        if (r.falhas && r.falhas.length) {
+          dialog(tr('Alguns ramais não foram gravados', 'Some extensions were not saved'), esc(msg) + '<br><br>' +
+            r.falhas.map(function (f) { return '<strong>' + esc(f.ext) + '</strong>: ' + esc(f.msg); }).join('<br>'), 'OK', function () {});
+        } else toast(msg);
+        state.view = 'list'; loadList();
+      }).catch(function (e) { err.textContent = e.message; err.hidden = false; ok.disabled = false; ok.textContent = tr('Tentar de novo', 'Try again'); });
+    });
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   /* ---------------- diálogos ---------------- */
@@ -263,6 +381,7 @@
     if (!b) return;
     var act = b.getAttribute('data-act');
     if (act === 'novo') openForm('');
+    else if (act === 'lote') renderLote();
     else if (act === 'voltar') { state.view = 'list'; renderList(); loadList(true); }
     else if (act === 'gerar') {
       var cs = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789', a = new Uint32Array(16), s = '';

@@ -33,7 +33,7 @@ HTML;
 
 function bv_rm_action($action)
 {
-    $write = in_array($action, array('save', 'delete', 'apply', 'secret'), true);
+    $write = in_array($action, array('save', 'delete', 'apply', 'secret', 'import_preview', 'import_apply'), true);
     if ($write) {
         $tok = isset($_SERVER['HTTP_X_BV_TOKEN']) ? (string) $_SERVER['HTTP_X_BV_TOKEN'] : '';
         $ok = $_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['bv_csrf']) && hash_equals($_SESSION['bv_csrf'], $tok);
@@ -54,6 +54,26 @@ function bv_rm_action($action)
             case 'secret': return bv_rm_json(bv_rm_secret($api, isset($_POST['ext']) ? $_POST['ext'] : ''));
             case 'save':   return bv_rm_json(bv_rm_save($api, $user));
             case 'delete': return bv_rm_json(bv_rm_delete($api, isset($_POST['ext']) ? $_POST['ext'] : '', $user));
+            case 'export':
+                require_once __DIR__ . '/lib/Lote.php';
+                $csv = BvRamaisLote::export($api);
+                bv_rm_log($user, 'exportou a planilha de ramais', true);
+                if (!headers_sent()) {
+                    header('Content-Type: text/csv; charset=UTF-8');
+                    header('Content-Disposition: attachment; filename="ramais-' . date('Ymd-Hi') . '.csv"');
+                    header('Cache-Control: no-store');
+                }
+                return "\xEF\xBB\xBF" . $csv; // BOM: o Excel abre os acentos certo
+            case 'template':
+                require_once __DIR__ . '/lib/Lote.php';
+                if (!headers_sent()) {
+                    header('Content-Type: text/csv; charset=UTF-8');
+                    header('Content-Disposition: attachment; filename="modelo-ramais.csv"');
+                }
+                $f = fopen('php://temp', 'w+'); fputcsv($f, BvRamaisLote::$HEADER); rewind($f);
+                return "\xEF\xBB\xBF" . stream_get_contents($f);
+            case 'import_preview': return bv_rm_json(bv_rm_import_preview($api, $user));
+            case 'import_apply':   return bv_rm_json(bv_rm_import_apply($api, $user, isset($_POST['id']) ? $_POST['id'] : ''));
             case 'apply':
                 $r = $api->applyChanges();
                 bv_rm_log($user, 'aplicou as alterações do PBX', $r['ok']);
@@ -81,6 +101,7 @@ function bv_rm_list(BvPbxApi $api)
     if ($r['code'] !== 200 || !isset($r['body']['results'])) throw new Exception(bv_rm_t('Não foi possível listar os ramais: ', 'Could not list extensions: ') . BvPbxApi::errorText($r));
 
     $live = bv_rm_live();
+    $grupos = bv_rm_groups();
     $items = array();
     foreach ((array) $r['body']['results'] as $x) {
         $ext = (string) (isset($x['extension']) ? $x['extension'] : '');
@@ -93,6 +114,8 @@ function bv_rm_list(BvPbxApi $api)
             'online' => $l ? (bool) $l['online'] : null,
             'ip' => $l && !empty($l['ip']) ? (string) $l['ip'] : '',
             'filas' => isset($live['filas'][$ext]) ? $live['filas'][$ext] : array(),
+            'call_group' => isset($grupos[$ext]['callgroup']) ? $grupos[$ext]['callgroup'] : '',
+            'pickup_group' => isset($grupos[$ext]['pickupgroup']) ? $grupos[$ext]['pickupgroup'] : '',
         );
     }
     usort($items, function ($a, $b) { return strnatcmp($a['ext'], $b['ext']); });
@@ -127,6 +150,19 @@ function bv_rm_live()
     return $out;
 }
 
+/* Grupos de chamada e de captura de todos os ramais numa consulta só (leitura). */
+function bv_rm_groups()
+{
+    $out = array();
+    if ($f = getenv('BV_TEST_GROUPS')) return (array) json_decode((string) @file_get_contents($f), true); // só testes
+    try {
+        $st = BvPbxApi::pbxDb()->query("SELECT id, keyword, data FROM sip WHERE keyword IN ('callgroup', 'pickupgroup')");
+        foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(string) $r['id']][$r['keyword']] = trim((string) $r['data']);
+    } catch (Exception $e) {
+    }
+    return $out;
+}
+
 /* Um ramal no formato do formulário (sem a senha). */
 function bv_rm_get(BvPbxApi $api, $ext)
 {
@@ -151,6 +187,8 @@ function bv_rm_get(BvPbxApi $api, $ext)
         'concurrency' => $g('extension_options.outbound_concurrency_limit', '0'),
         'dial_options' => $g('extension_options.dial_options'),
         'outbound_cid' => $g('callerid_override.outbound'),
+        'call_group' => $g('device_options.call_group'),
+        'pickup_group' => $g('device_options.pickup_group'),
     ));
 }
 
@@ -215,6 +253,14 @@ function bv_rm_save(BvPbxApi $api, $user)
     if ($cid !== '' && !ctype_digit($cid)) throw new BvRmError(bv_rm_t('O CallerID externo aceita só números.', 'The outbound CallerID accepts digits only.'), 'outbound_cid');
     $d['callerid_override.outbound'] = $cid;
 
+    foreach (array('call_group' => 'device_options.call_group', 'pickup_group' => 'device_options.pickup_group') as $f => $k) {
+        $v = preg_replace('/\s+/', '', (string) @$in[$f]);
+        if ($v !== '' && !preg_match('/^\d{1,2}(-\d{1,2})?(,\d{1,2}(-\d{1,2})?)*$/', $v)) {
+            throw new BvRmError(bv_rm_t('Use números de 0 a 63, separados por vírgula (ex.: 1 ou 1,2 ou 1-3).', 'Use numbers 0 to 63, comma separated (e.g. 1 or 1,2 or 1-3).'), $f);
+        }
+        if (array_key_exists($f, $in)) $d[$k] = $v;
+    }
+
     $secret = (string) @$in['secret'];
     if ($secret !== '') {
         if (strlen($secret) < 8) throw new BvRmError(bv_rm_t('A senha do aparelho precisa de pelo menos 8 caracteres.', 'The device password needs at least 8 characters.'), 'secret');
@@ -254,6 +300,55 @@ function bv_rm_delete(BvPbxApi $api, $ext, $user)
     BvPbxApi::clearPending();
     bv_rm_log($user, "excluiu o ramal $ext", true);
     return array('ok' => true, 'pendente' => BvPbxApi::pending());
+}
+
+/* ------------------------------------------------------------------ lote (planilha) */
+
+/* Lê a planilha, monta o plano e guarda no servidor; o navegador recebe só o resumo
+ * (sem senhas). A confirmação aplica exatamente o plano mostrado. */
+function bv_rm_import_preview(BvPbxApi $api, $user)
+{
+    require_once __DIR__ . '/lib/Lote.php';
+    if (empty($_FILES['planilha']) || $_FILES['planilha']['error'] !== UPLOAD_ERR_OK) throw new BvRmError(bv_rm_t('Envie um arquivo .csv.', 'Upload a .csv file.'));
+    if ($_FILES['planilha']['size'] > 2 * 1024 * 1024) throw new BvRmError(bv_rm_t('A planilha passa de 2 MB.', 'The file is larger than 2 MB.'));
+    $plan = BvRamaisLote::plan($api, file_get_contents($_FILES['planilha']['tmp_name']));
+    bv_rm_lote_gc();
+    $id = bin2hex(random_bytes(12));
+    $file = bv_rm_lote_file($id);
+    file_put_contents($file, json_encode(array('user' => $user, 'quando' => time(), 'plano' => $plan)));
+    @chmod($file, 0600);
+    $resumo = array(
+        'id' => $id, 'total' => $plan['total'], 'iguais' => $plan['iguais'], 'erros' => $plan['erros'], 'ignoradas' => $plan['ignoradas'],
+        'novos' => array_map(function ($i) { return array('ext' => $i['ext'], 'name' => $i['name']); }, $plan['novos']),
+        'alterados' => array_map(function ($i) { return array('ext' => $i['ext'], 'name' => $i['name'], 'mudancas' => $i['mudancas']); }, $plan['alterados']),
+    );
+    return $resumo;
+}
+
+function bv_rm_import_apply(BvPbxApi $api, $user, $id)
+{
+    require_once __DIR__ . '/lib/Lote.php';
+    $id = preg_replace('/[^a-f0-9]/', '', (string) $id);
+    $file = bv_rm_lote_file($id);
+    $saved = $id !== '' ? @json_decode((string) @file_get_contents($file), true) : null;
+    if (!$saved || $saved['user'] !== $user || time() - (int) $saved['quando'] > 1800) {
+        throw new BvRmError(bv_rm_t('A prévia expirou. Envie a planilha de novo.', 'The preview expired. Upload the file again.'));
+    }
+    @unlink($file);
+    $res = BvRamaisLote::apply($api, $saved['plano']);
+    if ($res['criados'] || $res['alterados']) BvPbxApi::markPending("planilha: {$res['criados']} criados, {$res['alterados']} alterados");
+    bv_rm_log($user, "aplicou planilha: {$res['criados']} criados, {$res['alterados']} alterados, " . count($res['falhas']) . ' falhas', !$res['falhas']);
+    $res['pendente'] = BvPbxApi::pending();
+    return $res;
+}
+
+function bv_rm_lote_file($id) { return sys_get_temp_dir() . '/bv-lote-' . $id . '.json'; }
+
+function bv_rm_lote_gc()
+{
+    foreach ((array) glob(sys_get_temp_dir() . '/bv-lote-*.json') as $f) {
+        if (is_file($f) && time() - filemtime($f) > 1800) @unlink($f);
+    }
 }
 
 /* ------------------------------------------------------------------ util */

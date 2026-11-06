@@ -122,3 +122,33 @@
   .bvr-search { width: 100%; margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .bvr-switch-ui, .bvr-switch-ui::after, .bvr-adv summary .bvr-i { transition: none; } }
+
+/* Planilha (ramais em lote) */
+.bvr-actions a.bl-btn { text-decoration: none; }
+.bvr-lote-sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.bvr-lote-sum > div { display: flex; flex-direction: column; padding: 10px 12px; border-radius: var(--radius-2xl); background: var(--muted); }
+.bvr-lote-sum strong { font-size: 22px; font-weight: 500; line-height: 1.2; color: var(--foreground); }
+.bvr-lote-sum span { font-size: 12px; color: var(--muted-foreground); }
+.bvr-lote-sum .is-bad { background: var(--destructive-tint); }
+.bvr-lote-sum .is-bad strong { color: var(--destructive); }
+.bvr-lote-body { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.bvr-lote-body h3 { margin: 8px 0 2px; font: 500 14px var(--font-sans); color: var(--foreground); }
+.bvr-lote-item { border-radius: var(--radius-xl); background: var(--muted); padding: 8px 12px; }
+.bvr-lote-item summary { cursor: pointer; color: var(--foreground); }
+.bvr-lote-item table { width: 100%; margin-top: 6px; border-collapse: collapse; font-size: 13px; }
+.bvr-lote-item td { padding: 4px 6px 4px 0; color: var(--foreground); }
+.bvr-lote-item td:first-child { width: 45%; }
+.bvr-lote-err { margin: 0; padding-left: 18px; color: var(--destructive); font-size: 13px; }
+.bvr-lote-ign { font-size: 12px; }
+.bvr-actions--end { justify-content: flex-end; }
+.bvr-rules { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; color: var(--muted-foreground); }
+.bvr-rules strong { color: var(--foreground); font-weight: 500; }
+.bvr-drop { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 96px; margin: 0; border: 1.5px dashed var(--border); border-radius: var(--radius-2xl); background: var(--muted); color: var(--muted-foreground); cursor: pointer; font-weight: 400; transition: border-color .15s, background-color .15s; }
+.bvr-drop strong { color: var(--primary); font-weight: 500; }
+.bvr-drop:hover, .bvr-drop.is-over { border-color: var(--primary); background: var(--bubble-tint); }
+.bvr-drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.bvr-drop:focus-within { box-shadow: 0 0 0 3px var(--focus-ring); }
+/* Grupos de chamada e captura na lista */
+.bvr-grps { display: flex; flex-direction: column; gap: 2px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.bvr-grp em { font-style: normal; color: var(--muted-foreground); font-size: 12px; margin-right: 2px; }
+.bvr .bvr-gsel { height: 36px !important; padding: 0 32px 0 12px; border: 0; border-radius: var(--radius-3xl); background-color: var(--card); box-shadow: 0 0 0 1px var(--border); font: 14px var(--font-sans); color: var(--foreground); }

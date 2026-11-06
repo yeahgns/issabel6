@@ -174,6 +174,21 @@ class BvPbxApi
         @unlink(sys_get_temp_dir() . '/' . self::PENDING);
     }
 
+    /* ---------------------------------------------------------------- banco (leitura) */
+
+    /* Conexão de leitura ao banco do IssabelPBX, para dados que a API só devolve ramal a
+     * ramal (ex.: grupos de chamada e captura de todos os ramais de uma vez). */
+    public static function pbxDb()
+    {
+        $amp = self::readConf('/etc/amportal.conf');
+        $host = !empty($amp['AMPDBHOST']) ? $amp['AMPDBHOST'] : 'localhost';
+        $name = !empty($amp['AMPDBNAME']) ? $amp['AMPDBNAME'] : 'asterisk';
+        $user = !empty($amp['AMPDBUSER']) ? $amp['AMPDBUSER'] : 'asteriskuser';
+        $pass = isset($amp['AMPDBPASS']) ? trim($amp['AMPDBPASS'], "\"'") : '';
+        return new PDO("mysql:host=$host;dbname=$name;charset=utf8", $user, $pass,
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3));
+    }
+
     /* ---------------------------------------------------------------- token */
 
     private function token()
