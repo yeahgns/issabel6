@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.9.0
+- **Filas**: tela própria (módulo `bv_pbx_filas`). Lista com distribuição, ramais e quem
+  está esperando agora; formulário com número, nome, ramais participantes (static agents,
+  com busca), distribuição, toque por ramal (agent timeout), espera máxima, pular ramais
+  ocupados, música de espera, gravação, destino se ninguém atender (failover) e destino
+  depois que o ramal desligar (queue continue). "Todas as opções no PBX" abre a página
+  original da fila.
+- A API de filas cria por PUT com os nomes internos das colunas e altera por PUT com os
+  nomes de apresentação; o DELETE exige corpo JSON. O cliente ganhou `putRaw()` e DELETE
+  com corpo. `tools/pbxapi-teste-filas.php` confere esse comportamento no servidor.
+- Membros de todas as filas vêm do banco do PBX numa consulta só (leitura).
+- Novo item **PBX > Áudios**, por enquanto abrindo a Música de espera do IssabelPBX.
+
 ## 1.8.0
 - **Criar ramais em lote**, dentro de Ramais: baixa os ramais atuais (ou um modelo vazio)
   no formato do Batch of Extensions do Issabel 5, recebe a planilha de volta (.csv do

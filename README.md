@@ -30,7 +30,7 @@ arquivo de pacote RPM e nenhuma configuração de telefonia.
 ```
 OPERAÇÃO     Visão geral · Painel do operador · Painel do call center ·
              Console do agente · Registro de chamadas
-PBX          Ramais · Filas · URA · Troncos · Rotas · Anúncios · Condições de tempo ·
+PBX          Ramais · Filas · URA · Troncos · Rotas · Anúncios · Áudios · Condições de tempo ·
              Conferências · Estacionamento · Lista de bloqueio
 CALL CENTER  Campanhas · Formulários · Agentes · Pausas
 SISTEMA      Usuários ▸ · Rede ▸ · Segurança ▸
@@ -39,7 +39,7 @@ SISTEMA      Usuários ▸ · Rede ▸ · Segurança ▸
              Avançado ▸ Dashboard do Issabel · Construtor de módulo · Remover módulo
 ```
 
-Ramais tem tela própria (módulo `bv_pbx_ramais`). Os demais itens de PBX abrem a tela
+Ramais e Filas têm telas próprias. Os demais itens de PBX abrem a tela
 correspondente do IssabelPBX dentro do layout
 (por enquanto; as telas próprias vêm depois). A tela completa do IssabelPBX segue
 disponível no tema v5 (Preferências > Temas > Bradial v5). Alguns itens nativos saem só do menu lateral (lista em `bradialHiddenMenus()`,
@@ -146,8 +146,10 @@ theme/lib/BvLangShim.php   rótulos dos módulos antigos do Issabel 4
 modules/bv_visao_geral/    Visão geral (index.php, lib/VisaoGeral.php, assets/)
 modules/bv_energia/        Reiniciar ou desligar (usa o sudo de /sbin/shutdown do Issabel)
 modules/bv_pbx_ramais/     Ramais (lista, formulário e lote por planilha, sobre a API do PBX)
+modules/bv_pbx_filas/      Filas (lista e formulário, sobre a API do PBX)
 modules/bv_pbx_common/     cliente da API do PBX (lib/PbxApi.php), sem item de menu
 tools/pbxapi-teste.php     teste da API do PBX com um ramal temporário
+tools/pbxapi-teste-filas.php  teste da API de filas com uma fila temporária
 menu/menu.xml              registro da Visão geral (issabel-menumerge)
 ```
 

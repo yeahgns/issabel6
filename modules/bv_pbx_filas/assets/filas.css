@@ -1,0 +1,14 @@
+/* Filas (Bradial Voz): complementa o CSS de Ramais (modules/bv_pbx_ramais/assets/ramais.css). */
+.bvf-wait { display: inline-flex; min-width: 28px; height: 24px; padding: 0 8px; align-items: center; justify-content: center; border-radius: 99px; background: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.bvf-wait.is-on { background: var(--bubble-tint); color: var(--primary); }
+.bvf-members { display: flex; flex-direction: column; gap: 10px; }
+.bvf-mtools { display: flex; align-items: center; gap: 12px; }
+.bvr .bvf-msearch { margin: 0; width: 260px; }
+.bvf-mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; max-height: 320px; overflow-y: auto; padding: 2px; }
+.bvf-m { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; padding: 8px 10px; border-radius: var(--radius-xl); background: var(--muted); cursor: pointer; font-weight: 400; transition: background-color .12s, box-shadow .12s; }
+.bvf-m:hover { box-shadow: inset 0 0 0 1px var(--border); }
+.bvf-m.is-on { background: var(--bubble-tint); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent); }
+.bvf-m input { accent-color: var(--primary); margin: 0; }
+.bvf-m strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+.bvf-m span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted-foreground); }
+.bvf-m[hidden] { display: none; }

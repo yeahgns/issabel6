@@ -6,7 +6,7 @@
     <menuitem menuid="bv_visao_geral" desc="Visão geral" parent="sysdash" module="yes" link="" order="1"></menuitem>
     <menuitem menuid="bv_energia" desc="Reiniciar ou desligar" parent="system" module="yes" link="" order="6"></menuitem>
     <menuitem menuid="bv_pbx_ramais" desc="Ramais" parent="pbxconfig" module="yes" link="" order="1"></menuitem>
-    <menuitem menuid="bv_pbx_filas" desc="Filas" parent="pbxconfig" module="no" link="/admin/config.php?display=queues" order="2"></menuitem>
+    <menuitem menuid="bv_pbx_filas" desc="Filas" parent="pbxconfig" module="yes" link="" order="2"></menuitem>
     <menuitem menuid="bv_pbx_ura" desc="URA" parent="pbxconfig" module="no" link="/admin/config.php?display=ivr" order="3"></menuitem>
     <menuitem menuid="bv_pbx_troncos" desc="Troncos" parent="pbxconfig" module="no" link="/admin/config.php?display=trunks" order="4"></menuitem>
     <menuitem menuid="bv_pbx_rotas" desc="Rotas" parent="pbxconfig" module="no" link="/admin/config.php?display=did" order="5"></menuitem>
@@ -15,5 +15,6 @@
     <menuitem menuid="bv_pbx_conferencias" desc="Conferências" parent="pbxconfig" module="no" link="/admin/config.php?display=conferences" order="8"></menuitem>
     <menuitem menuid="bv_pbx_estacionamento" desc="Estacionamento" parent="pbxconfig" module="no" link="/admin/config.php?display=parking" order="9"></menuitem>
     <menuitem menuid="bv_pbx_blacklist" desc="Lista de bloqueio" parent="pbxconfig" module="no" link="/admin/config.php?display=blacklist" order="10"></menuitem>
+    <menuitem menuid="bv_pbx_audios" desc="Áudios" parent="pbxconfig" module="no" link="/admin/config.php?display=music" order="7"></menuitem>
   </menulist>
 </module>

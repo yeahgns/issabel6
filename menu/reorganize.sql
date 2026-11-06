@@ -35,15 +35,17 @@ UPDATE menu SET IdParent='sysdash', Name='Registro de chamadas',  order_no=5 WHE
 DELETE FROM menu WHERE id IN ('bv_ramais','bv_filas','bv_troncos','bv_rotas_entrada','bv_rotas_saida');
 -- Ramais é tela própria do tema (módulo bv_pbx_ramais); os demais ainda abrem o PBX
 UPDATE menu SET IdParent='pbxconfig', Type='module', Link='', Name='Ramais', order_no=1 WHERE id='bv_pbx_ramais';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=queues', Name='Filas', order_no=2 WHERE id='bv_pbx_filas';
+UPDATE menu SET IdParent='pbxconfig', Type='module', Link='', Name='Filas', order_no=2 WHERE id='bv_pbx_filas';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=ivr', Name='URA', order_no=3 WHERE id='bv_pbx_ura';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=trunks', Name='Troncos', order_no=4 WHERE id='bv_pbx_troncos';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=did', Name='Rotas', order_no=5 WHERE id='bv_pbx_rotas';
 UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=announcement', Name='Anúncios', order_no=6 WHERE id='bv_pbx_anuncios';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=timeconditions', Name='Condições de tempo', order_no=7 WHERE id='bv_pbx_tempo';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=conferences', Name='Conferências', order_no=8 WHERE id='bv_pbx_conferencias';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=parking', Name='Estacionamento', order_no=9 WHERE id='bv_pbx_estacionamento';
-UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=blacklist', Name='Lista de bloqueio', order_no=10 WHERE id='bv_pbx_blacklist';
+-- Áudios: por enquanto a Música de espera do PBX; vira a tela de áudios (espera, anúncios, URA)
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=music', Name='Áudios', order_no=7 WHERE id='bv_pbx_audios';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=timeconditions', Name='Condições de tempo', order_no=8 WHERE id='bv_pbx_tempo';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=conferences', Name='Conferências', order_no=9 WHERE id='bv_pbx_conferencias';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=parking', Name='Estacionamento', order_no=10 WHERE id='bv_pbx_estacionamento';
+UPDATE menu SET IdParent='pbxconfig', Type='framed', Link='/admin/config.php?display=blacklist', Name='Lista de bloqueio', order_no=11 WHERE id='bv_pbx_blacklist';
 UPDATE menu SET Name='Configurações do PBX', order_no=50 WHERE id='pbxadmin';
 UPDATE menu SET IdParent='pbxconfig', Name='Ramais em lote', order_no=59 WHERE id='extensions_batch';
 UPDATE menu SET Name='Gravações', order_no=60 WHERE id='monitoring';

@@ -85,9 +85,20 @@ class BvPbxApi
         return $out;
     }
 
-    public function delete($resource, $id)
+    /* $data: alguns recursos (ex.: filas) leem um JSON no DELETE e recusam corpo vazio;
+     * nesses, mande array() e o cliente envia {"reload": false}. */
+    public function delete($resource, $id, $data = null)
     {
-        return $this->request('DELETE', $resource . '/' . rawurlencode($id));
+        if (is_array($data)) $data['reload'] = false;
+        return $this->request('DELETE', $resource . '/' . rawurlencode($id), $data);
+    }
+
+    /* PUT sem conversão para aninhado: usado onde a API espera os nomes internos das colunas
+     * (criação de fila por PUT, que não passa pela conversão de nomes). */
+    public function putRaw($resource, $id, array $data)
+    {
+        $data['reload'] = false;
+        return $this->request('PUT', $resource . '/' . rawurlencode($id), $data);
     }
 
     /* Resultado: array('code' => HTTP, 'body' => array|null, 'raw' => string, 'location' => string|null) */
